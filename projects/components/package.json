@@ -1,0 +1,34 @@
+{
+  "name": "@hypertrace/components",
+  "version": "0.0.0-PLACEHOLDER",
+  "scripts": {
+    "build": "ng build components",
+    "test": "pushd ../.. && ng test components",
+    "lint": "ng lint components",
+    "test:watch": "pushd ../.. && ng test components --watch"
+  },
+  "peerDependencies": {
+    "@angular/animations": "^9.1.0",
+    "@angular/common": "^9.1.0",
+    "@angular/core": "^9.1.0",
+    "@angular/cdk": "^9.1.0",
+    "@angular/platform-browser": "^9.1.0",
+    "@angular/material": "^9.1.0",
+    "@angular/forms": "^9.1.0",
+    "@angular/router": "^9.1.0",
+    "@angular/flex-layout": "^9.0.0-beta.29",
+    "@hypertrace/common": "^0.0.0",
+    "graphql-tag": "^2.10.1",
+    "core-js": "^3.5.0",
+    "rxjs": "~6.5.4",
+    "zone.js": "^0.10.3",
+    "lodash": "^4.17.11",
+    "d3-array": "^2.2.0",
+    "d3-axis": "^1.0.12",
+    "d3-scale": "^3.0.0",
+    "d3-selection": "^1.4.0"
+  },
+  "devDependencies": {
+    "@hypertrace/test-utils": "^0.0.0"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@hypertrace/common",
+  "version": "0.0.0-PLACEHOLDER",
+  "scripts": {
+    "build": "ng build common",
+    "test": "pushd ../.. && ng test common",
+    "lint": "ng lint common",
+    "test:watch": "pushd ../.. && ng test common --watch"
+  },
+  "peerDependencies": {
+    "@angular/common": "^9.1.0",
+    "@angular/core": "^9.1.0",
+    "@angular/cdk": "^9.1.0",
+    "@angular/platform-browser": "^9.1.0",
+    "@angular/router": "^9.1.0",
+    "@hypertrace/graphql-client": "^0.0.0",
+    "core-js": "^3.5.0",
+    "rxjs": "~6.5.4",
+    "zone.js": "^0.10.3",
+    "lodash": "^4.17.11",
+    "apollo-angular": "^1.6.0",
+    "apollo-angular-link-http": "^1.8.0",
+    "apollo-cache-inmemory": "^1.6.2",
+    "apollo-client": "^2.6.2",
+    "graphql": "^14.3.1",
+    "graphql-tag": "^2.10.1",
+    "d3-interpolate": "^1.3.2",
+    "d3-color": "^1.4.0"
+  },
+  "devDependencies": {
+    "@hypertrace/test-utils": "^0.0.0"
+  }
+}

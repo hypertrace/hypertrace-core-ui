@@ -1,0 +1,79 @@
+@import 'color-palette';
+@import 'font';
+
+.navigation-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  width: 100%;
+  padding: 24px 5px 5px 8px;
+  justify-content: space-between;
+  border-right: 1px solid $gray-2;
+
+  .content {
+    .nav-header {
+      @include overline($gray-9);
+      padding-top: 20px;
+      padding-left: 14px;
+      padding-bottom: 4px;
+    }
+  }
+
+  .resize-tab-button {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 28px;
+    right: -12px;
+    height: 28px;
+    width: 12px;
+    border: 1px solid $gray-2;
+    border-left-color: white;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    color: $gray-7;
+
+    &:hover {
+      color: $gray-4;
+    }
+
+    .resize-icon {
+      position: absolute;
+      right: 0;
+    }
+  }
+
+  .footer {
+    position: relative;
+    margin-left: 6px;
+    color: $gray-5;
+
+    .footer-item {
+      display: flex;
+      align-items: center;
+      margin-left: 8px;
+
+      .link {
+        @include link;
+        @include footnote($gray-5);
+      }
+    }
+
+    .nav-divider {
+      position: absolute;
+      top: -6px;
+      left: 8px;
+      margin: 0;
+      height: 1px;
+      width: 16px;
+      background-color: $gray-2;
+      border: none;
+    }
+  }
+}
+
+.expanded {
+  width: 220px;
+}

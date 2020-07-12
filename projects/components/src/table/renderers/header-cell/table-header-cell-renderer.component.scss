@@ -1,0 +1,42 @@
+@import 'color-palette';
+@import 'font';
+
+:host {
+  width: 100%; // Sorry...
+}
+
+.table-header-cell-renderer {
+  cursor: pointer;
+  @include ellipsis-overflow();
+  @include overline($gray-5);
+
+  &:hover {
+    color: $gray-9;
+  }
+
+  &.left {
+    text-align: left;
+  }
+
+  &.center {
+    text-align: center;
+  }
+
+  &.right {
+    text-align: right;
+  }
+
+  &:after {
+    display: inline-block;
+    font-size: 9px;
+  }
+
+  &.desc:after {
+    content: '▼';
+  }
+
+  &.asc:after {
+    content: '▼';
+    transform: scale(1, -1) translateY(1.5px); // That's right! Half pixels!
+  }
+}

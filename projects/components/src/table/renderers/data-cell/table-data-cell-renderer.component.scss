@@ -1,0 +1,24 @@
+@import 'font';
+@import 'color-palette';
+
+.vertical-alignment-container {
+  display: flex;
+  align-items: center;
+  height: 24px;
+
+  .horizontal-alignment-container {
+    width: 100%;
+
+    &.left {
+      text-align: left;
+    }
+
+    &.center {
+      text-align: center;
+    }
+
+    &.right {
+      text-align: right;
+    }
+  }
+}
