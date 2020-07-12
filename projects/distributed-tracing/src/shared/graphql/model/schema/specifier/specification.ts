@@ -1,4 +1,4 @@
-import { Dictionary, TimeDuration } from '@hypertrace/common';
+import { Dictionary } from '@hypertrace/common';
 import { GraphQlSelection } from '@hypertrace/graphql-client';
 import { GraphQlSortWithoutDirection } from '../sort/graphql-sort-without-direction';
 
@@ -9,8 +9,4 @@ export interface Specification {
   asGraphQlSelections(): GraphQlSelection | GraphQlSelection[];
   asGraphQlOrderByFragment(): GraphQlSortWithoutDirection;
   extractFromServerData(resultContainer: Dictionary<unknown>): unknown;
-}
-
-export interface SpecificationResolutionContext {
-  getAutoInterval(): TimeDuration;
 }

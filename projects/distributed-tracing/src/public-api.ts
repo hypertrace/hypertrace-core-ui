@@ -15,9 +15,6 @@ export * from './shared/graphql/request/builders/selections/graphql-selection-bu
 export * from './shared/graphql/request/builders/specification/specification-builder';
 export * from './shared/graphql/request/builders/specification/trace/trace-status/trace-status-specification-builder';
 
-// Context
-export { SpecificationContextBuilder } from './shared/graphql/request/builders/context/specification-context-builder.service';
-
 // Dashboard Graphql
 export * from './shared/dashboard/data/graphql/filter/graphql-filter-data-source.model';
 export * from './shared/dashboard/data/graphql/filter/graphql-filter-data-source.model';
