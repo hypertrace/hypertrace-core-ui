@@ -1,0 +1,42 @@
+@import 'color-palette';
+@import 'font';
+
+.htc-search-box {
+  @include font-placeholder;
+  display: flex;
+  position: relative;
+  align-items: center;
+  border-radius: 4px;
+
+  .icon {
+    position: absolute;
+    padding: 0 6px;
+    cursor: pointer;
+  }
+
+  .close {
+    right: 0;
+  }
+
+  .input {
+    @include font-title;
+    height: 34px;
+    line-height: 34px;
+    width: 420px;
+    background: transparent;
+    border: 1px solid transparent;
+    padding-left: 40px;
+    padding-right: 36px;
+    border-radius: 4px;
+
+    &::placeholder {
+      @include font-title;
+      line-height: 30px;
+    }
+
+    &:focus {
+      border: 1px solid $blue-1;
+      outline: none;
+    }
+  }
+}

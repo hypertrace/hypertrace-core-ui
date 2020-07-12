@@ -1,0 +1,66 @@
+@import 'font';
+@import 'color-palette';
+
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 36px;
+  width: 100%;
+  padding: 0 1px 0 8px;
+  background: white;
+  border: 1px solid $gray-2;
+  border-radius: 4px;
+
+  .content {
+    display: flex;
+  }
+
+  .search-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 8px;
+    color: $gray-4;
+  }
+
+  .filters-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .filters {
+    display: flex;
+    flex: auto;
+    flex-wrap: wrap;
+
+    .filter {
+      padding: 2px;
+    }
+
+    .filter-input {
+      width: 100%;
+      min-width: 24px;
+      flex: 1;
+    }
+  }
+
+  .clear-button {
+    display: flex;
+    align-items: center;
+
+    &:focus {
+      outline: 1px solid $blue-5;
+    }
+  }
+}
+
+.instructions {
+  @include body-small($gray-4);
+  @include ellipsis-overflow();
+  font-size: 12px;
+  padding-left: 40px;
+  width: 100%;
+}

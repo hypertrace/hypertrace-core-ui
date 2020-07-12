@@ -1,0 +1,14 @@
+.table-widget-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  .table {
+    flex-grow: 1;
+    width: 100%;
+  }
+
+  .with-header {
+    margin-top: 16px;
+  }
+}
