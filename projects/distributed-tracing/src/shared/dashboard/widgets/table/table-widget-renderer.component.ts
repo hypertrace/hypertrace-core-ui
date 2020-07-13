@@ -21,7 +21,7 @@ import { TableWidgetModel } from './table-widget.model';
     >
       <htc-table
         class="table"
-        [ngClass]="{ 'with-header': this.model.header }"
+        [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
         [columnConfigs]="this.columnDefs"
         [mode]="this.model.mode"
         [display]="this.model.style"
