@@ -240,6 +240,7 @@ export class TableComponent
 
     if (this.dataSource && changes.data) {
       // The dataSource changes on refresh. Only reassign if already initialized (this.dataSource !== undefined)
+      this.rowStateSubject.next(undefined);
       this.dataSource = this.buildDataSource();
     }
   }
