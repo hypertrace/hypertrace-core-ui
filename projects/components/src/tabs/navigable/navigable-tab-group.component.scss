@@ -9,11 +9,12 @@
 
   .tab-group {
     ::ng-deep .mat-tab-link {
-      font: inherit;
+      @include body-1-medium($gray-5);
+      line-height: 20px;
     }
 
     ::ng-deep .mat-tab-label-active {
-      color: $gray-7;
+      color: $gray-9;
     }
 
     ::ng-deep .mat-ink-bar {
