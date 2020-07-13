@@ -83,7 +83,7 @@ export class FilterBarComponent implements OnChanges {
   public internalFilters: Filter[] = [];
   public readonly instructions: string =
     'Select <b>one or more</b> parameters to filter by. The value is ' +
-    '<b>case sensitive</b>. Examples: <b>userIdentifier = hacker@darkweb.com</b> or <b>requestMethod != PUT</b>';
+    '<b>case sensitive</b>. Examples: <b>Duration >= 10</b> or <b>Service Name = dataservice</b>';
 
   public constructor(
     private readonly changeDetector: ChangeDetectorRef,
