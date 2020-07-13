@@ -106,7 +106,8 @@ export class FilterComponent implements OnInit, OnChanges {
   private mapToComboBoxOption(filter: IncompleteFilter): ComboBoxOption<IncompleteFilter> {
     return {
       text: filter.userString,
-      value: filter
+      value: filter,
+      tooltip: `${filter.userString} (${filter.field})`
     };
   }
 }

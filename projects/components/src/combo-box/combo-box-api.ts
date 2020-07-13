@@ -1,6 +1,7 @@
 export interface ComboBoxOption<TValue = string> {
   text: string;
   value: TValue;
+  tooltip?: string;
 }
 
 export interface ComboBoxResult<TValue = string> {
