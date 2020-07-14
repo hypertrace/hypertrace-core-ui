@@ -20,13 +20,14 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
         (filtersChange)="this.onFilterChange($event)"
       >
       </htc-filter-bar>
-      <htc-application-aware-dashboard
-        *htcLoadAsync="this.dashboardJson$ as dashboardJson"
-        class="dashboard-content"
-        [json]="dashboardJson"
-        (dashboardReady)="this.onDashboardReady($event)"
-      >
-      </htc-application-aware-dashboard>
+      <div class="dashboard-content">
+        <htc-application-aware-dashboard
+          *htcLoadAsync="this.dashboardJson$ as dashboardJson"
+          [json]="dashboardJson"
+          (dashboardReady)="this.onDashboardReady($event)"
+        >
+        </htc-application-aware-dashboard>
+      </div>
     </div>
   `
 })
