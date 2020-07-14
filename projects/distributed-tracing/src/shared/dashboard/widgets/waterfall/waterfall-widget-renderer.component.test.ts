@@ -1,13 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, tick } from '@angular/core/testing';
-import { BLUE_COLOR_PALETTE, NavigationService, RED_COLOR_PALETTE } from '@hypertrace/common';
-import { byText, createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
-
-import { RENDERER_API } from '@hypertrace/hyperdash-angular';
-
 import { IconLibraryTestingModule } from '@hypertrace/assets-library';
+import { DEFAULT_COLOR_PALETTE, NavigationService } from '@hypertrace/common';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
+import { RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { getMockFlexLayoutProviders } from '@hypertrace/test-utils';
+import { byText, createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { EMPTY, of } from 'rxjs';
 import { AttributeMetadataType } from '../../../graphql/model/metadata/attribute-metadata';
 import { SpanType } from '../../../graphql/model/schema/span';
@@ -76,12 +74,11 @@ describe('Waterfall widget renderer component', () => {
         }
       },
       {
-        provide: BLUE_COLOR_PALETTE,
-        useValue: ['black', 'white']
-      },
-      {
-        provide: RED_COLOR_PALETTE,
-        useValue: ['black', 'white']
+        provide: DEFAULT_COLOR_PALETTE,
+        useValue: {
+          name: 'default',
+          colors: []
+        }
       },
       mockProvider(GraphQlRequestService, {
         queryImmediately: () => EMPTY

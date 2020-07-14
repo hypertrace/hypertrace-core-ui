@@ -1,25 +1,30 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { rgb } from 'd3-color';
 import { ColorPalette } from './color-palette';
-import { ColorPaletteType } from './color-palette-type';
 
-export const BLUE_COLOR_PALETTE: InjectionToken<string[]> = new InjectionToken(ColorPaletteType.Blue);
-export const RED_COLOR_PALETTE: InjectionToken<string[]> = new InjectionToken(ColorPaletteType.Red);
+export const DEFAULT_COLOR_PALETTE: InjectionToken<ColorPaletteDefinition> = new InjectionToken(
+  'Default Color Palette'
+);
+export const ALTERNATE_COLOR_PALETTES: InjectionToken<ColorPaletteDefinition[]> = new InjectionToken(
+  'Alternate Color Palettes'
+);
 
 export type ColorPaletteKey = string | symbol;
 
 @Injectable({ providedIn: 'root' })
 export class ColorService {
-  private static readonly DEFAULT_PALETTE_KEY: string = ColorPaletteType.Blue;
+  private static readonly DEFAULT_PALETTE_KEY: unique symbol = Symbol('Default Palette Key');
 
   private readonly registeredPalettes: Map<ColorPaletteKey, string[]> = new Map();
 
   public constructor(
-    @Inject(BLUE_COLOR_PALETTE) blueColorPalette: string[],
-    @Inject(RED_COLOR_PALETTE) redColorPalette: string[]
+    @Inject(DEFAULT_COLOR_PALETTE) defaultPalette: ColorPaletteDefinition,
+    @Optional() @Inject(ALTERNATE_COLOR_PALETTES) alternatePalettes: ColorPaletteDefinition[] | null
   ) {
-    this.registerColorPalette(ColorPaletteType.Blue, blueColorPalette);
-    this.registerColorPalette(ColorPaletteType.Red, redColorPalette);
+    this.registerColorPalette(ColorService.DEFAULT_PALETTE_KEY, defaultPalette.colors);
+    [defaultPalette, ...(alternatePalettes ?? [])].forEach(palette =>
+      this.registerColorPalette(palette.key, palette.colors)
+    );
   }
 
   public getColorPalette(colorPalette: ColorPaletteKey | string[] = ColorService.DEFAULT_PALETTE_KEY): ColorPalette {
@@ -43,4 +48,9 @@ export class ColorService {
   private getBasisColors(key: ColorPaletteKey): string[] {
     return this.registeredPalettes.get(key) || this.registeredPalettes.get(ColorService.DEFAULT_PALETTE_KEY)!;
   }
+}
+
+export interface ColorPaletteDefinition {
+  key: ColorPaletteKey;
+  colors: string[];
 }

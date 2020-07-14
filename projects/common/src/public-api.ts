@@ -4,7 +4,6 @@
 
 // Color
 export * from './color/color.service';
-export * from './color/color-palette-type';
 // Constants
 export * from './constants/application-constants';
 // External
