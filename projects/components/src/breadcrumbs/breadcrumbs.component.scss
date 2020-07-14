@@ -6,8 +6,7 @@
     padding-bottom: 12px;
 
     .breadcrumb {
-      @include body-2-regular();
-      color: $blue-5;
+      @include body-small($blue-5);
       display: flex;
       justify-content: center;
       align-items: center;
