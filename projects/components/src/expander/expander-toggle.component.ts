@@ -10,7 +10,7 @@ import { IconSize } from '../icon/icon-size';
     <div class="expander-toggle">
       <htc-icon
         [icon]="this.getIconType()"
-        size="${IconSize.ExtraSmall}"
+        size="${IconSize.Small}"
         [showTooltip]="this.showTooltip"
         [label]="this.getTooltipText()"
       ></htc-icon>
