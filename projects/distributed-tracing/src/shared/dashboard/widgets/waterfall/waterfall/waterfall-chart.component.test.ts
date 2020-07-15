@@ -1,9 +1,8 @@
 import { fakeAsync } from '@angular/core/testing';
-import { BLUE_COLOR_PALETTE, NavigationService, RED_COLOR_PALETTE } from '@hypertrace/common';
-import { createHostFactory } from '@ngneat/spectator/jest';
-
 import { IconLibraryTestingModule } from '@hypertrace/assets-library';
+import { DEFAULT_COLOR_PALETTE, NavigationService } from '@hypertrace/common';
 import { getMockFlexLayoutProviders } from '@hypertrace/test-utils';
+import { createHostFactory } from '@ngneat/spectator/jest';
 import { SpanType } from '../../../../graphql/model/schema/span';
 import { WaterfallData } from './waterfall-chart';
 import { WaterfallChartComponent } from './waterfall-chart.component';
@@ -77,12 +76,11 @@ describe('Waterfall Chart component', () => {
     component: WaterfallChartComponent,
     providers: [
       {
-        provide: BLUE_COLOR_PALETTE,
-        useValue: ['black', 'white']
-      },
-      {
-        provide: RED_COLOR_PALETTE,
-        useValue: ['black', 'white']
+        provide: DEFAULT_COLOR_PALETTE,
+        useValue: {
+          name: 'default',
+          colors: []
+        }
       },
       ...getMockFlexLayoutProviders()
     ],
