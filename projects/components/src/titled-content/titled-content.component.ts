@@ -9,7 +9,7 @@ import { TitledHeaderControlDirective } from './header-controls/titled-header-co
   styleUrls: ['./titled-content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="titled-content-container fill-container">
+    <div class="titled-content-container">
       <div class="header">
         <htc-label *ngIf="this.shouldShowTitleInHeader" [label]="this.title" class="title"></htc-label>
         <htc-link [url]="this.link" class="link" *ngIf="this.link">

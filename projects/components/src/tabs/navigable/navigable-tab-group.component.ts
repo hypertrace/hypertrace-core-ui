@@ -7,21 +7,23 @@ import { NavigableTabComponent } from './navigable-tab.component';
 
 @Component({
   selector: 'htc-navigable-tab-group',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./navigable-tab-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="tab-group">
       <nav mat-tab-nav-bar *htcLetAsync="this.activeTab$ as activeTab" disableRipple>
         <ng-container *ngFor="let tab of this.tabs">
-          <div class="tab-button" *htcIfFeature="tab.features | htcFeature as featureState">
-            <a mat-tab-link (click)="this.onTabClick(tab)" class="tab-link" [active]="activeTab === tab">
-              <ng-container *ngTemplateOutlet="tab.content"></ng-container>
-              <span *ngIf="featureState === '${FeatureState.Preview}'" class="soon-container">
-                <span class="soon">SOON</span>
-              </span>
-            </a>
-            <div class="ink-bar" [ngClass]="{ active: activeTab === tab }"></div>
-          </div>
+          <ng-container *ngIf="!tab.hidden">
+             <div class="tab-button" *htcIfFeature="tab.featureFlags | htcFeature as featureState">
+              <a mat-tab-link (click)="this.onTabClick(tab)" class="tab-link" [active]="activeTab === tab">
+                <ng-container *ngTemplateOutlet="tab.content"></ng-container>
+                <span *ngIf="featureState === '${FeatureState.Preview}'" class="soon-container">
+                  <span class="soon">SOON</span>
+                </span>
+              </a>
+              <div class="ink-bar" [ngClass]="{ active: activeTab === tab }"></div>
+            </div>
+          </ng-container>
         </ng-container>
       </nav>
       <div class="divider"></div>

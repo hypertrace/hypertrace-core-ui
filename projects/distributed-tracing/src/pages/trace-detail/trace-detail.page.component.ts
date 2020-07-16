@@ -13,33 +13,38 @@ import { TraceDetails, TraceDetailService } from './trace-detail.service';
   providers: [SubscriptionLifecycle, TraceDetailService],
   template: `
     <div class="trace-detail" *htcLoadAsync="this.traceDetails$ as traceDetails">
-      <div class="back">
-        <htc-icon
-          (click)="this.onClickBack()"
-          icon="${IconType.KeyboardBackspace}"
-          size="${IconSize.Small}"
-          class="arrow"
-        ></htc-icon>
-        <htc-label (click)="this.onClickBack()" label="Back" class="label"></htc-label>
+      <div class="header">
+        <div class="back">
+          <htc-icon
+            (click)="this.onClickBack()"
+            icon="${IconType.KeyboardBackspace}"
+            size="${IconSize.Small}"
+            class="arrow"
+          ></htc-icon>
+          <htc-label (click)="this.onClickBack()" label="Back" class="label"></htc-label>
+        </div>
+
+        <htc-label [label]="traceDetails.titleString" class="title"></htc-label>
+
+        <div class="summary-row">
+          <htc-summary-value
+            class="summary-value"
+            icon="${IconType.Time}"
+            [value]="traceDetails.timeString"
+          ></htc-summary-value>
+          <htc-summary-value class="summary-value" icon="${IconType.Id}" [value]="traceDetails.id"></htc-summary-value>
+        </div>
       </div>
 
-      <htc-label [label]="traceDetails.titleString" class="title"></htc-label>
-
-      <div class="summary-row">
-        <htc-summary-value
-          class="summary-value"
-          icon="${IconType.Time}"
-          [value]="traceDetails.timeString"
-        ></htc-summary-value>
-        <htc-summary-value class="summary-value" icon="${IconType.Id}" [value]="traceDetails.id"></htc-summary-value>
+      <div class="scrollable-container">
+        <htc-application-aware-dashboard
+          [json]="this.defaultJson"
+          [padding]="0"
+          (dashboardReady)="this.onDashboardReady($event)"
+        >
+        </htc-application-aware-dashboard>
       </div>
 
-      <htc-application-aware-dashboard
-        class="dashboard-content"
-        [json]="this.defaultJson"
-        (dashboardReady)="this.onDashboardReady($event)"
-      >
-      </htc-application-aware-dashboard>
     </div>
   `
 })

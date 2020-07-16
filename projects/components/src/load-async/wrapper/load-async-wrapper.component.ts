@@ -11,7 +11,6 @@ export const ASYNC_WRAPPER_PARAMETERS$ = new InjectionToken<Observable<LoadAsync
 
 @Component({
   selector: 'htc-load-async-wrapper',
-  styleUrls: ['./load-async-wrapper.scss'],
   template: `
     <div *ngIf="this.state$ | async as state" class="fill-container" [ngSwitch]="state.type">
       <ng-container *ngSwitchCase="'${LoadAsyncStateType.Loading}'">

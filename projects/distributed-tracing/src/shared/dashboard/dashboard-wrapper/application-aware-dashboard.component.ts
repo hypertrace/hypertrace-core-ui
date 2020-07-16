@@ -7,13 +7,13 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
 
 @Component({
   selector: 'htc-application-aware-dashboard',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./application-aware-dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="htc-application-aware-dashboard">
+    <div class="application-aware-dashboard"
+      [style.padding.px]="this.padding">
       <hda-dashboard
         *ngIf="this.json"
-        class="dashboard"
         [json]="this.json"
         (dashboardReady)="this.onDashboardReady($event)"
         (widgetSelectionChange)="this.onWidgetSelectionChange($event)"
@@ -35,6 +35,9 @@ export class ApplicationAwareDashboardComponent implements OnDestroy {
 
   @Input()
   public editable: boolean = false;
+
+  @Input()
+  public padding?: number;
 
   @Output()
   public readonly dashboardReady: EventEmitter<Dashboard> = new EventEmitter();
@@ -76,4 +79,5 @@ export class ApplicationAwareDashboardComponent implements OnDestroy {
   public onDashboardUpdated(): void {
     this.jsonChange.emit(this.dashboard!.serialize() as ModelJson);
   }
+
 }

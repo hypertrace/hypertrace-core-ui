@@ -5,31 +5,31 @@ import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
 import { Observable } from 'rxjs';
 import { Filter } from '../../shared/components/filter-bar/filter/filter-api';
 import { TracingTableCellRenderer } from '../../shared/components/table/tracing-table-cell-renderer';
+import { NavigableDashboardFilterConfig } from '../../shared/dashboard/dashboard-wrapper/navigable-dashboard.component';
 import { GraphQlFilterDataSourceModel } from '../../shared/dashboard/data/graphql/filter/graphql-filter-data-source.model';
 import { AttributeMetadata } from '../../shared/graphql/model/metadata/attribute-metadata';
 import { GraphQlFilterBuilderService } from '../../shared/services/filter-builder/graphql-filter-builder.service';
 import { MetadataService } from '../../shared/services/metadata/metadata.service';
 
 @Component({
-  styleUrls: ['./span-list.page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="dashboard-container-content">
-      <htc-filter-bar [scope]="this.scope" [syncWithUrl]="true" (filtersChange)="this.onFilterChange($event)">
-      </htc-filter-bar>
-      <htc-navigable-dashboard
-        class="dashboard-content content"
-        [navLocation]="this.location"
-        [defaultJson]="this.defaultJson"
-        (dashboardReady)="this.onDashboardReady($event)"
-      >
-      </htc-navigable-dashboard>
-    </div>
+    <htc-navigable-dashboard
+      [navLocation]="this.location"
+      [defaultJson]="this.defaultJson"
+      [filterConfig]="this.filterConfig"
+      (dashboardReady)="this.onDashboardReady($event)"
+    >
+    </htc-navigable-dashboard>
   `
 })
 export class SpanListPageComponent implements OnInit {
   public readonly location: string = 'SPANS';
   public readonly scope: string = 'SPAN';
+
+  public readonly filterConfig: NavigableDashboardFilterConfig = {
+    scope: this.scope
+  };
 
   public attributes$!: Observable<AttributeMetadata[]>;
   private currentFilters: Filter[] = [];

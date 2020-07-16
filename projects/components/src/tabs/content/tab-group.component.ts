@@ -3,8 +3,8 @@ import { TabComponent } from './tab/tab.component';
 
 @Component({
   selector: 'htc-tab-group',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./tab-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="tab-group">
       <mat-tab-group animationDuration="0ms" disableRipple (selectedTabChange)="this.activeTabIndex = $event.index">
@@ -13,7 +13,7 @@ import { TabComponent } from './tab/tab.component';
             <div class="tab-label">{{ tab.label }}</div>
             <div class="ink-bar" [ngClass]="{ active: activeTabIndex === i }"></div>
           </ng-template>
-          <ng-template class="tab-contents" matTabContent>
+          <ng-template matTabContent>
             <ng-container *ngTemplateOutlet="tab.content"></ng-container>
           </ng-template>
         </mat-tab>
