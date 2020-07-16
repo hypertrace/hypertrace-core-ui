@@ -10,8 +10,7 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
   styleUrls: ['./application-aware-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="application-aware-dashboard"
-      [style.padding.px]="this.padding">
+    <div class="application-aware-dashboard" [style.padding.px]="this.padding">
       <hda-dashboard
         *ngIf="this.json"
         [json]="this.json"
@@ -79,5 +78,4 @@ export class ApplicationAwareDashboardComponent implements OnDestroy {
   public onDashboardUpdated(): void {
     this.jsonChange.emit(this.dashboard!.serialize() as ModelJson);
   }
-
 }

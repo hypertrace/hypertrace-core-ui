@@ -6,12 +6,8 @@ import { NavigableTab } from './navigable-tab';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <htc-navigable-tab-group>
-      <htc-navigable-tab
-        *ngFor="let tab of this.tabs"
-        [path]="tab.path"
-        [hidden]="tab.hidden"
-      >
-        {{tab.label}}
+      <htc-navigable-tab *ngFor="let tab of this.tabs" [path]="tab.path" [hidden]="tab.hidden">
+        {{ tab.label }}
       </htc-navigable-tab>
     </htc-navigable-tab-group>
   `

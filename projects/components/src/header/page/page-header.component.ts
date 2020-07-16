@@ -11,11 +11,7 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
   styleUrls: ['./page-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      *ngIf="this.breadcrumbs$ | async as breadcrumbs"
-      class="page-header"
-      [class.bottom-border]="!this.tabs.length"
-    >
+    <div *ngIf="this.breadcrumbs$ | async as breadcrumbs" class="page-header" [class.bottom-border]="!this.tabs.length">
       <div class="breadcrumb-container">
         <htc-breadcrumbs [breadcrumbs]="breadcrumbs"></htc-breadcrumbs>
 

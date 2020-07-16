@@ -44,7 +44,6 @@ import { TraceDetails, TraceDetailService } from './trace-detail.service';
         >
         </htc-application-aware-dashboard>
       </div>
-
     </div>
   `
 })
