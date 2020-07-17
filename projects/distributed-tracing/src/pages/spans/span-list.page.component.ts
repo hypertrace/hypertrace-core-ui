@@ -110,5 +110,4 @@ export class SpanListPageComponent {
   public onDashboardReady(dashboard: Dashboard): void {
     this.dashboard = dashboard;
   }
-
 }
