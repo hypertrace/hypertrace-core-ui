@@ -6,11 +6,10 @@ import { FeatureConfigCheckModule } from '../../feature-check/feature-config-che
 import { LetAsyncModule } from '../../let-async/let-async.module';
 import { NavigableTabGroupComponent } from './navigable-tab-group.component';
 import { NavigableTabComponent } from './navigable-tab.component';
-import { NavigableTabsComponent } from './navigable-tabs.component';
 
 @NgModule({
-  declarations: [NavigableTabGroupComponent, NavigableTabComponent, NavigableTabsComponent],
-  exports: [NavigableTabGroupComponent, NavigableTabComponent, NavigableTabsComponent],
+  declarations: [NavigableTabGroupComponent, NavigableTabComponent],
+  exports: [NavigableTabGroupComponent, NavigableTabComponent],
   imports: [MatTabsModule, CommonModule, RouterModule, LetAsyncModule, FeatureConfigCheckModule]
 })
 export class NavigableTabModule {}

@@ -30,7 +30,11 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
 
       <ng-content></ng-content>
 
-      <htc-navigable-tabs class="tabs" *ngIf="this.tabs.length" [tabs]="this.tabs"></htc-navigable-tabs>
+      <htc-navigable-tab-group *ngIf="this.tabs.length" class="tabs">
+        <htc-navigable-tab *ngFor="let tab of this.tabs" [path]="tab.path" [hidden]="tab.hidden">
+          {{ tab.label }}
+        </htc-navigable-tab>
+      </htc-navigable-tab-group>
     </div>
   `
 })

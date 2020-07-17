@@ -119,7 +119,6 @@ export { MessageDisplayModule } from './message-display/message-display.module';
 export * from './tabs/navigable/navigable-tab';
 export * from './tabs/navigable/navigable-tab-group.component';
 export * from './tabs/navigable/navigable-tab.component';
-export * from './tabs/navigable/navigable-tabs.component';
 export * from './tabs/navigable/navigable-tab.module';
 
 // Not-Found Component
