@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { Breadcrumb, NavigationService, TypedSimpleChanges } from '@hypertrace/common';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { IconSize } from '../icon/icon-size';
 
 @Component({

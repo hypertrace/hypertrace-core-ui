@@ -1,10 +1,10 @@
 import { ARRAY_PROPERTY, Model, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { EMPTY, Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Trace, TraceType } from '../../../../../shared/graphql/model/schema/trace';
 import {
-  TRACE_GQL_REQUEST,
-  TraceGraphQlQueryHandlerService
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
 } from '../../../../../shared/graphql/request/handlers/traces/trace-graphql-query-handler.service';
 import { GraphQlDataSourceModel } from '../graphql-data-source.model';
 import { AttributeSpecificationModel } from '../specifiers/attribute-specification.model';
@@ -50,6 +50,6 @@ export class TraceDataSourceModel extends GraphQlDataSourceModel<Trace> {
       timeRange: this.getTimeRangeOrThrow(),
       traceProperties: this.traceSpecifications,
       spanProperties: this.spansSpecifications
-    }).pipe(flatMap(response => (response ? of(response) : EMPTY)));
+    }).pipe(mergeMap(response => (response ? of(response) : EMPTY)));
   }
 }

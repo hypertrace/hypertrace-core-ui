@@ -18,6 +18,7 @@ module.exports = {
   watchPathIgnorePatterns: ['test-results'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: {
+    '^lodash-es$': 'lodash',
     '@hypertrace/assets-library': '<rootDir>/projects/assets-library/src/public-api.ts',
     '@hypertrace/common$': '<rootDir>/projects/common/src/public-api.ts',
     '@hypertrace/components': '<rootDir>/projects/components/src/public-api.ts',

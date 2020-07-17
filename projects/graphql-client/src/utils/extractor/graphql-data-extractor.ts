@@ -1,4 +1,4 @@
-import { isEmpty, merge } from 'lodash';
+import { isEmpty, merge } from 'lodash-es';
 import { GraphQlSelection } from '../../model/graphql-selection';
 import { GraphQlRequestBuilder } from '../builders/request/graphql-request-builder';
 

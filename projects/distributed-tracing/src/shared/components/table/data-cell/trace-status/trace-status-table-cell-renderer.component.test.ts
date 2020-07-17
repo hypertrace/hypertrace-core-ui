@@ -2,11 +2,11 @@ import { Dictionary, FormattingModule } from '@hypertrace/common';
 import { createComponentFactory } from '@ngneat/spectator/jest';
 
 import {
+  TableColumnConfig,
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA,
-  TableColumnConfig
+  TABLE_CELL_RENDERER_ROW_DATA
 } from '@hypertrace/components';
 import { TraceStatus, TraceStatusType } from '../../../../../shared/graphql/model/schema/trace';
 import { TraceStatusTableCellRendererComponent } from './trace-status-table-cell-renderer.component';

@@ -4,10 +4,12 @@
   "peerDependencies": {
     "@angular/common": "^9.1.0",
     "@angular/core": "^9.1.0",
-    "tslib": "^1.10.0",
     "@angular/platform-browser": "^9.1.0",
     "@angular/material": "^9.1.0",
     "rxjs": "~6.5.4",
-    "lodash": "^4.17.11"
+    "lodash-es": "^4.17.15"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }

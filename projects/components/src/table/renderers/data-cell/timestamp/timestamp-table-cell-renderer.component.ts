@@ -4,11 +4,11 @@ import { TableColumnConfig } from '../../../table-api';
 import { StandardTableCellRendererType } from '../../standard-table-cell-renderer-type';
 import { TableCellAlignmentType } from '../../table-cell-alignment-type';
 import {
+  TableCellRenderer,
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA,
-  TableCellRenderer
+  TABLE_CELL_RENDERER_ROW_DATA
 } from '../../table-cell-renderer';
 import { TableCellRendererComponent } from '../../table-cell-renderer.component';
 

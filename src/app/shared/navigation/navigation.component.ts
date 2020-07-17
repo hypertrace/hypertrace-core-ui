@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NavigationService, TraceRoute } from '@hypertrace/common';
 import { NavItemConfig, NavItemType } from '@hypertrace/components';
 import { TracingIconType } from '@hypertrace/distributed-tracing';
-import { uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 
 @Component({
   selector: 'htc-navigation',

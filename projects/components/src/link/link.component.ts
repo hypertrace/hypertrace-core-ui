@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NavigationService } from '@hypertrace/common';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 
 @Component({
   selector: 'htc-link',

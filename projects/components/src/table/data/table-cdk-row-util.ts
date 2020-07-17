@@ -1,5 +1,5 @@
 import { isEqualIgnoreFunctions } from '@hypertrace/common';
-import { omit } from 'lodash';
+import { omit } from 'lodash-es';
 import {
   RowStateChange,
   StatefulPrefetchedTreeTableRow,

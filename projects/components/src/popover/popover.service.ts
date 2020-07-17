@@ -3,11 +3,11 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector } from '@angular/core';
 import { NavigationService } from '@hypertrace/common';
 import {
-  POPOVER_CONTAINER_DATA,
   PopoverContainerComponent,
-  PopoverContainerData
+  PopoverContainerData,
+  POPOVER_CONTAINER_DATA
 } from './container/popover-container.component';
-import { POPOVER_DATA, PopoverOptions } from './popover';
+import { PopoverOptions, POPOVER_DATA } from './popover';
 import { PopoverPositionBuilder } from './popover-position-builder';
 import { PopoverRef } from './popover-ref';
 

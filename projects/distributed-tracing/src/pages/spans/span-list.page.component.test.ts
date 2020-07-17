@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import {
   NavigationService,
@@ -7,16 +8,15 @@ import {
   TimeRangeService,
   TimeUnit
 } from '@hypertrace/common';
-import { FilterBarService, SpanListPageModule } from '@hypertrace/distributed-tracing';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
-import { createComponentFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
-
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { getMockFlexLayoutProviders } from '@hypertrace/test-utils';
+import { createComponentFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
+import { FilterBarService } from '../../shared/components/filter-bar/filter-bar.service';
 import { GraphQlFilterBuilderService } from '../../shared/services/filter-builder/graphql-filter-builder.service';
 import { MetadataService } from '../../shared/services/metadata/metadata.service';
 import { SpanListPageComponent } from './span-list.page.component';
+import { SpanListPageModule } from './span-list.page.module';
 
 describe('Span List Page Component', () => {
   let spectator: Spectator<SpanListPageComponent>;

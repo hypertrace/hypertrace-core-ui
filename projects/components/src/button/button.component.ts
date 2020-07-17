@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { IconSize } from '../icon/icon-size';
 import { ButtonRole, ButtonSize, ButtonStyle } from './button';
 

@@ -1,17 +1,18 @@
 import { fakeAsync } from '@angular/core/testing';
 import { FixedTimeRange } from '@hypertrace/common';
-import { AttributeMetadataType, MetadataService } from '@hypertrace/distributed-tracing';
 import { runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory, mockProvider } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
+import { MetadataService } from '../../../../services/metadata/metadata.service';
+import { AttributeMetadataType } from '../../../model/metadata/attribute-metadata';
 import { MetricAggregationType } from '../../../model/metrics/metric-aggregation';
 import { spanIdKey } from '../../../model/schema/span';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
 import { SpecificationBuilder } from '../../builders/specification/specification-builder';
 import {
   GraphQlSpansRequest,
-  SPANS_GQL_REQUEST,
-  SpansGraphQlQueryHandlerService
+  SpansGraphQlQueryHandlerService,
+  SPANS_GQL_REQUEST
 } from './spans-graphql-query-handler.service';
 
 describe('SpansGraphQlQueryHandlerService', () => {

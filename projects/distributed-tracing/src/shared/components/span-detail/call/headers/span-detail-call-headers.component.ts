@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { Dictionary } from '@hypertrace/common';
 import { ListViewRecord } from '@hypertrace/components';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { EMPTY, Observable, of } from 'rxjs';
 
 @Component({

@@ -9,8 +9,8 @@ import { Specification } from '../../../model/schema/specifier/specification';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
 import {
   GraphQlSpansRequest,
-  SPANS_GQL_REQUEST,
-  SpansGraphQlQueryHandlerService
+  SpansGraphQlQueryHandlerService,
+  SPANS_GQL_REQUEST
 } from './spans-graphql-query-handler.service';
 
 @Injectable({ providedIn: 'root' })

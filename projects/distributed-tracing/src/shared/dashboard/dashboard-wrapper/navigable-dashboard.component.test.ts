@@ -1,11 +1,11 @@
 import { LoadAsyncModule } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
-import { AttributeMetadataType } from '@hypertrace/distributed-tracing';
 import { Dashboard } from '@hypertrace/hyperdash';
 import { createComponentFactory } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 import { Filter, UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
+import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-filter-data-source.model';

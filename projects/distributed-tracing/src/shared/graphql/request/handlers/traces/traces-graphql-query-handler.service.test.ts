@@ -4,12 +4,12 @@ import { GraphQlEnumArgument } from '@hypertrace/graphql-client';
 import { runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory } from '@ngneat/spectator/jest';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
-import { TRACE_SCOPE, traceIdKey, traceTypeKey } from '../../../model/schema/trace';
+import { traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../../model/schema/trace';
 import { SpecificationBuilder } from '../../builders/specification/specification-builder';
 import {
   GraphQlTracesRequest,
-  TRACES_GQL_REQUEST,
-  TracesGraphQlQueryHandlerService
+  TracesGraphQlQueryHandlerService,
+  TRACES_GQL_REQUEST
 } from './traces-graphql-query-handler.service';
 
 describe('TracesGraphQlQueryHandlerService', () => {

@@ -1,6 +1,6 @@
 import { TableDataRequest, TableDataResponse, TableDataSource, TableRow } from '@hypertrace/components';
 import { ModelProperty, NUMBER_PROPERTY } from '@hypertrace/hyperdash';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { Observable, of as observableOf } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GraphQlFieldFilter } from '../../../../../shared/graphql/model/schema/filter/field/graphql-field-filter';

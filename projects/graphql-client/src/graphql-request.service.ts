@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import gql from 'graphql-tag';
-import { includes } from 'lodash';
+import { includes } from 'lodash-es';
 import { defer, EMPTY, Observable, Observer, of, Subject } from 'rxjs';
-import { buffer, catchError, debounceTime, filter, flatMap, map, take } from 'rxjs/operators';
+import { buffer, catchError, debounceTime, filter, map, mergeMap, take } from 'rxjs/operators';
 import {
   GraphQlHandler,
   GraphQlHandlerType,
@@ -138,7 +138,7 @@ export class GraphQlRequestService {
       .mutate<TResponse>({
         mutation: gql(`mutation ${requestString}`)
       })
-      .pipe(flatMap(response => (response.data ? of(response.data) : EMPTY)));
+      .pipe(mergeMap(response => (response.data ? of(response.data) : EMPTY)));
   }
 
   private getResultForRequest<T>(request: GraphQlRequest): Observable<T> {
@@ -146,7 +146,7 @@ export class GraphQlRequestService {
     return this.bufferedResultStream.pipe(
       filter(resultMap => resultMap.has(request)),
       take(1),
-      flatMap(resultMap => this.getResultFromMap<T>(request, resultMap))
+      mergeMap(resultMap => this.getResultFromMap<T>(request, resultMap))
     );
   }
 
@@ -214,7 +214,7 @@ export class GraphQlRequestService {
             this.extractor.extractAll(selectionMultiMap.get(request)!, queryBuilder, response)
           )
         ),
-        flatMap(convertedResponse =>
+        mergeMap(convertedResponse =>
           convertedResponse instanceof Observable ? convertedResponse : of(convertedResponse)
         )
       );

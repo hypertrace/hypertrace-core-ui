@@ -1,6 +1,6 @@
-import { AttributeMetadataType, UserFilterOperator } from '@hypertrace/distributed-tracing';
 import { createServiceFactory } from '@ngneat/spectator/jest';
-import { AttributeMetadata } from '../../graphql/model/metadata/attribute-metadata';
+import { UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
+import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterBuilderService } from './graphql-filter-builder.service';

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { forkJoinSafeEmpty } from '@hypertrace/common';
+import { Dictionary, forkJoinSafeEmpty } from '@hypertrace/common';
 import { GraphQlHandlerType, GraphQlQueryHandler, GraphQlSelection } from '@hypertrace/graphql-client';
-import { Dictionary } from 'lodash';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GraphQlFilter } from '../../../model/schema/filter/graphql-filter';

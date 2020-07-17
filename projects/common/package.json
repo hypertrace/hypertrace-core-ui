@@ -17,11 +17,7 @@
     "core-js": "^3.5.0",
     "rxjs": "~6.5.4",
     "zone.js": "^0.10.3",
-    "lodash": "^4.17.11",
-    "apollo-angular": "^1.6.0",
-    "apollo-angular-link-http": "^1.8.0",
-    "apollo-cache-inmemory": "^1.6.2",
-    "apollo-client": "^2.6.2",
+    "lodash-es": "^4.17.15",
     "graphql": "^14.3.1",
     "graphql-tag": "^2.10.1",
     "d3-interpolate": "^1.3.2",
@@ -29,5 +25,8 @@
   },
   "devDependencies": {
     "@hypertrace/test-utils": "^0.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }

@@ -13,7 +13,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, finalize, switchMap } from 'rxjs/operators';
 import { ButtonStyle } from '../button/button';

@@ -7,7 +7,7 @@ import {
   ModelPropertyType,
   STRING_PROPERTY
 } from '@hypertrace/hyperdash';
-import { ENUM_TYPE, EnumPropertyTypeInstance } from '../../properties/enums/enum-property-type';
+import { EnumPropertyTypeInstance, ENUM_TYPE } from '../../properties/enums/enum-property-type';
 import { LinkWidgetModel } from '../link/link-widget.model';
 
 @Model({

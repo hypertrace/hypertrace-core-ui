@@ -32,6 +32,7 @@ module.exports = {
   modulePathIgnorePatterns: ['<rootDir>/dist/'], // Need to reset from app project, but empty is merged
   testMatch: ['<rootDir>/(src|projects)/**/+(*.)+(spec|test).ts'],
   moduleNameMapper: {
+    '^lodash-es$': 'lodash',
     '@hypertrace/assets-library': '<rootDir>/projects/assets-library/src/public-api.ts',
     '@hypertrace/common$': '<rootDir>/projects/common/src/public-api.ts',
     '@hypertrace/components': '<rootDir>/projects/components/src/public-api.ts',

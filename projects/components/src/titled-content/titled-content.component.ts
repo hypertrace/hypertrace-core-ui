@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, ContentChild, Input } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { ButtonRole, ButtonSize, ButtonStyle } from '../button/button';
 import { TitledHeaderControlDirective } from './header-controls/titled-header-control.directive';
 

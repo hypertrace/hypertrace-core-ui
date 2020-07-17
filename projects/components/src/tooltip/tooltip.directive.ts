@@ -1,5 +1,5 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy, TemplateRef } from '@angular/core';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PopoverPositionType, PopoverRelativePositionLocation } from '../popover/popover';

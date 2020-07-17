@@ -4,8 +4,8 @@ import { Model } from '@hypertrace/hyperdash';
 import { GraphQlFilter } from '../../../../../graphql/model/schema/filter/graphql-filter';
 import {
   GraphQlSpansRequest,
-  SPANS_GQL_REQUEST,
-  SpansResponse
+  SpansResponse,
+  SPANS_GQL_REQUEST
 } from '../../../../../graphql/request/handlers/spans/spans-graphql-query-handler.service';
 import { SpecificationBackedTableColumnDef } from '../../../../widgets/table/table-widget-column.model'; // Todo: Fix this dependency
 import { TableDataSourceModel } from '../table-data-source.model';

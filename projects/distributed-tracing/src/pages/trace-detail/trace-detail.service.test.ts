@@ -13,7 +13,7 @@ import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/sp
 import { of } from 'rxjs';
 import { AttributeMetadataType } from '../../shared/graphql/model/metadata/attribute-metadata';
 import { spanIdKey } from '../../shared/graphql/model/schema/span';
-import { TRACE_SCOPE, traceIdKey, traceTypeKey } from '../../shared/graphql/model/schema/trace';
+import { traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../shared/graphql/model/schema/trace';
 import { MetadataService } from '../../shared/services/metadata/metadata.service';
 import { TraceDetailService } from './trace-detail.service';
 

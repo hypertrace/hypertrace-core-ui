@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { forkJoinSafeEmpty, isEqualIgnoreFunctions, RequireBy } from '@hypertrace/common';
 import { combineLatest, NEVER, Observable, of, Subject, throwError } from 'rxjs';
-import { catchError, debounceTime, flatMap, map, mergeMap, startWith, tap } from 'rxjs/operators';
+import { catchError, debounceTime, map, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
 import { PageEvent } from '../../paginator/page.event';
 import { PaginationProvider } from '../../paginator/paginator-api';
 import { RowStateChange, StatefulTableRow, StatefulTreeTableRow, TableColumnConfig, TableRow } from '../table-api';
@@ -153,7 +153,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     if (changedRow !== undefined) {
       return of(this.cachedRows).pipe(
         map(cachedRows => TableCdkRowUtil.buildRowStateChanges(cachedRows, changedRow)),
-        flatMap(stateChanges => this.fetchAndAppendNewChildren(stateChanges)),
+        switchMap(stateChanges => this.fetchAndAppendNewChildren(stateChanges)),
         map(TableCdkRowUtil.removeCollapsedRows)
       );
     }

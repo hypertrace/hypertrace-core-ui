@@ -1,12 +1,12 @@
 import { Dictionary } from '@hypertrace/common';
 import { ARRAY_PROPERTY, Model, ModelProperty, PLAIN_OBJECT_PROPERTY } from '@hypertrace/hyperdash';
 import { EMPTY, Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Trace, traceIdKey, traceTypeKey } from '../../../../graphql/model/schema/trace';
 import { SpecificationBuilder } from '../../../../graphql/request/builders/specification/specification-builder';
 import {
-  TRACE_GQL_REQUEST,
-  TraceGraphQlQueryHandlerService
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
 } from '../../../../graphql/request/handlers/traces/trace-graphql-query-handler.service';
 import { GraphQlDataSourceModel } from '../../../data/graphql/graphql-data-source.model';
 
@@ -39,7 +39,7 @@ export class TraceDetailDataSourceModel extends GraphQlDataSourceModel<TraceDeta
       traceProperties: this.getTraceAttributes().map(attribute =>
         this.attributeSpecBuilder.attributeSpecificationForKey(attribute)
       )
-    }).pipe(flatMap(trace => this.mapResponseObject(trace)));
+    }).pipe(mergeMap(trace => this.mapResponseObject(trace)));
   }
 
   protected getTraceAttributes(): string[] {

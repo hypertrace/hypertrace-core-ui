@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectorRef, Pipe, PipeTransform } from '@angular/core';
 import { FeatureState, FeatureStateResolver } from '@hypertrace/common';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { Observable } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 

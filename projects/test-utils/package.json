@@ -5,9 +5,12 @@
   "peerDependencies": {
     "@angular/common": "^9.1.0",
     "@angular/core": "^9.1.0",
-    "@angular/flex-layout": "^9.0.0-beta.29",
+    "@angular/flex-layout": "^10.0.0-beta.32",
     "@angular/platform-browser": "^9.1.0",
     "@angular/router": "^9.1.0",
     "rxjs": "~6.5.4"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   }
 }

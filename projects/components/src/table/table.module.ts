@@ -7,7 +7,7 @@ import { PaginatorModule } from '../paginator/paginator.module';
 import { TraceSearchBoxModule } from '../search-box/search-box.module';
 import { TooltipModule } from '../tooltip/tooltip.module';
 import { TableCellRendererConstructor } from './renderers/table-cell-renderer';
-import { TABLE_CELL_RENDERERS, TableCellRendererModule } from './renderers/table-cell-renderer.module';
+import { TableCellRendererModule, TABLE_CELL_RENDERERS } from './renderers/table-cell-renderer.module';
 import { TableComponent } from './table.component';
 
 @NgModule({

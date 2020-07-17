@@ -60,7 +60,7 @@ export abstract class Coercer<T, TOptions extends CoercerOptions<T>> {
       return [];
     }
 
-    if (this.options.maxArrayLength < value.length) {
+    if (this.options.maxArrayLength !== undefined && this.options.maxArrayLength < value.length) {
       return [];
     }
 

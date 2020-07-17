@@ -1,5 +1,5 @@
 import { formatDate } from '@angular/common';
-import { defaults } from 'lodash';
+import { defaults } from 'lodash-es';
 
 export const enum DateFormatMode {
   TimeOnly,
