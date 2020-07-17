@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

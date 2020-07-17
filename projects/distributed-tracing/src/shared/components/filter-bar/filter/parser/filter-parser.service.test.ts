@@ -1,13 +1,10 @@
-import {
-  AttributeMetadata,
-  AttributeMetadataType,
-  TRACE_SCOPE,
-  UserFilterOperator
-} from '@hypertrace/distributed-tracing';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
+import { AttributeMetadata, AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
+import { TRACE_SCOPE } from '../../../../graphql/model/schema/trace';
 import { FilterBuilderService } from '../builder/filter-builder.service';
 import { NumberFilterBuilder } from '../builder/number-filter-builder';
 import { StringFilterBuilder } from '../builder/string-filter-builder';
+import { UserFilterOperator } from '../filter-api';
 import { FilterParserService } from './filter-parser.service';
 
 describe('Filter Parser service', () => {

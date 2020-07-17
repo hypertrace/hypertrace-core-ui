@@ -1,7 +1,7 @@
 import { NavigationService } from '@hypertrace/common';
 import { Model } from '@hypertrace/hyperdash';
 import { ModelInject } from '@hypertrace/hyperdash-angular';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 import { Span, spanIdKey } from '../../../../graphql/model/schema/span';
 import { InteractionHandler } from '../../interaction-handler';

@@ -1,5 +1,5 @@
 import { Model, ModelApi, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
-import { MODEL_API, ModelInject } from '@hypertrace/hyperdash-angular';
+import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
 import { TraceDetailData, TraceDetailDataSourceModel } from './data/trace-detail-data-source.model';
 

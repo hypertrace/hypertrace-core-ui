@@ -40,7 +40,8 @@
             "stylePreprocessorOptions": {
               "includePaths": ["./projects/assets-library/assets/styles", "./node_modules"]
             },
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["graphql-tag", "zen-observable"]
           },
           "configurations": {
             "production": {
@@ -285,37 +286,6 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": ["projects/test-utils/tsconfig.lib.json", "projects/test-utils/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
-          }
-        }
-      }
-    },
-    "observability": {
-      "projectType": "library",
-      "root": "projects/observability",
-      "sourceRoot": "projects/observability/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/observability/tsconfig.lib.json",
-            "project": "projects/observability/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/observability/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {}
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["projects/observability/tsconfig.lib.json", "projects/observability/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**"]
           }
         }

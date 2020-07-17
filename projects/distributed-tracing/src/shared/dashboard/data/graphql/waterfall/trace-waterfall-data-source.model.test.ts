@@ -4,7 +4,7 @@ import { mockProvider } from '@ngneat/spectator/jest';
 import { Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { GraphQlTimeRange } from '../../../../graphql/model/schema/timerange/graphql-time-range';
-import { Trace, TRACE_SCOPE, traceIdKey, traceTypeKey } from '../../../../graphql/model/schema/trace';
+import { Trace, traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../../../graphql/model/schema/trace';
 import { MetadataService } from '../../../../services/metadata/metadata.service';
 import { WaterfallData } from '../../../widgets/waterfall/waterfall/waterfall-chart';
 import { GraphQlQueryEventService } from '../graphql-query-event.service';

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
-import { CONTENT_HOLDER_TEMPLATE, ContentHolder } from '../../content/content-holder';
+import { ContentHolder, CONTENT_HOLDER_TEMPLATE } from '../../content/content-holder';
 
 @Component({
   selector: 'htc-navigable-tab',

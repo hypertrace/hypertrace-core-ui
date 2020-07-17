@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { forkJoinSafeEmpty, NavigationService } from '@hypertrace/common';
 import { Observable } from 'rxjs';
-import { filter, flatMap } from 'rxjs/operators';
+import { filter, mergeMap } from 'rxjs/operators';
 import { MetadataService } from '../../services/metadata/metadata.service';
 import { Filter } from './filter/filter-api';
 import { FilterParserService } from './filter/parser/filter-parser.service';
@@ -32,7 +32,7 @@ export class FilterBarService {
 
   private parseUrlFilterString(filterString: string, scope: string): Observable<Filter> {
     return this.metadataService.getFilterAttributes(scope).pipe(
-      flatMap(attributes =>
+      mergeMap(attributes =>
         // Filter out any attribute that is not a substring of the filter string.
         // Further matching of attributes against filter string tokens happens downstream.
         attributes

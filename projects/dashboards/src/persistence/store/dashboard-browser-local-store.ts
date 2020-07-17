@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
-// tslint:disable-next-line: match-default-export-name
-import uuidV4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import {
   DashboardCreationData,
   DashboardStore,
@@ -98,6 +97,6 @@ export class DashboardBrowserLocalStore implements DashboardStore {
   }
 
   private generateId(): string {
-    return uuidV4();
+    return uuidv4();
   }
 }

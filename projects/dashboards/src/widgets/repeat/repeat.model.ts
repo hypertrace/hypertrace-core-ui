@@ -6,7 +6,7 @@ import {
   ModelProperty,
   ModelPropertyType
 } from '@hypertrace/hyperdash';
-import { MODEL_API, ModelInject } from '@hypertrace/hyperdash-angular';
+import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { StaticDataSource } from '../../data/static/static-data-source.model';

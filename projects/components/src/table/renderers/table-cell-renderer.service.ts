@@ -2,11 +2,11 @@ import { Injectable, Injector } from '@angular/core';
 import { Dictionary, LoggerService } from '@hypertrace/common';
 import { TableColumnConfig } from '../table-api';
 import {
+  TableCellRendererConstructor,
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA,
-  TableCellRendererConstructor
+  TABLE_CELL_RENDERER_ROW_DATA
 } from './table-cell-renderer';
 
 @Injectable({

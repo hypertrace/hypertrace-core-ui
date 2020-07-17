@@ -1,17 +1,14 @@
 import { fakeAsync } from '@angular/core/testing';
-import {
-  AttributeMetadata,
-  AttributeMetadataType,
-  MetadataService,
-  UserFilterOperator
-} from '@hypertrace/distributed-tracing';
 import { runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
+import { AttributeMetadata, AttributeMetadataType } from '../../../graphql/model/metadata/attribute-metadata';
 import { TRACE_SCOPE } from '../../../graphql/model/schema/trace';
+import { MetadataService } from '../../../services/metadata/metadata.service';
 import { FilterBuilderService } from './builder/filter-builder.service';
 import { NumberFilterBuilder } from './builder/number-filter-builder';
 import { StringFilterBuilder } from './builder/string-filter-builder';
+import { UserFilterOperator } from './filter-api';
 import { FilterService } from './filter.service';
 
 describe('Filter service', () => {

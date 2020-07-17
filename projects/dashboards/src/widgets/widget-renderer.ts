@@ -1,9 +1,12 @@
-import { ChangeDetectorRef, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FixedTimeRange, TimeRange } from '@hypertrace/common';
 import { TimeRange as DashboardTimeRange } from '@hypertrace/hyperdash';
-import { RENDERER_API, RendererApi } from '@hypertrace/hyperdash-angular';
+import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable, Subject } from 'rxjs';
 import { shareReplay, takeUntil, tap } from 'rxjs/operators';
+
+@Directive()
+// tslint:disable-next-line: directive-class-suffix
 export abstract class WidgetRenderer<TModel extends object, TData = unknown> implements OnInit, OnDestroy {
   public readonly model: TModel;
   public timeRange?: TimeRange;

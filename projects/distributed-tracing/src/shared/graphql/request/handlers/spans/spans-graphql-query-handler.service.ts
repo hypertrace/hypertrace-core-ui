@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { forkJoinSafeEmpty } from '@hypertrace/common';
+import { Dictionary, forkJoinSafeEmpty } from '@hypertrace/common';
 import { GraphQlHandlerType, GraphQlQueryHandler, GraphQlSelection } from '@hypertrace/graphql-client';
-import { Dictionary } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MetadataService } from '../../../../services/metadata/metadata.service';
 import { GraphQlFilter } from '../../../model/schema/filter/graphql-filter';
 import { GraphQlSortBySpecification } from '../../../model/schema/sort/graphql-sort-by-specification';
-import { Span, SPAN_SCOPE, spanIdKey } from '../../../model/schema/span';
+import { Span, spanIdKey, SPAN_SCOPE } from '../../../model/schema/span';
 import { Specification } from '../../../model/schema/specifier/specification';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
 import { GraphQlArgumentBuilder } from '../../builders/argument/graphql-argument-builder';

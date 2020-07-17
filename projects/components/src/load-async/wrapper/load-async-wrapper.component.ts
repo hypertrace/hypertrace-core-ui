@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, InjectionToken, TemplateRef } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
 import { Observable } from 'rxjs';
-import { flatMap, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { LoadAsyncStateType } from '../load-async-state.type';
 import { AsyncState, ErrorAsyncState, LoadAsyncContext } from '../load-async.service';
 
@@ -43,7 +43,7 @@ export class LoadAsyncWrapperComponent {
   public constructor(@Inject(ASYNC_WRAPPER_PARAMETERS$) parameters$: Observable<LoadAsyncWrapperParameters>) {
     this.state$ = parameters$.pipe(
       tap(params => (this.content = params.content)),
-      flatMap(parameter => parameter.state$),
+      switchMap(parameter => parameter.state$),
       tap(state => this.updateMessage(state.type, (state as Partial<ErrorAsyncState>).description))
     );
   }

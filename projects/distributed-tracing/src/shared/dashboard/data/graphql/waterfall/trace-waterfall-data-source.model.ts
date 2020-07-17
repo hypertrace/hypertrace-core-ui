@@ -4,13 +4,13 @@ import { ModelInject } from '@hypertrace/hyperdash-angular';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AttributeMetadata } from '../../../../graphql/model/metadata/attribute-metadata';
-import { SPAN_SCOPE, spanIdKey, SpanType } from '../../../../graphql/model/schema/span';
+import { spanIdKey, SpanType, SPAN_SCOPE } from '../../../../graphql/model/schema/span';
 import { Specification } from '../../../../graphql/model/schema/specifier/specification';
 import { Trace } from '../../../../graphql/model/schema/trace';
 import { SpecificationBuilder } from '../../../../graphql/request/builders/specification/specification-builder';
 import {
-  TRACE_GQL_REQUEST,
-  TraceGraphQlQueryHandlerService
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
 } from '../../../../graphql/request/handlers/traces/trace-graphql-query-handler.service';
 import { MetadataService } from '../../../../services/metadata/metadata.service';
 import { WaterfallData } from '../../../widgets/waterfall/waterfall/waterfall-chart';

@@ -9,7 +9,7 @@ import {
   Renderer2
 } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 
 @Component({
   selector: 'htc-event-blocker',

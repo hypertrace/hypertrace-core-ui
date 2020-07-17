@@ -4,12 +4,12 @@ import { Apollo } from 'apollo-angular';
 import { NetworkStatus } from 'apollo-client';
 import { of } from 'rxjs';
 import {
-  GRAPHQL_URI,
   GraphQlHandlerType,
   GraphQlMutationHandler,
   GraphQlQueryHandler,
   GraphQlRequestCacheability,
-  GraphQlRequestOptions
+  GraphQlRequestOptions,
+  GRAPHQL_URI
 } from './graphql-config';
 import { GraphQlRequestService } from './graphql-request.service';
 import { GraphQlModule } from './graphql.module';

@@ -4,12 +4,12 @@ import { createServiceFactory } from '@ngneat/spectator/jest';
 import { GraphQlFilterType } from '../../../model/schema/filter/graphql-filter';
 import { spanIdKey } from '../../../model/schema/span';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
-import { TRACE_SCOPE, traceIdKey, traceTypeKey } from '../../../model/schema/trace';
+import { traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../../model/schema/trace';
 import { SpecificationBuilder } from '../../builders/specification/specification-builder';
 import {
   GraphQlTraceRequest,
-  TRACE_GQL_REQUEST,
-  TraceGraphQlQueryHandlerService
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
 } from './trace-graphql-query-handler.service';
 
 describe('TraceGraphQlQueryHandlerService', () => {

@@ -23,8 +23,6 @@
         "@hypertrace/graphql-client",
         "@hypertrace/distributed-tracing",
         "@hypertrace/test-utils",
-        "@hypertrace/proprietary",
-        "@hypertrace/observability",
         "ng-mocks"
       ]
     ],
@@ -62,7 +60,6 @@
     "array-type": [true, "array"],
     "no-non-null-assertion": false,
     "member-ordering": false,
-    "no-unused-variable": false,
     "max-classes-per-file": [true, 1, "exclude-class-expressions"],
     "object-literal-sort-keys": false,
     "no-void-expression": [true, "ignore-arrow-function-shorthand"],
@@ -96,7 +93,6 @@
         "grouped-imports": false
       }
     ],
-    "no-use-before-declare": false,
     "increment-decrement": false,
     "radix": false,
     "directive-selector": [true, "attribute", ["htc"], "camelCase"],

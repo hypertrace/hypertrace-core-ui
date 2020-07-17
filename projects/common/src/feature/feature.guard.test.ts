@@ -27,7 +27,7 @@ describe('Feature Guard', () => {
   const mockFeatureResolverService = new (class extends FeatureStateResolver {
     public getFeatureState(feature: string): Observable<FeatureState> {
       const featureValue = mockFeatureMap.get(feature);
-      if (featureValue === true) {
+      if (featureValue) {
         return of(FeatureState.Enabled);
       }
 

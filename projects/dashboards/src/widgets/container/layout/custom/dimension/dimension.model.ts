@@ -1,5 +1,5 @@
 import { Model, ModelProperty, NUMBER_PROPERTY } from '@hypertrace/hyperdash';
-import { ENUM_TYPE, EnumPropertyTypeInstance } from '../../../../../properties/enums/enum-property-type';
+import { EnumPropertyTypeInstance, ENUM_TYPE } from '../../../../../properties/enums/enum-property-type';
 
 export enum DimensionUnit {
   Px = 'PX',

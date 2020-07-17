@@ -9,7 +9,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { RecursivePartial, TypedSimpleChanges } from '@hypertrace/common';
-import { minBy } from 'lodash';
+import { minBy } from 'lodash-es';
 import { SequenceOptions, SequenceSegment } from './sequence';
 import { SequenceChartService } from './sequence-chart.service';
 import { SequenceObject } from './sequence-object';

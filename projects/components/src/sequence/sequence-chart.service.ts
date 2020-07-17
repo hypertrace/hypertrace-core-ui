@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RecursivePartial } from '@hypertrace/common';
 import { select } from 'd3-selection';
-import { defaultsDeep } from 'lodash';
+import { defaultsDeep } from 'lodash-es';
 import { SequenceChartAxisService } from './axis/sequence-chart-axis.service';
 import { SequenceChartLayoutService } from './layout/sequence-chart-layout.service';
 import { SequenceBarRendererService } from './renderer/sequence-bar-renderer.service';
