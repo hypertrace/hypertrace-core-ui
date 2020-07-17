@@ -1,13 +1,12 @@
 import { Dictionary } from '@hypertrace/common';
 import { Model, ModelProperty, PLAIN_OBJECT_PROPERTY } from '@hypertrace/hyperdash';
-
 import { EMPTY, Observable, of } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { Span, spanIdKey } from '../../../../graphql/model/schema/span';
 import { SpecificationBuilder } from '../../../../graphql/request/builders/specification/specification-builder';
 import {
-  SPAN_GQL_REQUEST,
-  SpanGraphQlQueryHandlerService
+  SpanGraphQlQueryHandlerService,
+  SPAN_GQL_REQUEST
 } from '../../../../graphql/request/handlers/spans/span-graphql-query-handler.service';
 import { GraphQlDataSourceModel } from '../../../data/graphql/graphql-data-source.model';
 
@@ -36,7 +35,7 @@ export class SpanDetailDataSourceModel extends GraphQlDataSourceModel<SpanDetail
       properties: this.getSpanAttributes().map(attribute =>
         this.attributeSpecBuilder.attributeSpecificationForKey(attribute)
       )
-    }).pipe(flatMap(span => this.mapResponseObject(span)));
+    }).pipe(mergeMap(span => this.mapResponseObject(span)));
   }
 
   private mapResponseObject(span: Span | undefined): Observable<SpanDetailData> {

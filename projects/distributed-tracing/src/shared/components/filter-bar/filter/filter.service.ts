@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
 import { MetadataService } from '../../../services/metadata/metadata.service';
 import { FilterBuilderService } from './builder/filter-builder.service';
-import { USER_FILTER_OPERATORS, UserFilterOperator } from './filter-api';
+import { UserFilterOperator, USER_FILTER_OPERATORS } from './filter-api';
 import { FilterParserService } from './parser/filter-parser.service';
 
 export interface IncompleteFilter {

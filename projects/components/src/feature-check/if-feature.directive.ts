@@ -1,6 +1,6 @@
 import { Directive, EmbeddedViewRef, Input, OnChanges, TemplateRef, ViewContainerRef } from '@angular/core';
 import { FeatureState } from '@hypertrace/common';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
 @Directive({
   selector: '[htcIfFeature]'

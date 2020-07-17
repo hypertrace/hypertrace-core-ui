@@ -5,8 +5,8 @@ import { GraphQlMetricAggregationType } from '../../../graphql/model/schema/metr
 import { SPAN_SCOPE } from '../../../graphql/model/schema/span';
 import {
   GraphQlMetadataRequest,
-  METADATA_GQL_REQUEST,
-  MetadataGraphQlQueryHandlerService
+  MetadataGraphQlQueryHandlerService,
+  METADATA_GQL_REQUEST
 } from './metadata-graphql-query-handler.service';
 
 describe('Metadata graphql query handler service', () => {

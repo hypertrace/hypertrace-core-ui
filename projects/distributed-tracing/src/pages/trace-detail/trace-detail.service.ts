@@ -9,8 +9,8 @@ import { GraphQlTimeRange } from '../../shared/graphql/model/schema/timerange/gr
 import { Trace, traceIdKey, TraceType, traceTypeKey } from '../../shared/graphql/model/schema/trace';
 import { SpecificationBuilder } from '../../shared/graphql/request/builders/specification/specification-builder';
 import {
-  TRACE_GQL_REQUEST,
-  TraceGraphQlQueryHandlerService
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
 } from '../../shared/graphql/request/handlers/traces/trace-graphql-query-handler.service';
 import { MetadataService } from '../../shared/services/metadata/metadata.service';
 

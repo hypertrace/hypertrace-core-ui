@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { EMPTY, ReplaySubject } from 'rxjs';
-import { catchError, defaultIfEmpty, filter, flatMap, map, take } from 'rxjs/operators';
+import { catchError, defaultIfEmpty, filter, map, switchMap, take } from 'rxjs/operators';
 import { NavigationService } from '../navigation/navigation.service';
 import { ReplayObservable } from '../utilities/rxjs/rxjs-utils';
 import { FixedTimeRange } from './fixed-time-range';
@@ -62,7 +62,7 @@ export class TimeRangeService {
     this.navigationService.navigation$
       .pipe(
         take(1), // Wait for first navigation
-        flatMap(activatedRoute => activatedRoute.queryParamMap), // Get the params from it
+        switchMap(activatedRoute => activatedRoute.queryParamMap), // Get the params from it
         take(1), // Only the first set of params
         map(paramMap => paramMap.get(TimeRangeService.TIME_RANGE_QUERY_PARAM)), // Extract the time range value from it
         filter((timeRangeString): timeRangeString is string => !isEmpty(timeRangeString)), // Only valid time ranges

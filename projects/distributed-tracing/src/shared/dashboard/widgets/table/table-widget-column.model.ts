@@ -1,5 +1,5 @@
 import { TableCellAlignmentType, TableColumnConfig, TableRow, TableSortDirection } from '@hypertrace/components';
-import { ENUM_TYPE, EnumPropertyTypeInstance } from '@hypertrace/dashboards';
+import { EnumPropertyTypeInstance, ENUM_TYPE } from '@hypertrace/dashboards';
 import { BOOLEAN_PROPERTY, Model, ModelProperty, ModelPropertyType, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { Specification } from '../../../graphql/model/schema/specifier/specification';
 import { InteractionHandler } from '../../interaction/interaction-handler';

@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Json, JsonValue } from '@hypertrace/common';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { JsonElementType, JsonRecord } from './json-viewer.type';
 
 @Pipe({

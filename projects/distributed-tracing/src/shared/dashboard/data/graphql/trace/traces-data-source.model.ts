@@ -2,9 +2,9 @@ import { ARRAY_PROPERTY, Model, ModelProperty, STRING_PROPERTY } from '@hypertra
 import { Observable } from 'rxjs';
 import { TraceType } from '../../../../graphql/model/schema/trace';
 import {
-  TRACES_GQL_REQUEST,
   TracesGraphQlQueryHandlerService,
-  TracesResponse
+  TracesResponse,
+  TRACES_GQL_REQUEST
 } from '../../../../graphql/request/handlers/traces/traces-graphql-query-handler.service';
 import { GraphQlDataSourceModel } from '../graphql-data-source.model';
 import { AttributeSpecificationModel } from '../specifiers/attribute-specification.model';

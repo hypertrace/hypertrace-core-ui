@@ -33,6 +33,5 @@ module.exports = {
   ],
   modulePathIgnorePatterns: ['BOGUS', '<rootDir>/dist/'], // Need to reset from app project, but empty is merged
   watchPathIgnorePatterns: ['test-results'],
-  testEnvironment: 'jest-environment-jsdom-sixteen', // Update test env to newer jsdom for bug fixes
   testMatch: ['<rootDir>/projects/components/**/+(*.)+(spec|test).ts']
 };

@@ -1,8 +1,8 @@
 import { TableDataSource, TableMode, TableRow, TableStyle } from '@hypertrace/components';
 import {
   ArrayPropertyTypeInstance,
-  ENUM_TYPE,
   EnumPropertyTypeInstance,
+  ENUM_TYPE,
   ModelTemplatePropertyType,
   WidgetHeaderModel
 } from '@hypertrace/dashboards';
@@ -17,7 +17,7 @@ import {
   ModelPropertyType,
   STRING_PROPERTY
 } from '@hypertrace/hyperdash';
-import { MODEL_API, ModelInject } from '@hypertrace/hyperdash-angular';
+import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
 import { SpecificationBackedTableColumnDef, TableWidgetColumnModel } from './table-widget-column.model';
 

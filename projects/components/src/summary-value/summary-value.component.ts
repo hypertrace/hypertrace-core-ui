@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { IconSize } from '../icon/icon-size';
 
 @Component({

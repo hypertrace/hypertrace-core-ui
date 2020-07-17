@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { Breadcrumb, forkJoinSafeEmpty, NavigationService, ReplayObservable } from '@hypertrace/common';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { concat, defer, EMPTY, Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, switchMap, toArray } from 'rxjs/operators';
 

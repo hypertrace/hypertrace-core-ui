@@ -4,10 +4,10 @@ import { AttributeMetadata } from '../../../../graphql/model/metadata/attribute-
 import { FilterBuilderService } from '../builder/filter-builder.service';
 import {
   Filter,
-  URL_FILTER_OPERATORS,
   UrlFilterOperator,
-  USER_FILTER_OPERATORS,
-  UserFilterOperator
+  URL_FILTER_OPERATORS,
+  UserFilterOperator,
+  USER_FILTER_OPERATORS
 } from '../filter-api';
 
 interface ParsedFilter {

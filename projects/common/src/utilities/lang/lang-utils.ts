@@ -1,4 +1,4 @@
-import { isEqualWith } from 'lodash';
+import { isEqualWith } from 'lodash-es';
 
 /**
  * Useful in a place like the default case of a switch statement where each enum value is a case. If a new enum

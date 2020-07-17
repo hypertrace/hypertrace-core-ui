@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { RadioOption } from '@hypertrace/components';
 import { EditorApi, ModelPropertyEditor } from '@hypertrace/hyperdash';
 import { EDITOR_API } from '@hypertrace/hyperdash-angular';
-import { ENUM_TYPE, EnumPropertyTypeInstance } from './enum-property-type';
+import { EnumPropertyTypeInstance, ENUM_TYPE } from './enum-property-type';
 
 @ModelPropertyEditor({ propertyType: ENUM_TYPE.type })
 @Component({

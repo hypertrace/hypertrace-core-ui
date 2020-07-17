@@ -1,4 +1,4 @@
-import { isEmpty, isEqual, map, merge, mergeWith, toPairs } from 'lodash';
+import { isEmpty, isEqual, map, merge, mergeWith, toPairs } from 'lodash-es';
 import { GraphQlArgument, GraphQlArgumentValue, GraphQlEnumArgument } from '../../../model/graphql-argument';
 import { GraphQlSelection } from '../../../model/graphql-selection';
 

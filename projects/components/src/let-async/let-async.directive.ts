@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Directive, DoCheck, Input, TemplateRef, ViewContainerRef, WrappedValue } from '@angular/core';
+import { Directive, DoCheck, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 
 /**
@@ -27,7 +27,7 @@ export class LetAsyncDirective<T> implements DoCheck {
 
   public ngDoCheck(): void {
     // Async pipe is impure, use do check to check it each cycle as an async pipe alone would be
-    this.updateContext(this.maybeUnwrap(this.asyncPipe.transform(this.data$)));
+    this.updateContext(this.removeNulls(this.asyncPipe.transform(this.data$)));
   }
 
   private updateContext(value?: T): void {
@@ -36,12 +36,8 @@ export class LetAsyncDirective<T> implements DoCheck {
   }
 
   // tslint:disable-next-line: no-null-undefined-union async pipe could return either null or undefined
-  private maybeUnwrap(value: T | null | undefined | WrappedValue): T | undefined {
-    if (value === null || value === undefined) {
-      return undefined;
-    }
-
-    return WrappedValue.unwrap(value);
+  private removeNulls(value: T | null | undefined): T | undefined {
+    return value === null ? undefined : value;
   }
 }
 

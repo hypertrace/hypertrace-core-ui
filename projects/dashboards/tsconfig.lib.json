@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "../../",
     "declaration": true,
@@ -20,5 +20,6 @@
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "enableResourceInlining": true
-  }
+  },
+  "exclude": ["**/*.test.ts", "**/*.spec.ts"]
 }

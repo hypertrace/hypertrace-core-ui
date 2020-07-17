@@ -6,7 +6,7 @@ import {
   ModelEventPublisher,
   ModelProperty
 } from '@hypertrace/hyperdash';
-import { MODEL_API, ModelInject } from '@hypertrace/hyperdash-angular';
+import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 
 import { GraphQlQueryHandler, RequestTypeForHandler, ResponseTypeForHandler } from '@hypertrace/graphql-client';
 import { Observable, Observer, ReplaySubject, Subject } from 'rxjs';

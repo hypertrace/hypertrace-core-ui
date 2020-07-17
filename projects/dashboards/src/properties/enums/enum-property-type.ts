@@ -1,5 +1,5 @@
 import { ModelPropertyTypeInstance, ModelPropertyTypeRegistrationInformation } from '@hypertrace/hyperdash';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 
 export const ENUM_TYPE: ModelPropertyTypeRegistrationInformation = {
   type: 'enum',

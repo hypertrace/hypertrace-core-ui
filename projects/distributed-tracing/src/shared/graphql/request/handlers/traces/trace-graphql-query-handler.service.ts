@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Dictionary } from '@hypertrace/common';
 import { GraphQlHandlerType, GraphQlQueryHandler, GraphQlSelection } from '@hypertrace/graphql-client';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { GraphQlFieldFilter } from '../../../model/schema/filter/field/graphql-field-filter';
 import { GraphQlFilter, GraphQlOperatorType } from '../../../model/schema/filter/graphql-filter';
 import { GraphQlIdFilter } from '../../../model/schema/filter/id/graphql-id-filter';

@@ -1,13 +1,11 @@
-import {
-  ObservedGraphQlRequest,
-  spanIdKey,
-  TRACE_GQL_REQUEST,
-  TRACE_SCOPE,
-  TraceGraphQlQueryHandlerService,
-  traceIdKey,
-  traceTypeKey
-} from '@hypertrace/distributed-tracing';
 import { ModelApi } from '@hypertrace/hyperdash';
+import { spanIdKey } from '../../../../graphql/model/schema/span';
+import { traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../../../graphql/model/schema/trace';
+import {
+  TraceGraphQlQueryHandlerService,
+  TRACE_GQL_REQUEST
+} from '../../../../graphql/request/handlers/traces/trace-graphql-query-handler.service';
+import { ObservedGraphQlRequest } from '../../../data/graphql/graphql-query-event.service';
 import { TraceDetailDataSourceModel } from './trace-detail-data-source.model';
 
 describe('Trace detail data source model', () => {

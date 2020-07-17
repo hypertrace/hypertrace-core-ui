@@ -5,7 +5,7 @@ import { IconLibraryTestingModule, IconType } from '@hypertrace/assets-library';
 import { CustomError, NavigationService } from '@hypertrace/common';
 import { createDirectiveFactory, mockProvider, SpectatorDirective } from '@ngneat/spectator/jest';
 import { EMPTY, Observable, of, throwError } from 'rxjs';
-import { delay, flatMap } from 'rxjs/operators';
+import { delay, mergeMap } from 'rxjs/operators';
 import { IconModule } from '../icon/icon.module';
 import { MessageDisplayComponent } from '../message-display/message-display.component';
 import { LoadAsyncDirective } from './load-async.directive';
@@ -47,7 +47,7 @@ describe('Load Async directive', () => {
     spectator.setHostInput({
       data$: of('content').pipe(
         delay(0),
-        flatMap(() => throwError(new Error()))
+        mergeMap(() => throwError(new Error()))
       )
     });
     expect(spectator.query(LoaderComponent)).toExist();
@@ -66,7 +66,7 @@ describe('Load Async directive', () => {
     spectator.setHostInput({
       data$: of('content').pipe(
         delay(0),
-        flatMap(() => throwError(new CustomError('custom error message')))
+        mergeMap(() => throwError(new CustomError('custom error message')))
       )
     });
     expect(spectator.query(LoaderComponent)).toExist();

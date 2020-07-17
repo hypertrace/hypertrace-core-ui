@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { Filter } from '../../model/filter';
 import { FilterOperatorType } from '../../model/filter-operator-type';
 import { FilterType } from '../../model/filter-type';

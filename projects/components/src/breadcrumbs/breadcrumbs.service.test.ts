@@ -106,18 +106,7 @@ describe('BreadcrumbsService', () => {
       ]
     });
 
-    runFakeRxjs(({ expectObservable }) => {
-      expectObservable(spectator.service.breadcrumbs$).toBe('(x|)', {
-        x: [
-          {
-            icon: IconType.Application,
-            label: 'First Breadcrumb',
-            url: ['first']
-          }
-        ]
-      });
-    });
-
+    spectator.service.breadcrumbs$.subscribe();
     expect(spectator.inject(NavigationService).navigateToErrorPage).toHaveBeenCalled();
   });
 });

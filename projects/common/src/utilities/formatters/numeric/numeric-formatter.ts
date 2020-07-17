@@ -1,4 +1,4 @@
-import { cloneDeep, defaults } from 'lodash';
+import { cloneDeep, defaults } from 'lodash-es';
 
 export class NumericFormatter {
   public static readonly STANDARD_VALUES: ReadonlyArray<NumericFormatterThreshold> = [

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { isEqual, minBy } from 'lodash';
+import { isEqual, minBy } from 'lodash-es';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ReplayObservable } from '../utilities/rxjs/rxjs-utils';
 import { TimeDuration } from './time-duration';

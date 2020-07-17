@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { forkJoinSafeEmpty, ReplayObservable } from '@hypertrace/common';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 import { catchError, defaultIfEmpty, filter, map, shareReplay, tap, throwIfEmpty } from 'rxjs/operators';
 import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
@@ -9,8 +9,8 @@ import { addAggregationToDisplayName, getAggregationDisplayName } from '../../gr
 import { Specification } from '../../graphql/model/schema/specifier/specification';
 import { isMetricSpecification } from '../../graphql/model/specifications/metric-specification';
 import {
-  METADATA_GQL_REQUEST,
-  MetadataGraphQlQueryHandlerService
+  MetadataGraphQlQueryHandlerService,
+  METADATA_GQL_REQUEST
 } from './handler/metadata-graphql-query-handler.service';
 
 @Injectable({ providedIn: 'root' })

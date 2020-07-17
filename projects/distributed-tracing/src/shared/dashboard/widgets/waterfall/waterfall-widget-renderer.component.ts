@@ -11,7 +11,7 @@ import { IconType } from '@hypertrace/assets-library';
 import { ButtonStyle, PopoverRef, SheetOverlayService, SheetSize } from '@hypertrace/components';
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
-import { RENDERER_API, RendererApi } from '@hypertrace/hyperdash-angular';
+import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
 import { SpanDetailLayoutStyle } from '../../../components/span-detail/span-detail-layout-style';
 import { WaterfallWidgetModel } from './waterfall-widget.model';

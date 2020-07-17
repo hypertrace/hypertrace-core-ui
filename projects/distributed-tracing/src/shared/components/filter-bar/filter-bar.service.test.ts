@@ -1,19 +1,15 @@
 import { fakeAsync, flush } from '@angular/core/testing';
 import { NavigationService } from '@hypertrace/common';
-import {
-  AttributeMetadata,
-  AttributeMetadataType,
-  Filter,
-  FilterBarService,
-  MetadataService,
-  SPAN_SCOPE,
-  UserFilterOperator
-} from '@hypertrace/distributed-tracing';
 import { runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
+import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
+import { SPAN_SCOPE } from '../../graphql/model/schema/span';
+import { MetadataService } from '../../services/metadata/metadata.service';
+import { FilterBarService } from './filter-bar.service';
 import { NumberFilterBuilder } from './filter/builder/number-filter-builder';
 import { StringFilterBuilder } from './filter/builder/string-filter-builder';
+import { Filter, UserFilterOperator } from './filter/filter-api';
 import { FilterParserService } from './filter/parser/filter-parser.service';
 
 describe('Filter Bar service', () => {

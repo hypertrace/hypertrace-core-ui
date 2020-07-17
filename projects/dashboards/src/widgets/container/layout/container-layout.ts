@@ -1,6 +1,6 @@
 import { ComponentFactoryResolver, Injector, Type, ViewContainerRef } from '@angular/core';
 import { BOOLEAN_PROPERTY, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
-import { CONTAINER_LAYOUT, ContainerLayoutComponent } from './container-layout.component';
+import { ContainerLayoutComponent, CONTAINER_LAYOUT } from './container-layout.component';
 
 // Make abstract so it exists at runtime and can be used by the dashboard system
 export abstract class ContainerLayout {

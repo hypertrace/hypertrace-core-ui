@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash-es';
 import { StandardTableCellRendererType } from '../renderers/standard-table-cell-renderer-type';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 import { TableCdkColumnUtil } from './table-cdk-column-util';

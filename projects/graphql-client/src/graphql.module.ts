@@ -1,9 +1,9 @@
 import { Inject, InjectionToken, Injector, ModuleWithProviders, NgModule } from '@angular/core';
-import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
+import { ApolloModule, APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { ApolloClientOptions } from 'apollo-client';
-import { GRAPHQL_REQUEST_HANDLERS_TOKENS, GRAPHQL_URI, GraphQlQueryHandler } from './graphql-config';
+import { GraphQlQueryHandler, GRAPHQL_REQUEST_HANDLERS_TOKENS, GRAPHQL_URI } from './graphql-config';
 import { GraphQlRequestService } from './graphql-request.service';
 
 // tslint:disable-next-line: only-arrow-functions

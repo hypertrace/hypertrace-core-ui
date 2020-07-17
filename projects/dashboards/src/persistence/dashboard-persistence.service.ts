@@ -1,8 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-// tslint:disable-next-line: match-default-export-name
-import uuidv5 from 'uuid/v5';
+import { v5 as uuidv5 } from 'uuid';
 import { DashboardBrowserLocalStore } from './store/dashboard-browser-local-store';
 import {
   DashboardCreationData,

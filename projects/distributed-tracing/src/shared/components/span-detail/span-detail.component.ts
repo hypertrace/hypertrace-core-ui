@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { isEmpty } from 'lodash';
+import { isEmpty } from 'lodash-es';
 import { SpanData } from './span-data';
 import { SpanDetailLayoutStyle } from './span-detail-layout-style';
 

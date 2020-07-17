@@ -13,11 +13,11 @@ module.exports = {
     }
   },
   setupFilesAfterEnv: ['<rootDir>/node_modules/@angular-builders/jest/dist/jest-config/setup.js'],
-  testEnvironment: 'jest-environment-jsdom-sixteen', // Update test env to newer jsdom for bug fixes
   testMatch: ['<rootDir>/(src|projects)/**/+(*.)+(spec|test).ts'],
   watchPathIgnorePatterns: ['test-results'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   moduleNameMapper: {
+    '^lodash-es$': 'lodash',
     '@hypertrace/assets-library': '<rootDir>/projects/assets-library/src/public-api.ts',
     '@hypertrace/common$': '<rootDir>/projects/common/src/public-api.ts',
     '@hypertrace/components': '<rootDir>/projects/components/src/public-api.ts',
