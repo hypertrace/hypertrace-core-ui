@@ -47,9 +47,6 @@
       "path": "./projects/test-utils/tsconfig.lib.json"
     },
     {
-      "path": "./projects/test-utils/tsconfig.spec.json"
-    },
-    {
       "path": "./projects/assets-library/tsconfig.lib.json"
     },
     {
