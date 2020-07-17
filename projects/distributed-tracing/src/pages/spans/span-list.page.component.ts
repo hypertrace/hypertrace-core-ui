@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StandardTableCellRendererType, TableMode, TableSortDirection, TableStyle } from '@hypertrace/components';
-import { ModelJson } from '@hypertrace/hyperdash';
+import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
+
 import { TracingTableCellRenderer } from '../../shared/components/table/tracing-table-cell-renderer';
 import { NavigableDashboardFilterConfig } from '../../shared/dashboard/dashboard-wrapper/navigable-dashboard.component';
 import { SPAN_SCOPE } from '../../shared/graphql/model/schema/span';
@@ -12,6 +13,7 @@ import { SPAN_SCOPE } from '../../shared/graphql/model/schema/span';
       [navLocation]="this.location"
       [defaultJson]="this.defaultJson"
       [filterConfig]="this.filterConfig"
+      (dashboardReady)="this.onDashboardReady($event)"
     >
     </htc-navigable-dashboard>
   `
@@ -22,6 +24,8 @@ export class SpanListPageComponent {
   public readonly filterConfig: NavigableDashboardFilterConfig = {
     scope: SPAN_SCOPE
   };
+
+  public dashboard?: Dashboard;
 
   public readonly defaultJson: ModelJson = {
     type: 'table-widget',
@@ -102,4 +106,9 @@ export class SpanListPageComponent {
       type: 'spans-table-data-source'
     }
   };
+
+  public onDashboardReady(dashboard: Dashboard): void {
+    this.dashboard = dashboard;
+  }
+
 }
