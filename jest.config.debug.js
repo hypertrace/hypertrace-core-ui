@@ -13,7 +13,6 @@ module.exports = {
     }
   },
   setupFilesAfterEnv: ['<rootDir>/node_modules/@angular-builders/jest/dist/jest-config/setup.js'],
-  testEnvironment: 'jest-environment-jsdom-sixteen', // Update test env to newer jsdom for bug fixes
   testMatch: ['<rootDir>/(src|projects)/**/+(*.)+(spec|test).ts'],
   watchPathIgnorePatterns: ['test-results'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],

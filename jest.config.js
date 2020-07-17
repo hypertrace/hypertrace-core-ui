@@ -27,7 +27,6 @@ module.exports = {
     '!**/*/test/**',
     '!src/app/routes/**/*.ts'
   ],
-  testEnvironment: 'jest-environment-jsdom-sixteen', // Update test env to newer jsdom for bug fixes
   coverageDirectory: 'coverage/hypertrace-core-ui',
   modulePathIgnorePatterns: ['<rootDir>/dist/'], // Need to reset from app project, but empty is merged
   testMatch: ['<rootDir>/(src|projects)/**/+(*.)+(spec|test).ts'],
