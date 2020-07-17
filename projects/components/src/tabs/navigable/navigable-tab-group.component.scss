@@ -26,7 +26,7 @@
 }
 
 .tab-group {
-  margin-bottom: 16px;
+  height: 48px;
 }
 
 .divider {
@@ -67,7 +67,7 @@
 }
 
 .tab-link {
-  height: 44px;
+  height: 46px; // plus ink-bar is 48
   min-width: 0;
   padding: 0;
   font-size: 16px;
@@ -77,7 +77,7 @@
 }
 
 .ink-bar {
-  height: 2px;
+  height: 2px; // plus tab-link is 48
   border-radius: 1px;
 
   background-position: center;

@@ -10,24 +10,24 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
 
 @Component({
   selector: 'htc-navigable-dashboard',
+  styleUrls: ['./navigable-dashboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div [ngClass]="this.filterConfig ? 'dashboard-container-content' : 'fill-container'">
+    <div class="navigable-dashboard" *htcLoadAsync="this.dashboardJson$ as dashboardJson">
       <htc-filter-bar
+        class="filter-bar"
         *ngIf="this.showFilterBar"
         [scope]="this.filterConfig?.scope"
         [syncWithUrl]="true"
         (filtersChange)="this.onFilterChange($event)"
       >
       </htc-filter-bar>
-      <div class="dashboard-content">
-        <htc-application-aware-dashboard
-          *htcLoadAsync="this.dashboardJson$ as dashboardJson"
-          [json]="dashboardJson"
-          (dashboardReady)="this.onDashboardReady($event)"
-        >
-        </htc-application-aware-dashboard>
-      </div>
+      <htc-application-aware-dashboard
+        class="dashboard"
+        [json]="dashboardJson"
+        (dashboardReady)="this.onDashboardReady($event)"
+      >
+      </htc-application-aware-dashboard>
     </div>
   `
 })

@@ -15,7 +15,17 @@ export class NavigableTabComponent extends ContentHolder {
   @Input()
   public path!: string;
 
-  public get features(): string[] {
+  @Input()
+  public hidden: boolean = false;
+
+  @Input()
+  public features: string[] = [];
+
+  public get featureFlags(): string[] {
+    return [...this.routeFeatures(), ...this.features];
+  }
+
+  private routeFeatures(): string[] {
     const route = this.navService.getRouteConfig([this.path], this.activatedRoute);
 
     return (route && route.data && route.data.features) || [];

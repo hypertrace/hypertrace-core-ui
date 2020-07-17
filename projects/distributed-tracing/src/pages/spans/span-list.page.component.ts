@@ -1,38 +1,30 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StandardTableCellRendererType, TableMode, TableSortDirection, TableStyle } from '@hypertrace/components';
 import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
 
-import { Observable } from 'rxjs';
-import { Filter } from '../../shared/components/filter-bar/filter/filter-api';
 import { TracingTableCellRenderer } from '../../shared/components/table/tracing-table-cell-renderer';
-import { GraphQlFilterDataSourceModel } from '../../shared/dashboard/data/graphql/filter/graphql-filter-data-source.model';
-import { AttributeMetadata } from '../../shared/graphql/model/metadata/attribute-metadata';
-import { GraphQlFilterBuilderService } from '../../shared/services/filter-builder/graphql-filter-builder.service';
-import { MetadataService } from '../../shared/services/metadata/metadata.service';
+import { NavigableDashboardFilterConfig } from '../../shared/dashboard/dashboard-wrapper/navigable-dashboard.component';
+import { SPAN_SCOPE } from '../../shared/graphql/model/schema/span';
 
 @Component({
-  styleUrls: ['./span-list.page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="dashboard-container-content">
-      <htc-filter-bar [scope]="this.scope" [syncWithUrl]="true" (filtersChange)="this.onFilterChange($event)">
-      </htc-filter-bar>
-      <htc-navigable-dashboard
-        class="dashboard-content content"
-        [navLocation]="this.location"
-        [defaultJson]="this.defaultJson"
-        (dashboardReady)="this.onDashboardReady($event)"
-      >
-      </htc-navigable-dashboard>
-    </div>
+    <htc-navigable-dashboard
+      [navLocation]="this.location"
+      [defaultJson]="this.defaultJson"
+      [filterConfig]="this.filterConfig"
+      (dashboardReady)="this.onDashboardReady($event)"
+    >
+    </htc-navigable-dashboard>
   `
 })
-export class SpanListPageComponent implements OnInit {
+export class SpanListPageComponent {
   public readonly location: string = 'SPANS';
-  public readonly scope: string = 'SPAN';
 
-  public attributes$!: Observable<AttributeMetadata[]>;
-  private currentFilters: Filter[] = [];
+  public readonly filterConfig: NavigableDashboardFilterConfig = {
+    scope: SPAN_SCOPE
+  };
+
   public dashboard?: Dashboard;
 
   public readonly defaultJson: ModelJson = {
@@ -115,34 +107,7 @@ export class SpanListPageComponent implements OnInit {
     }
   };
 
-  public constructor(
-    private readonly graphQlFilterBuilderService: GraphQlFilterBuilderService,
-    private readonly metadataService: MetadataService
-  ) {}
-
-  public ngOnInit(): void {
-    this.attributes$ = this.metadataService.getFilterAttributes(this.scope);
-  }
-
   public onDashboardReady(dashboard: Dashboard): void {
     this.dashboard = dashboard;
-    this.updateFilters(dashboard, this.currentFilters);
-  }
-
-  public onFilterChange(filters: Filter[]): void {
-    this.currentFilters = filters;
-    if (this.dashboard) {
-      this.updateFilters(this.dashboard, filters);
-    }
-  }
-
-  private updateFilters(dashboard: Dashboard, filters: Filter[]): void {
-    const graphqlFilters = this.graphQlFilterBuilderService.buildGraphQlFilters(filters);
-    dashboard
-      .getRootDataSource<GraphQlFilterDataSourceModel>()
-      ?.clearFilters()
-      .addFilters(...graphqlFilters);
-
-    dashboard.refresh();
   }
 }
