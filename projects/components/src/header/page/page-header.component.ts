@@ -11,7 +11,11 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
   styleUrls: ['./page-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div *ngIf="this.breadcrumbs$ | async as breadcrumbs" class="page-header" [class.bottom-border]="!this.tabs.length">
+    <div
+      *ngIf="this.breadcrumbs$ | async as breadcrumbs"
+      class="page-header"
+      [class.bottom-border]="!this.tabs?.length"
+    >
       <div class="breadcrumb-container">
         <htc-breadcrumbs [breadcrumbs]="breadcrumbs"></htc-breadcrumbs>
 
@@ -30,7 +34,7 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
 
       <ng-content></ng-content>
 
-      <htc-navigable-tab-group *ngIf="this.tabs.length" class="tabs">
+      <htc-navigable-tab-group *ngIf="this.tabs?.length" class="tabs">
         <htc-navigable-tab *ngFor="let tab of this.tabs" [path]="tab.path" [hidden]="tab.hidden">
           {{ tab.label }}
         </htc-navigable-tab>
@@ -40,7 +44,7 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
 })
 export class PageHeaderComponent {
   @Input()
-  public tabs: NavigableTab[] = [];
+  public tabs?: NavigableTab[] = [];
 
   public breadcrumbs$: Observable<Breadcrumb[] | undefined> = this.breadcrumbsService.breadcrumbs$.pipe(
     map(breadcrumbs => (breadcrumbs.length > 0 ? breadcrumbs : undefined))
