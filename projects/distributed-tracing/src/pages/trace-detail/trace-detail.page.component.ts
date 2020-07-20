@@ -17,7 +17,7 @@ import { TraceDetails, TraceDetailService } from './trace-detail.service';
         <div class="back">
           <htc-icon
             (click)="this.onClickBack()"
-            icon="${IconType.KeyboardBackspace}"
+            icon="${IconType.ArrowLeft}"
             size="${IconSize.Small}"
             class="arrow"
           ></htc-icon>
