@@ -18,7 +18,7 @@
   .summary-container {
     display: flex;
     flex-direction: column;
-    margin-top: 6px;
+    margin-top: 16px;
     flex: 0;
   }
 
@@ -27,5 +27,6 @@
     min-height: 0;
     overflow: hidden;
     isolation: isolate;
+    margin-top: 18px;
   }
 }

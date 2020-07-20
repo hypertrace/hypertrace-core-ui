@@ -15,7 +15,7 @@ import { ButtonRole, ButtonSize, ButtonStyle } from './button';
           *ngIf="this.icon && !this.trailingIcon"
           [icon]="this.icon"
           [label]="this.label"
-          size="${IconSize.Small}"
+          [size]="this.getIconSizeClass()"
           class="icon leading"
         ></htc-icon>
 
@@ -28,7 +28,7 @@ import { ButtonRole, ButtonSize, ButtonStyle } from './button';
           *ngIf="this.icon && this.trailingIcon"
           [icon]="this.icon"
           [label]="this.label"
-          size="${IconSize.Small}"
+          [size]="this.getIconSizeClass()"
           class="icon trailing"
         ></htc-icon>
       </button>
@@ -69,5 +69,14 @@ export class ButtonComponent {
     }
 
     return classes;
+  }
+
+  public getIconSizeClass(): string {
+    switch (this.size) {
+      case ButtonSize.Large:
+        return IconSize.Large;
+      default:
+        return IconSize.Small;
+    }
   }
 }
