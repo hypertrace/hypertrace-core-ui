@@ -1,6 +1,7 @@
 import { RouterTestingModule } from '@angular/router/testing';
 import { IconType } from '@hypertrace/assets-library';
 import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { IconSize } from '../icon/icon-size';
 import { ButtonRole, ButtonSize, ButtonStyle } from './button';
 import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
@@ -66,24 +67,28 @@ describe('Button Component', () => {
 
     // Default
     expect(spectator.query('.button')).toHaveClass('button secondary medium');
+    expect(spectator.component.getIconSizeClass()).toEqual(IconSize.Small);
 
     // Large
     spectator.setInput({
       size: ButtonSize.Large
     });
     expect(spectator.query('.button')).toHaveClass('button secondary large');
+    expect(spectator.component.getIconSizeClass()).toEqual(IconSize.Large);
 
     // Small
     spectator.setInput({
       size: ButtonSize.Small
     });
     expect(spectator.query('.button')).toHaveClass('button secondary small');
+    expect(spectator.component.getIconSizeClass()).toEqual(IconSize.Small);
 
     // Medium
     spectator.setInput({
       size: ButtonSize.Medium
     });
     expect(spectator.query('.button')).toHaveClass('button secondary medium');
+    expect(spectator.component.getIconSizeClass()).toEqual(IconSize.Small);
   });
 
   test('should have correct style class for disabled state', () => {

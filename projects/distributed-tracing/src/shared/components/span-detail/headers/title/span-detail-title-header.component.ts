@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { ButtonStyle } from '@hypertrace/components';
+import { ButtonSize, ButtonStyle } from '@hypertrace/components';
 import { SpanTitle } from '../../span-title';
 
 @Component({
@@ -23,12 +23,16 @@ import { SpanTitle } from '../../span-title';
       </div>
       <!-- Right Side Button Controls -->
       <div class="controls">
-        <htc-copy-shareable-link-to-clipboard class="share"></htc-copy-shareable-link-to-clipboard>
+        <htc-copy-shareable-link-to-clipboard
+          class="share"
+          size="${ButtonSize.Large}"
+        ></htc-copy-shareable-link-to-clipboard>
 
         <div class="divider"></div>
 
         <htc-button
           class="close"
+          size="${ButtonSize.Large}"
           icon="${IconType.CloseCircle}"
           display="${ButtonStyle.Outlined}"
           htcTooltip="Close Details"
