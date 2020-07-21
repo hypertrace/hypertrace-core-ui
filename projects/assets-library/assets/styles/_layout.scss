@@ -36,10 +36,39 @@
   padding: 0;
 }
 
+@mixin hidden {
+  display: none !important;
+}
+
+@mixin list-hover {
+  &:hover {
+    background: $gray-1;
+    cursor: pointer;
+  }
+}
+
+@mixin card-hover {
+  &:hover {
+    @include box-shadow();
+  }
+}
+
+@mixin box-shadow {
+  box-shadow: 0 1px 4px rgba($gray-7, 0.16), 0 3px 4px rgba($gray-7, 0.08), 0 2px 5px rgba($gray-7, 0.16);
+}
+
 @mixin frame-border {
   border: 1px solid $color-border;
 }
 
-@mixin hidden {
-  display: none !important;
+@mixin dropdown($radius: 4px) {
+  @include box-shadow;
+  width: inherit;
+  border-radius: $radius;
+  background: white;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  left: 1px; // To visually center accounting for margin
+  margin: 1px 0; // Keeps the dropdown from covering the trigger border
 }

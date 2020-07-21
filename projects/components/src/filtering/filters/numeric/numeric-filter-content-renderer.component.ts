@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FilterOperatorType } from '../../model/filter-operator-type';
-import { FILTER_RENDERER_API, FilterRendererApi } from '../../rendering/filter-renderer.component';
+import { FilterRendererApi, FILTER_RENDERER_API } from '../../rendering/filter-renderer.component';
 import { NumericFilter } from './numeric-filter';
 
 @Component({
