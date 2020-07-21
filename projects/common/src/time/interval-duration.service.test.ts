@@ -100,6 +100,22 @@ describe('Interval duration service', () => {
     ]);
   });
 
+  test('provides available intervals for an arbitrary time range based on maximum data points', () => {
+    const spectator = serviceBuilder();
+
+    expect(
+      spectator.service.getAvailableIntervalsForTimeRange(
+        new FixedTimeRange(new Date('2019-09-19T16:40:45.141Z'), new Date('2019-09-21T16:40:45.141Z')),
+        100
+      )
+    ).toEqual([
+      new TimeDuration(30, TimeUnit.Minute),
+      new TimeDuration(1, TimeUnit.Hour),
+      new TimeDuration(6, TimeUnit.Hour),
+      new TimeDuration(12, TimeUnit.Hour)
+    ]);
+  });
+
   test('calculates the closest match to an interval from a list', () => {
     const spectator = serviceBuilder();
 
@@ -155,5 +171,29 @@ describe('Interval duration service', () => {
         new FixedTimeRange(new Date('2019-09-19T16:40:45.141Z'), new Date('2019-09-21T16:40:45.141Z'))
       )
     ).toEqual(new TimeDuration(15, TimeUnit.Minute)); // Smallest in range
+  });
+
+  test('provides the value of the auto duration for an arbitrary time range with provided maximum data points', () => {
+    const spectator = serviceBuilder();
+    expect(
+      spectator.service.getAutoDuration(
+        new FixedTimeRange(new Date('2019-09-19T16:40:45.141Z'), new Date('2019-09-21T16:40:45.141Z')),
+        100
+      )
+    ).toEqual(new TimeDuration(30, TimeUnit.Minute)); // Smallest in range
+  });
+
+  test('calculates the exact match (or undefined if none) of an interval from a list', () => {
+    const spectator = serviceBuilder();
+
+    expect(
+      spectator.service.getAutoDurationFromTimeDurations([
+        new TimeDuration(15, TimeUnit.Minute),
+        new TimeDuration(30, TimeUnit.Minute),
+        new TimeDuration(1, TimeUnit.Hour),
+        new TimeDuration(6, TimeUnit.Hour),
+        new TimeDuration(12, TimeUnit.Hour)
+      ])
+    ).toEqual(new TimeDuration(15, TimeUnit.Minute));
   });
 });
