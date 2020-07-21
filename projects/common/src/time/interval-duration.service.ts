@@ -41,10 +41,11 @@ export class IntervalDurationService {
   }
 
   public getAvailableIntervalsForTimeRange(
-    timeRange: TimeRange = this.timeRangeService.getCurrentTimeRange()
+    timeRange: TimeRange = this.timeRangeService.getCurrentTimeRange(),
+    maximumDataPoints: number = 500
   ): TimeDuration[] {
-    // Can make this configurable at some point, but for now, an interval musts produce at least 3 data points but no more than 500
-    return this.getAvailableIntervals(timeRange, 3, 500);
+    // Can make this configurable at some point, but for now, an interval musts produce at least 3 data points
+    return this.getAvailableIntervals(timeRange, 3, maximumDataPoints);
   }
 
   public getClosestMatch(duration: TimeDuration, availableDurations: TimeDuration[]): TimeDuration | undefined {
@@ -55,14 +56,22 @@ export class IntervalDurationService {
     return availableDurations.find(availableDuration => duration.equals(availableDuration));
   }
 
-  public getAutoDuration(timeRange: TimeRange = this.timeRangeService.getCurrentTimeRange()): TimeDuration {
-    const availableDurations = this.getAvailableIntervalsForTimeRange(timeRange);
+  public getAutoDuration(
+    timeRange: TimeRange = this.timeRangeService.getCurrentTimeRange(),
+    maximumDataPoints?: number
+  ): TimeDuration {
+    // Currently sorted smallest to largest
+    const availableDurations = this.getAvailableIntervalsForTimeRange(timeRange, maximumDataPoints);
 
-    if (availableDurations.length === 0) {
+    return this.getAutoDurationFromTimeDurations(availableDurations);
+  }
+
+  public getAutoDurationFromTimeDurations(durations: TimeDuration[]): TimeDuration {
+    if (durations.length === 0) {
       throw Error('No intervals supported at requested time range');
     }
 
-    return availableDurations[0]; // Currently sorted smallest to largest
+    return durations[0];
   }
 
   private getAvailableIntervals(timeRange: TimeRange, minDataPoints: number, maxDataPoints: number): TimeDuration[] {
