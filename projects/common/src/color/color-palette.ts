@@ -21,7 +21,7 @@ export class ColorPalette {
     }
 
     if (count === 2) {
-      // Use the middle and end colors for generating 2 colors from a larger palette
+      // Use the start and middle colors for generating 2 colors from a larger palette
       return this.forNColors(3).slice(0, 2);
     }
 
