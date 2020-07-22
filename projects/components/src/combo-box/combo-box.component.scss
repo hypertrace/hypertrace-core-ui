@@ -1,5 +1,6 @@
 @import 'font';
 @import 'color-palette';
+@import 'layout';
 
 .popover-trigger {
   display: flex;
@@ -91,12 +92,8 @@
 }
 
 .popover-content {
-  @include box-shadow();
-  background: white;
-  border: $gray-1 solid 1px;
+  @include dropdown();
   max-height: 400px;
-  overflow-y: scroll;
-  border-radius: 2px;
 
   .popover-item {
     height: 36px;
