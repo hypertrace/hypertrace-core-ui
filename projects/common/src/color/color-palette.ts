@@ -16,6 +16,10 @@ export class ColorPalette {
       return [...this.basisColors];
     }
 
+    if (count === 1) {
+      return [this.basisColors[0]];
+    }
+
     if (count === 2) {
       // Use the middle and end colors for generating 2 colors from a larger palette
       return this.forNColors(3).slice(0, 2);
