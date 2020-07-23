@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, ContentChild, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
 import { isEmpty } from 'lodash-es';
 import { ButtonRole, ButtonSize, ButtonStyle } from '../button/button';
+import { IconSize } from '../icon/icon-size';
 import { TitledHeaderControlDirective } from './header-controls/titled-header-control.directive';
 
 @Component({
@@ -12,6 +13,13 @@ import { TitledHeaderControlDirective } from './header-controls/titled-header-co
     <div class="titled-content-container">
       <div class="header">
         <htc-label *ngIf="this.shouldShowTitleInHeader" [label]="this.title" class="title"></htc-label>
+        <htc-icon
+          class="icon"
+          *ngIf="this.tooltip"
+          icon="${IconType.Info}"
+          size="${IconSize.Small}"
+          [htcTooltip]="this.tooltip"
+        ></htc-icon>
         <htc-link [url]="this.link" class="link" *ngIf="this.link">
           <htc-button
             [label]="this.linkLabel"
@@ -50,6 +58,9 @@ export class TitledContentComponent {
 
   @Input()
   public linkLabel?: string;
+
+  @Input()
+  public tooltip?: TemplateRef<unknown> | string | number;
 
   private get shouldShowTitle(): boolean {
     return !isEmpty(this.title) && !this.hideTitle;
