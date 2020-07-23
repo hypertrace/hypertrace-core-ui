@@ -70,7 +70,7 @@ import { ComboBoxMode, ComboBoxOption, ComboBoxResult } from './combo-box-api';
             class="trigger-clear-button trigger-control"
             (click)="this.onInputClear($event)"
           >
-            <htc-icon icon="${IconType.CloseCircle}" size="${IconSize.ExtraSmall}"></htc-icon>
+            <htc-icon icon="${IconType.CloseCircleFilled}" size="${IconSize.ExtraSmall}"></htc-icon>
           </div>
         </div>
       </htc-popover-trigger>
@@ -85,7 +85,7 @@ import { ComboBoxMode, ComboBoxOption, ComboBoxResult } from './combo-box-api';
             *ngFor="let option of this.filteredOptions; index as i"
             [class.selected]="this.highlightedOptionIndex === i"
             (click)="this.onOptionClick(option)"
-            [htcTooltip]="option.tooltip ? option.tooltip : ''"
+            [htcTooltip]="option.tooltip"
             class="popover-item"
           >
             <div [innerHtml]="option.text | htcHighlight: this.text"></div>

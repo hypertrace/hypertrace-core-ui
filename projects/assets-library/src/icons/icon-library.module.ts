@@ -29,6 +29,7 @@ const iconsRootPath = 'assets/icons';
         { key: IconType.ChevronUp, url: `${iconsRootPath}/chevron-up.svg` },
         { key: IconType.Close, url: `${iconsRootPath}/close.svg` },
         { key: IconType.CloseCircle, url: `${iconsRootPath}/close-circle.svg` },
+        { key: IconType.CloseCircleFilled, url: `${iconsRootPath}/close-circle-filled.svg` },
         { key: IconType.CollapseAll, url: `${iconsRootPath}/collapse-all.svg` },
         { key: IconType.Collapsed, url: `${iconsRootPath}/plus-square.svg` },
         { key: IconType.Compare, url: `${iconsRootPath}/compare.svg` },
