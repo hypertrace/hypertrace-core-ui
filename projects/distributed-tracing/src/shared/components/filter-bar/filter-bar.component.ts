@@ -21,7 +21,12 @@ import { Filter } from './filter/filter-api';
   styleUrls: ['./filter-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="filter-bar" [class.focused]="this.isFocused">
+    <div
+      class="filter-bar"
+      (focusin)="this.isFocused = true"
+      (focusout)="this.isFocused = false"
+      [class.focused]="this.isFocused"
+    >
       <div class="content">
         <!-- Search Icon -->
         <htc-icon icon="${IconType.Filter}" size="${IconSize.Medium}" class="search-icon"></htc-icon>
@@ -35,8 +40,6 @@ import { Filter } from './filter/filter-api';
             [scope]="this.scope"
             (apply)="this.onApply($event)"
             (clear)="this.onClear(filter)"
-            (focusin)="this.isFocused = true"
-            (focusout)="this.isFocused = false"
           ></htc-filter>
           <htc-filter
             #filterInput
@@ -44,8 +47,6 @@ import { Filter } from './filter/filter-api';
             [clearOnEnter]="true"
             [scope]="this.scope"
             (apply)="this.onInputApply($event)"
-            (focusin)="this.isFocused = true"
-            (focusout)="this.isFocused = false"
           ></htc-filter>
         </div>
 
