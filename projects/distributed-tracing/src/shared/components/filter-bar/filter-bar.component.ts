@@ -35,8 +35,8 @@ import { Filter } from './filter/filter-api';
             [scope]="this.scope"
             (apply)="this.onApply($event)"
             (clear)="this.onClear(filter)"
-            (focused)="this.isFocused = true"
-            (blurred)="this.isFocused = false"
+            (focusin)="this.isFocused = true"
+            (focusout)="this.isFocused = false"
           ></htc-filter>
           <htc-filter
             #filterInput
@@ -44,8 +44,8 @@ import { Filter } from './filter/filter-api';
             [clearOnEnter]="true"
             [scope]="this.scope"
             (apply)="this.onInputApply($event)"
-            (focused)="this.isFocused = true"
-            (blurred)="this.isFocused = false"
+            (focusin)="this.isFocused = true"
+            (focusout)="this.isFocused = false"
           ></htc-filter>
         </div>
 

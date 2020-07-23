@@ -24,8 +24,6 @@ import { FilterService, IncompleteFilter } from './filter.service';
         (selection)="this.onApply($event)"
         (clear)="this.onClear()"
         (escape)="this.onClear()"
-        (focused)="this.focused.emit()"
-        (blurred)="this.blurred.emit()"
       ></htc-combo-box>
     </div>
   `
@@ -45,12 +43,6 @@ export class FilterComponent implements OnInit, OnChanges {
 
   @Output()
   public readonly clear: EventEmitter<void> = new EventEmitter();
-
-  @Output()
-  public readonly focused: EventEmitter<void> = new EventEmitter();
-
-  @Output()
-  public readonly blurred: EventEmitter<void> = new EventEmitter();
 
   public text?: string;
   public options?: Observable<ComboBoxOption<IncompleteFilter>[]>;

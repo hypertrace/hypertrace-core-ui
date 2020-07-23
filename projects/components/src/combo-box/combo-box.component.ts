@@ -57,8 +57,6 @@ import { ComboBoxMode, ComboBoxOption, ComboBoxResult } from './combo-box-api';
             (keydown.shift.tab)="this.onPrevOption($event)"
             (keydown.escape)="this.onEscape()"
             (select)="this.onSelect()"
-            (focus)="this.focused.emit()"
-            (blur)="this.blurred.emit()"
           />
 
           <!-- Hidden Element -->
@@ -136,12 +134,6 @@ export class ComboBoxComponent<TValue = string> implements AfterViewInit, OnChan
 
   @Output()
   public readonly escape: EventEmitter<void> = new EventEmitter();
-
-  @Output()
-  public readonly focused: EventEmitter<void> = new EventEmitter();
-
-  @Output()
-  public readonly blurred: EventEmitter<void> = new EventEmitter();
 
   @ViewChild(PopoverComponent)
   public readonly popoverComponent!: PopoverComponent;
