@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { ButtonRole, ButtonSize, ButtonStyle, IconSize } from '@hypertrace/components';
+import { IconSize } from '@hypertrace/components';
 import { Subscription } from 'rxjs';
 import { FilterBarService } from './filter-bar.service';
 import { Filter } from './filter/filter-api';
@@ -21,7 +21,7 @@ import { Filter } from './filter/filter-api';
   styleUrls: ['./filter-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="filter-bar">
+    <div class="filter-bar" [class.focused]="this.isFocused">
       <div class="content">
         <!-- Search Icon -->
         <htc-icon icon="${IconType.Filter}" size="${IconSize.Medium}" class="search-icon"></htc-icon>
@@ -35,6 +35,8 @@ import { Filter } from './filter/filter-api';
             [scope]="this.scope"
             (apply)="this.onApply($event)"
             (clear)="this.onClear(filter)"
+            (focused)="this.isFocused = true"
+            (blurred)="this.isFocused = false"
           ></htc-filter>
           <htc-filter
             #filterInput
@@ -42,22 +44,20 @@ import { Filter } from './filter/filter-api';
             [clearOnEnter]="true"
             [scope]="this.scope"
             (apply)="this.onInputApply($event)"
+            (focused)="this.isFocused = true"
+            (blurred)="this.isFocused = false"
           ></htc-filter>
         </div>
 
         <!-- Clear Button -->
-        <htc-button
-          *ngIf="this.internalFilters?.length"
+        <htc-icon
+          class="clear-icon"
+          icon="${IconType.CloseCircleFilled}"
+          size="${IconSize.Small}"
           tabindex="0"
-          role="${ButtonRole.Primary}"
-          display="${ButtonStyle.Text}"
-          size="${ButtonSize.Medium}"
-          icon="${IconType.CloseCircle}"
-          label="Clear"
-          class="clear-button"
           (keydown.enter)="this.onClearAll()"
           (click)="this.onClearAll()"
-        ></htc-button>
+        ></htc-icon>
       </div>
     </div>
     <div [innerHTML]="this.instructions" class="instructions"></div>
@@ -78,6 +78,8 @@ export class FilterBarComponent implements OnChanges {
 
   @ViewChild('filterInput', { read: ElementRef })
   public readonly filterInput!: ElementRef;
+
+  public isFocused: boolean = false;
 
   private subscription?: Subscription;
   public internalFilters: Filter[] = [];
