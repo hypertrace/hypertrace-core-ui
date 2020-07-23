@@ -52,6 +52,7 @@ import { Filter } from './filter/filter-api';
 
         <!-- Clear Button -->
         <htc-icon
+          *ngIf="this.internalFilters?.length"
           class="clear-icon"
           icon="${IconType.CloseCircleFilled}"
           size="${IconSize.Small}"
