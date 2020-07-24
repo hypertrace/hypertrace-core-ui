@@ -1,10 +1,11 @@
-import { NavigationService, TimeRangeService } from '@hypertrace/common';
+import { ColorService, NavigationService, TimeRangeService } from '@hypertrace/common';
 import { MetadataService } from '@hypertrace/distributed-tracing';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
 import { ModelJson } from '@hypertrace/hyperdash';
-import { DashboardManagerService } from '@hypertrace/hyperdash-angular';
+import { DashboardManagerService, LoggerService } from '@hypertrace/hyperdash-angular';
+import { getMockFlexLayoutProviders } from '@hypertrace/test-utils';
 import { mockProvider, Spectator } from '@ngneat/spectator/jest';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 
 export const isValidModelJson = (
   spectator: Spectator<unknown>,
@@ -22,11 +23,20 @@ export const isValidModelJson = (
 
 export const mockDashboardProviders = [
   mockProvider(GraphQlRequestService),
-  mockProvider(TimeRangeService),
+  mockProvider(ColorService),
+  mockProvider(TimeRangeService, {
+    getTimeRangeAndChanges: () => EMPTY
+  }),
   mockProvider(NavigationService, {
     getAllValuesForQueryParameter: () => []
   }),
   mockProvider(MetadataService, {
     getFilterAttributes: () => of([])
-  })
+  }),
+  mockProvider(LoggerService, {
+    warn: jest.fn().mockImplementation(fail),
+    info: jest.fn().mockImplementation(fail),
+    error: jest.fn().mockImplementation(fail)
+  }),
+  ...getMockFlexLayoutProviders()
 ];
