@@ -23,8 +23,8 @@ import { SelectSize } from './select-size';
 
 @Component({
   selector: 'htc-select',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./select.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [SubscriptionLifecycle],
   template: `
     <div

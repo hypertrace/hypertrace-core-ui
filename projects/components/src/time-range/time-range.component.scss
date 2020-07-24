@@ -1,5 +1,6 @@
 @import 'color-palette';
 @import 'font';
+@import 'layout';
 
 @mixin top-bar-button() {
   // Custom styling for top bar different shades than normal buttons
@@ -43,11 +44,10 @@
 }
 
 .popover-content {
-  background: white;
-  border: $gray-1 solid 1px;
+  @include dropdown();
 
   .predefined {
-    width: 197px;
+    width: 198px;
   }
 }
 

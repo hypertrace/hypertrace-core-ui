@@ -1,17 +1,16 @@
-import { fakeAsync } from '@angular/core/testing';
-import { NavigationService } from '@hypertrace/common';
-import { createHostFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
+import { LabelComponent } from '@hypertrace/components';
+import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { MockComponent } from 'ng-mocks';
+import { TitledHeaderControlDirective } from './header-controls/titled-header-control.directive';
 import { TitledContentComponent } from './titled-content.component';
-import { TitledContentModule } from './titled-content.module';
 
 describe('Titled content component', () => {
   let spectator: Spectator<TitledContentComponent>;
 
   const createHost = createHostFactory({
-    declareComponent: false,
-    component: TitledContentComponent,
-    imports: [TitledContentModule],
-    providers: [mockProvider(NavigationService)]
+    shallow: true,
+    declarations: [MockComponent(LabelComponent), TitledHeaderControlDirective],
+    component: TitledContentComponent
   });
 
   test('should render content with no title provided', () => {
@@ -41,11 +40,11 @@ describe('Titled content component', () => {
       }
     );
 
-    expect(spectator.query('.title')).toHaveText('Example title');
+    expect(spectator.query(LabelComponent)!.label).toEqual('Example title');
     expect(spectator.query('.content')).toHaveText('My content');
   });
 
-  test('should render header control', fakeAsync(() => {
+  test('should render header control', () => {
     spectator = createHost(
       `
       <htc-titled-content>
@@ -54,8 +53,7 @@ describe('Titled content component', () => {
       </htc-titled-content>
       `
     );
-    spectator.tick();
     expect(spectator.query('.controls')).toExist();
     expect(spectator.query('.projected-control')).toHaveText('Header Control');
-  }));
+  });
 });

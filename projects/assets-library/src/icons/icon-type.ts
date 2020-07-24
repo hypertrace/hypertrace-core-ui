@@ -22,6 +22,7 @@ export const enum IconType {
   ChevronUp = 'svg:chevron-up',
   Close = 'svg:close',
   CloseCircle = 'svg:close-circle',
+  CloseCircleFilled = 'svg:close-circle-filled',
   CollapseAll = 'svg:collapse-all',
   Collapsed = 'svg:plus-square',
   Compare = 'svg:compare',
