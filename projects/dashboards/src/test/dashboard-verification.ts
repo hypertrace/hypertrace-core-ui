@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { ColorService, NavigationService, TimeRangeService } from '@hypertrace/common';
 import { MetadataService } from '@hypertrace/distributed-tracing';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
@@ -37,6 +38,9 @@ export const mockDashboardProviders = [
     warn: jest.fn().mockImplementation(fail),
     info: jest.fn().mockImplementation(fail),
     error: jest.fn().mockImplementation(fail)
+  }),
+  mockProvider(ActivatedRoute, {
+    queryParamMap: EMPTY
   }),
   ...getMockFlexLayoutProviders()
 ];
