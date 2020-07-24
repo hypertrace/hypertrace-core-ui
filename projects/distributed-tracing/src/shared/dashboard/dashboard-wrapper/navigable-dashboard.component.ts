@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { TypedSimpleChanges } from '@hypertrace/common';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
 import { EMPTY, Observable } from 'rxjs';
@@ -31,12 +32,12 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
     </div>
   `
 })
-export class NavigableDashboardComponent implements OnInit {
+export class NavigableDashboardComponent implements OnChanges {
   @Input()
   public readonly defaultJson?: ModelJson;
 
   @Input()
-  public navLocation!: string;
+  public navLocation?: string;
 
   @Input()
   public filterConfig?: NavigableDashboardFilterConfig;
@@ -60,12 +61,16 @@ export class NavigableDashboardComponent implements OnInit {
     private readonly graphQlFilterBuilderService: GraphQlFilterBuilderService
   ) {}
 
-  public ngOnInit(): void {
-    this.dashboardJson$ = this.dashboardPersistenceService.getForLocation(this.navLocation).pipe(
-      map(dashboard => dashboard.content),
-      catchError(() => EMPTY),
-      defaultIfEmpty(this.defaultJson)
-    );
+  public ngOnChanges(changeObject: TypedSimpleChanges<this>): void {
+    if (changeObject.navLocation) {
+      const persistedDashboard$ =
+        this.navLocation === undefined ? EMPTY : this.dashboardPersistenceService.getForLocation(this.navLocation);
+      this.dashboardJson$ = persistedDashboard$.pipe(
+        map(dashboard => dashboard.content),
+        catchError(() => EMPTY),
+        defaultIfEmpty(this.defaultJson)
+      );
+    }
   }
 
   public onDashboardReady(dashboard: Dashboard): void {

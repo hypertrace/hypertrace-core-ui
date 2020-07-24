@@ -1,7 +1,7 @@
 import { LoadAsyncModule } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { Dashboard } from '@hypertrace/hyperdash';
-import { createComponentFactory } from '@ngneat/spectator/jest';
+import { createHostFactory } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
 import { Filter, UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
@@ -13,16 +13,22 @@ import { ApplicationAwareDashboardComponent } from './application-aware-dashboar
 import { NavigableDashboardComponent } from './navigable-dashboard.component';
 
 describe('Navigable dashboard component', () => {
-  const componentFactory = createComponentFactory({
+  const hostFactory = createHostFactory({
     component: NavigableDashboardComponent,
     imports: [LoadAsyncModule],
-    declarations: [MockComponent(ApplicationAwareDashboardComponent), MockComponent(FilterBarComponent)]
+    declarations: [MockComponent(ApplicationAwareDashboardComponent), MockComponent(FilterBarComponent)],
+    template: `
+    <htc-navigable-dashboard 
+      [defaultJson]="defaultJson" 
+      [navLocation]="navLocation" 
+      [filterConfig]="filterConfig">
+    </htc-navigable-dashboard>`
   });
 
   test('uses default JSON if no dashboard registered', () => {
     const defaultJson = { type: 'my-default-model' };
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         defaultJson: defaultJson,
         navLocation: 'my-location'
       }
@@ -34,8 +40,8 @@ describe('Navigable dashboard component', () => {
 
   test('looks up a registered dashboard', () => {
     const registeredJson = { type: 'my-registered-model' };
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         navLocation: 'my-location'
       },
       detectChanges: false
@@ -50,8 +56,8 @@ describe('Navigable dashboard component', () => {
   test('prefers a registered dashboard over provided default', () => {
     const registeredJson = { type: 'my-registered-model' };
     const defaultJson = { type: 'my-default-model' };
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         navLocation: 'my-location',
         defaultJson: defaultJson
       },
@@ -67,8 +73,8 @@ describe('Navigable dashboard component', () => {
   test('applies a provided implicit filter', () => {
     const defaultJson = { type: 'my-default-model' };
     const implicitFilter = new GraphQlFieldFilter('foo', GraphQlOperatorType.Equals, 'bar');
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
@@ -94,8 +100,8 @@ describe('Navigable dashboard component', () => {
 
   test('applies filter updates', () => {
     const defaultJson = { type: 'my-default-model' };
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
@@ -131,8 +137,8 @@ describe('Navigable dashboard component', () => {
   test('can hide a filter bar with implicit filters', () => {
     const implicitFilter = new GraphQlFieldFilter('foo', GraphQlOperatorType.Equals, 'bar');
     const defaultJson = { type: 'my-default-model' };
-    const spectator = componentFactory({
-      props: {
+    const spectator = hostFactory(undefined, {
+      hostProps: {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
