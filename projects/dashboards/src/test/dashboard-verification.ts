@@ -6,7 +6,7 @@ import { DashboardManagerService } from '@hypertrace/hyperdash-angular';
 import { mockProvider, Spectator } from '@ngneat/spectator/jest';
 import { of } from 'rxjs';
 
-export const isValidDashboard = (
+export const isValidModelJson = (
   spectator: Spectator<unknown>,
   definition: ModelJson | { json: ModelJson }
 ): boolean => {
