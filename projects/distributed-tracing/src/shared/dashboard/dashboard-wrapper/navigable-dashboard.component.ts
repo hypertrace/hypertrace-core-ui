@@ -17,8 +17,8 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
     <div class="navigable-dashboard" *htcLoadAsync="this.dashboardJson$ as dashboardJson">
       <htc-filter-bar
         class="filter-bar"
-        *ngIf="this.showFilterBar"
-        [scope]="this.filterConfig?.scope"
+        *ngIf="this.filterConfig?.filterBar"
+        [scope]="this.filterConfig!.filterBar!.scope"
         [syncWithUrl]="true"
         (filtersChange)="this.onFilterChange($event)"
       >
@@ -44,10 +44,6 @@ export class NavigableDashboardComponent implements OnChanges {
 
   @Output()
   public readonly dashboardReady: EventEmitter<Dashboard> = new EventEmitter();
-
-  public get showFilterBar(): boolean {
-    return !!this.filterConfig && !this.filterConfig.hideFilterBar;
-  }
 
   public dashboardJson$?: Observable<ModelJson>;
   private explicitFilters: Filter[] = [];
@@ -96,7 +92,8 @@ export class NavigableDashboardComponent implements OnChanges {
 }
 
 export interface NavigableDashboardFilterConfig {
-  scope: string;
-  hideFilterBar?: boolean;
+  filterBar?: {
+    scope: string;
+  };
   implicitFilters?: GraphQlFilter[];
 }
