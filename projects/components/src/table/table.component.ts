@@ -10,8 +10,11 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { TypedSimpleChanges } from '@hypertrace/common';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
@@ -133,7 +136,12 @@ import {
 
     <!-- Pagination -->
     <div class="pagination-controls" *ngIf="this.pageable">
-      <htc-paginator></htc-paginator>
+      <htc-paginator
+        *htcLetAsync="this.urlPageData$ as pageData"
+        (pageChange)="this.onPageChange($event)"
+        [pageSize]="pageData?.pageSize"
+        [pageIndex]="pageData?.pageIndex"
+      ></htc-paginator>
     </div>
   `
 })
@@ -146,6 +154,8 @@ export class TableComponent
     FilterProvider,
     ColumnStateChangeProvider,
     RowStateChangeProvider {
+  private static readonly PAGE_INDEX_URL_PARAM: string = 'page';
+  private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
     field: '$$state',
     width: '32px',
@@ -194,6 +204,9 @@ export class TableComponent
   @Input()
   public hovered?: StatefulTableRow;
 
+  @Input()
+  public syncWithUrl: boolean = false;
+
   @Output()
   public readonly selectionChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
     StatefulTableRow | undefined
@@ -228,10 +241,17 @@ export class TableComponent
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
   public readonly rowState$: Observable<StatefulTableRow | undefined> = this.rowStateSubject.asObservable();
   public readonly columnState$: Observable<TableColumnConfig | undefined> = this.columnStateSubject.asObservable();
+  public readonly urlPageData$: Observable<Partial<PageEvent> | undefined> = this.activatedRoute.queryParamMap.pipe(
+    map(params => this.pageDataFromUrl(params))
+  );
 
   public dataSource?: TableCdkDataSource;
 
-  public constructor(private readonly changeDetector: ChangeDetectorRef) {}
+  public constructor(
+    private readonly changeDetector: ChangeDetectorRef,
+    private readonly navigationService: NavigationService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfigs || changes.detailContent) {
@@ -247,6 +267,7 @@ export class TableComponent
 
   public ngAfterViewInit(): void {
     this.dataSource = this.buildDataSource();
+    this.initializeUrl();
     this.changeDetector.detectChanges();
   }
 
@@ -421,5 +442,32 @@ export class TableComponent
 
   public isRowExpanded(row: StatefulTableRow): boolean {
     return this.hasExpandableRows() && row.$$state.expanded;
+  }
+
+  public onPageChange(pageEvent: PageEvent): void {
+    if (this.syncWithUrl) {
+      this.navigationService.addQueryParametersToUrl({
+        [TableComponent.PAGE_INDEX_URL_PARAM]: pageEvent.pageIndex,
+        [TableComponent.PAGE_SIZE_URL_PARAM]: pageEvent.pageSize
+      });
+    }
+  }
+
+  private initializeUrl(): void {
+    if (this.paginator) {
+      this.onPageChange({
+        pageSize: this.paginator.pageSize,
+        pageIndex: this.paginator.pageIndex
+      });
+    }
+  }
+
+  private pageDataFromUrl(params: ParamMap): Partial<PageEvent> | undefined {
+    return this.syncWithUrl
+      ? {
+          pageSize: new NumberCoercer().coerce(params.get(TableComponent.PAGE_SIZE_URL_PARAM)),
+          pageIndex: new NumberCoercer().coerce(params.get(TableComponent.PAGE_INDEX_URL_PARAM))
+        }
+      : undefined;
   }
 }
