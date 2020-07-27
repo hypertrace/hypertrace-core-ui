@@ -159,7 +159,7 @@ export class TableComponent
     RowStateChangeProvider {
   private static readonly PAGE_INDEX_URL_PARAM: string = 'page';
   private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
-  private static readonly SORT_COLUMN_URL_PARAM: string = 'sort';
+  private static readonly SORT_COLUMN_URL_PARAM: string = 'sort-by';
   private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
     field: '$$state',
