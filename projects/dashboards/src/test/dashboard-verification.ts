@@ -1,4 +1,11 @@
-import { ColorService, NavigationService, TimeRangeService } from '@hypertrace/common';
+import {
+  ColorService,
+  NavigationService,
+  RelativeTimeRange,
+  TimeDuration,
+  TimeRangeService,
+  TimeUnit
+} from '@hypertrace/common';
 import { MetadataService } from '@hypertrace/distributed-tracing';
 import { GraphQlRequestService } from '@hypertrace/graphql-client';
 import { ModelJson } from '@hypertrace/hyperdash';
@@ -25,7 +32,8 @@ export const mockDashboardProviders = [
   mockProvider(GraphQlRequestService),
   mockProvider(ColorService),
   mockProvider(TimeRangeService, {
-    getTimeRangeAndChanges: () => EMPTY
+    getTimeRangeAndChanges: () => EMPTY,
+    getCurrentTimeRange: jest.fn().mockReturnValue(new RelativeTimeRange(new TimeDuration(15, TimeUnit.Minute)))
   }),
   mockProvider(NavigationService, {
     getAllValuesForQueryParameter: () => []
