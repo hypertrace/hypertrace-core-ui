@@ -1,14 +1,16 @@
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
-import { LetAsyncModule } from '@hypertrace/components';
+import { LetAsyncModule, TableSortDirection } from '@hypertrace/components';
 import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { EMPTY, of } from 'rxjs';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { TableHeaderCellRendererComponent } from './renderers/header-cell/table-header-cell-renderer.component';
 import { TableComponent } from './table.component';
 
 describe('Table component', () => {
-  const data = [
+  // TODO remove builders once table stops mutating inputs
+  const buildData = () => [
     {
       foo: 'bar'
     },
@@ -17,7 +19,7 @@ describe('Table component', () => {
     }
   ];
 
-  const columns = [
+  const buildColumns = () => [
     {
       field: 'foo'
     }
@@ -34,7 +36,7 @@ describe('Table component', () => {
       }),
       mockProvider(NavigationService)
     ],
-    declarations: [MockComponent(PaginatorComponent)],
+    declarations: [MockComponent(PaginatorComponent), MockComponent(TableHeaderCellRendererComponent)],
     template: `
     <htc-table
       [columnConfigs]="columnConfigs"
@@ -42,11 +44,12 @@ describe('Table component', () => {
       [syncWithUrl]="syncWithUrl">
     </htc-table>`
   });
+
   test('does not alter the URL on paging if syncWithUrl false', () => {
     const spectator = createHost(undefined, {
       hostProps: {
-        columnConfigs: columns,
-        data: data,
+        columnConfigs: buildColumns(),
+        data: buildData(),
         syncWithUrl: false
       }
     });
@@ -62,8 +65,8 @@ describe('Table component', () => {
   test('updates the URL on paging if syncWithUrl true', () => {
     const spectator = createHost(undefined, {
       hostProps: {
-        columnConfigs: columns,
-        data: data,
+        columnConfigs: buildColumns(),
+        data: buildData(),
         syncWithUrl: true
       }
     });
@@ -82,8 +85,8 @@ describe('Table component', () => {
   test('reads page data from URL if syncWithUrl true', () => {
     const spectator = createHost(undefined, {
       hostProps: {
-        columnConfigs: columns,
-        data: data,
+        columnConfigs: buildColumns(),
+        data: buildData(),
         syncWithUrl: true
       },
       providers: [
@@ -101,5 +104,65 @@ describe('Table component', () => {
     const paginator = spectator.query(PaginatorComponent);
     expect(paginator?.pageSize).toBe(100);
     expect(paginator?.pageIndex).toBe(1);
+  });
+
+  test('reads sort data from URL if syncWithUrl true', () => {
+    const spectator = createHost(undefined, {
+      hostProps: {
+        columnConfigs: buildColumns(),
+        data: buildData(),
+        syncWithUrl: true
+      },
+      providers: [
+        mockProvider(ActivatedRoute, {
+          queryParamMap: of(
+            convertToParamMap({
+              'sort-by': 'foo',
+              'sort-direction': TableSortDirection.Ascending
+            })
+          )
+        })
+      ]
+    });
+
+    expect(spectator.component.columnConfigs![0]).toEqual(
+      expect.objectContaining({
+        sort: TableSortDirection.Ascending,
+        field: 'foo'
+      })
+    );
+  });
+
+  test('does not alter the URL on sorting if syncWithUrl false', () => {
+    const columns = buildColumns();
+    const spectator = createHost(undefined, {
+      hostProps: {
+        columnConfigs: columns,
+        data: buildData(),
+        syncWithUrl: false
+      }
+    });
+
+    spectator.component.onHeaderCellClick(columns[0]);
+
+    expect(spectator.inject(NavigationService).addQueryParametersToUrl).not.toHaveBeenCalled();
+  });
+
+  test('updates the URL on sorting if syncWithUrl true', () => {
+    const columns = buildColumns();
+    const spectator = createHost(undefined, {
+      hostProps: {
+        columnConfigs: columns,
+        data: buildData(),
+        syncWithUrl: true
+      }
+    });
+
+    spectator.component.onHeaderCellClick(columns[0]);
+
+    expect(spectator.inject(NavigationService).addQueryParametersToUrl).toHaveBeenCalledWith({
+      'sort-by': 'foo',
+      'sort-direction': TableSortDirection.Ascending
+    });
   });
 });

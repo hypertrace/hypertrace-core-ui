@@ -69,7 +69,8 @@
       "allow-undefined-union",
       "ignore-rhs",
       "allow-mix",
-      "allow-boolean-or-undefined"
+      "allow-boolean-or-undefined",
+      "allow-enum"
     ],
     "object-literal-shorthand": [true, "never"],
     "arrow-parens": false,

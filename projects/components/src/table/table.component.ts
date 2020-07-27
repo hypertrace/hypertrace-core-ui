@@ -6,14 +6,15 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
@@ -37,6 +38,7 @@ import {
   TableStyle
 } from './table-api';
 
+// tslint:disable max-file-line-count
 @Component({
   selector: 'htc-table',
   styleUrls: ['./table.component.scss'],
@@ -149,6 +151,7 @@ export class TableComponent
   implements
     OnChanges,
     AfterViewInit,
+    OnDestroy,
     ColumnConfigProvider,
     TableDataSourceProvider,
     FilterProvider,
@@ -156,6 +159,8 @@ export class TableComponent
     RowStateChangeProvider {
   private static readonly PAGE_INDEX_URL_PARAM: string = 'page';
   private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
+  private static readonly SORT_COLUMN_URL_PARAM: string = 'sort-by';
+  private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
     field: '$$state',
     width: '32px',
@@ -205,7 +210,7 @@ export class TableComponent
   public hovered?: StatefulTableRow;
 
   @Input()
-  public syncWithUrl: boolean = false;
+  public syncWithUrl?: boolean = false;
 
   @Output()
   public readonly selectionChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -251,7 +256,14 @@ export class TableComponent
     private readonly changeDetector: ChangeDetectorRef,
     private readonly navigationService: NavigationService,
     private readonly activatedRoute: ActivatedRoute
-  ) {}
+  ) {
+    combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
+      .pipe(
+        map(([queryParamMap, columns]) => this.sortDataFromUrl(queryParamMap, columns)),
+        filter((sort): sort is Required<SortedColumn> => sort !== undefined)
+      )
+      .subscribe(sort => this.updateSort(sort));
+  }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfigs || changes.detailContent) {
@@ -267,12 +279,28 @@ export class TableComponent
 
   public ngAfterViewInit(): void {
     this.dataSource = this.buildDataSource();
-    this.initializeUrl();
     this.changeDetector.detectChanges();
   }
 
+  public ngOnDestroy(): void {
+    this.filterSubject.complete();
+    this.rowStateSubject.complete();
+    this.columnStateSubject.complete();
+    this.columnConfigsSubject.complete();
+  }
+
   public onHeaderCellClick(columnConfig: TableColumnConfig): void {
-    this.toggleColumnSort(columnConfig);
+    this.updateSort({
+      column: columnConfig,
+      direction: this.getNextSortDirection(columnConfig.sort)
+    });
+
+    if (this.syncWithUrl) {
+      this.navigationService.addQueryParametersToUrl({
+        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.field,
+        [TableComponent.SORT_DIRECTION_URL_PARAM]: columnConfig.sort
+      });
+    }
   }
 
   public onDataCellClick(columnConfig: TableColumnConfig, row: StatefulTableRow): void {
@@ -356,19 +384,9 @@ export class TableComponent
       .map(columnConfig => columnConfig.field);
   }
 
-  private toggleColumnSort(columnConfig: TableColumnConfig): void {
-    // Order: undefined -> Ascending -> Descending -> undefined
-    switch (columnConfig.sort) {
-      case TableSortDirection.Ascending:
-        columnConfig.sort = TableSortDirection.Descending;
-        break;
-      case TableSortDirection.Descending:
-        columnConfig.sort = undefined;
-        break;
-      default:
-        columnConfig.sort = TableSortDirection.Ascending;
-    }
-    this.columnStateSubject.next(columnConfig);
+  private updateSort(sort: SortedColumn): void {
+    sort.column.sort = sort.direction;
+    this.columnStateSubject.next(sort.column);
   }
 
   public toggleRowSelection(row: StatefulTableRow): void {
@@ -453,12 +471,15 @@ export class TableComponent
     }
   }
 
-  private initializeUrl(): void {
-    if (this.paginator) {
-      this.onPageChange({
-        pageSize: this.paginator.pageSize,
-        pageIndex: this.paginator.pageIndex
-      });
+  private getNextSortDirection(sortDirection?: TableSortDirection): TableSortDirection | undefined {
+    // Order: undefined -> Ascending -> Descending -> undefined
+    switch (sortDirection) {
+      case TableSortDirection.Ascending:
+        return TableSortDirection.Descending;
+      case TableSortDirection.Descending:
+        return undefined;
+      default:
+        return TableSortDirection.Ascending;
     }
   }
 
@@ -470,4 +491,25 @@ export class TableComponent
         }
       : undefined;
   }
+
+  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfig[]): Required<SortedColumn> | undefined {
+    if (!this.syncWithUrl) {
+      return undefined;
+    }
+
+    const sortColumn = columns.find(column => column.field === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
+    const sortDirection = params.get(TableComponent.SORT_DIRECTION_URL_PARAM) as TableSortDirection | null;
+
+    return sortColumn && sortDirection
+      ? {
+          column: sortColumn,
+          direction: sortDirection
+        }
+      : undefined;
+  }
+}
+
+interface SortedColumn {
+  column: TableColumnConfig;
+  direction?: TableSortDirection;
 }
