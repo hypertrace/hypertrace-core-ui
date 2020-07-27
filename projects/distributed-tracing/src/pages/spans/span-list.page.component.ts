@@ -12,6 +12,6 @@ import { spanListDashboard } from './span-list.page.dashboard';
 })
 export class SpanListPageComponent {
   public readonly filterConfig: NavigableDashboardFilterConfig = {
-    scope: SPAN_SCOPE
+    filterBar: { scope: SPAN_SCOPE }
   };
 }

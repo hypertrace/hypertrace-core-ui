@@ -78,7 +78,6 @@ describe('Navigable dashboard component', () => {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
-          scope: 'my-scope',
           implicitFilters: [implicitFilter]
         }
       }
@@ -105,7 +104,7 @@ describe('Navigable dashboard component', () => {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
-          scope: 'my-scope'
+          filterBar: { scope: 'my-scope' }
         }
       }
     });
@@ -142,9 +141,7 @@ describe('Navigable dashboard component', () => {
         defaultJson: defaultJson,
         navLocation: 'my-location',
         filterConfig: {
-          scope: 'my-scope',
-          implicitFilters: [implicitFilter],
-          hideFilterBar: true
+          implicitFilters: [implicitFilter]
         }
       }
     });
