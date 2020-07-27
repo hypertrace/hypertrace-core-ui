@@ -117,7 +117,7 @@ describe('Table component', () => {
         mockProvider(ActivatedRoute, {
           queryParamMap: of(
             convertToParamMap({
-              sort: 'foo',
+              'sort-by': 'foo',
               'sort-direction': TableSortDirection.Ascending
             })
           )
@@ -161,7 +161,7 @@ describe('Table component', () => {
     spectator.component.onHeaderCellClick(columns[0]);
 
     expect(spectator.inject(NavigationService).addQueryParametersToUrl).toHaveBeenCalledWith({
-      sort: 'foo',
+      'sort-by': 'foo',
       'sort-direction': TableSortDirection.Ascending
     });
   });
