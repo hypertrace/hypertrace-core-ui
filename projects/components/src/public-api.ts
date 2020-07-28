@@ -56,6 +56,11 @@ export * from './expander/expander-toggle.module';
 // Feature Check
 export * from './feature-check/feature-config-check.module';
 
+// Filter Tabs
+export * from './filter-tabs/filter-tabs.module';
+export * from './filter-tabs/filter-tabs.component';
+export * from './filter-tabs/filter-tab';
+
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';
