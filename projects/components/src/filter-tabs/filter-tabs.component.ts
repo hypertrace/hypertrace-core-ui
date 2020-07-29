@@ -65,7 +65,7 @@ export class FilterTabsComponent implements AfterViewInit, OnChanges {
   public setActiveTab(tab?: FilterTab): void {
     this.activeTab = tab || (this.tabs && this.tabs[0]);
     this.activeTabIndex = this.tabs?.indexOf(this.activeTab!);
-    this.activeElementPosition = this.getElementPosition(this.activeTab!);
+    this.activeElementPosition = this.getElementPosition(this.activeTab!, this.activeTabIndex);
     this.activeTabChange.emit(this.activeTab);
     this.changeDetector.markForCheck();
   }
@@ -76,18 +76,16 @@ export class FilterTabsComponent implements AfterViewInit, OnChanges {
     );
   }
 
-  private getElementPosition(tab: FilterTab): { left: number; width: number } {
+  private getElementPosition(tab: FilterTab, index: number = 0): { left: number; width: number } {
     const element = this.getTabElement(tab)?.nativeElement;
+    if (element === undefined) {
+      return { left: 0, width: 0 };
+    }
 
-    return element !== undefined
-      ? {
-          left: element.offsetLeft + 2, // Add 2 for the margin on the parent
-          width: element.offsetWidth - 4 // Subtract 4 for the margin on the parent
-        }
-      : {
-          left: 0,
-          width: 0
-        };
+    return {
+      left: element.offsetLeft + 2, // Add 2 for the margin on the parent
+      width: element.offsetWidth - (index + 1) // Subtract approximate cumulative margin (not exact due to flexbox)
+    };
   }
 
   private getTabElement(tab?: FilterTab): ElementRef | undefined {
