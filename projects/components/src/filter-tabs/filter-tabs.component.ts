@@ -83,7 +83,7 @@ export class FilterTabsComponent implements AfterViewInit, OnChanges {
     }
 
     return {
-      left: element.offsetLeft + 2, // Add 2 for the margin on the parent
+      left: +element.offsetLeft + 2, // Add 2 for the margin on the parent
       width: element.offsetWidth - (index + 1) // Subtract approximate cumulative margin (not exact due to flexbox)
     };
   }
