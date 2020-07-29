@@ -1,7 +1,6 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -50,8 +49,6 @@ export class FilterTabsComponent implements AfterViewInit, OnChanges {
   private activeTabIndex?: number;
   public activeElementPosition?: { left: number; width: number };
 
-  public constructor(private readonly changeDetector: ChangeDetectorRef) {}
-
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.tabs) {
       this.setActiveTab();
@@ -67,7 +64,6 @@ export class FilterTabsComponent implements AfterViewInit, OnChanges {
     this.activeTabIndex = this.tabs?.indexOf(this.activeTab!);
     this.activeElementPosition = this.getElementPosition(this.activeTab!, this.activeTabIndex);
     this.activeTabChange.emit(this.activeTab);
-    this.changeDetector.markForCheck();
   }
 
   public isAdjacentActiveTab(index: number): boolean {
