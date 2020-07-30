@@ -56,11 +56,6 @@ export * from './expander/expander-toggle.module';
 // Feature Check
 export * from './feature-check/feature-config-check.module';
 
-// Filter Tabs
-export * from './toggle-group/toggle-group.module';
-export * from './toggle-group/toggle-group.component';
-export * from './toggle-group/toggle-item';
-
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';
@@ -223,6 +218,11 @@ export { ToggleButtonComponent } from './toggle-button-group/button/toggle-butto
 export { ToggleButtonGroupComponent } from './toggle-button-group/toggle-button-group.component';
 export { ToggleButtonModule } from './toggle-button-group/toggle-button.module';
 export { ToggleViewMode } from './toggle-button-group/toggle-button';
+
+// Toggle Group
+export * from './toggle-group/toggle-group.module';
+export * from './toggle-group/toggle-group.component';
+export * from './toggle-group/toggle-item';
 
 // Tooltip
 export { TooltipModule } from './tooltip/tooltip.module';
