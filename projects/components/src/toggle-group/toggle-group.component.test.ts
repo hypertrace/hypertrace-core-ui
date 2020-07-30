@@ -1,11 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
 import { NavigationService } from '@hypertrace/common';
-import { ToggleGroupComponent, ToggleGroupModule } from '@hypertrace/components';
+import { ToggleGroupComponent, ToggleGroupModule, ToggleItem } from '@hypertrace/components';
 import { byText, createHostFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
 import { EMPTY } from 'rxjs';
-import { Toggle } from './filter-tab';
 
-describe('Filter Tabs Component', () => {
+describe('Toggle Group Component', () => {
   let spectator: Spectator<ToggleGroupComponent>;
 
   const createHost = createHostFactory({
@@ -20,8 +19,8 @@ describe('Filter Tabs Component', () => {
     ]
   });
 
-  test('should toggle filter tabs', fakeAsync(() => {
-    const tabs: Toggle[] = [
+  test('should toggle items', fakeAsync(() => {
+    const items: ToggleItem[] = [
       {
         label: 'First',
         value: 'first-value'
@@ -31,28 +30,28 @@ describe('Filter Tabs Component', () => {
         value: 'second-value'
       }
     ];
-    const activeTab: Toggle = tabs[1];
-    const activeTabChangeSpy = jest.fn();
+    const activeItem: ToggleItem = items[1];
+    const activeItemChangeSpy = jest.fn();
 
     spectator = createHost(
       `
-      <htc-filter-toggle [tabs]="this.tabs" [activeTab]="this.activeTab" (activeTabChange)="this.activeTabChange($event)">
-      </htc-filter-toggle>
+      <htc-toggle-group [items]="this.items" [activeItem]="this.activeItem" (activeItemChange)="this.activeItemChange($event)">
+      </htc-toggle-group>
     `,
       {
         hostProps: {
-          tabs: tabs,
-          activeTab: activeTab,
-          activeTabChange: activeTabChangeSpy
+          items: items,
+          activeItem: activeItem,
+          activeItemChange: activeItemChangeSpy
         }
       }
     );
 
     spectator.tick();
-    expect(activeTabChangeSpy).toHaveBeenCalledWith(tabs[1]);
+    expect(activeItemChangeSpy).toHaveBeenCalledWith(items[1]);
 
     spectator.click(spectator.query(byText('First'))!);
     spectator.tick();
-    expect(activeTabChangeSpy).toHaveBeenCalledWith(tabs[0]);
+    expect(activeItemChangeSpy).toHaveBeenCalledWith(items[0]);
   }));
 });
