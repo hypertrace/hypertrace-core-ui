@@ -1,22 +1,15 @@
 import { fakeAsync } from '@angular/core/testing';
-import { NavigationService } from '@hypertrace/common';
-import { ToggleGroupComponent, ToggleGroupModule, ToggleItem } from '@hypertrace/components';
-import { byText, createHostFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
-import { EMPTY } from 'rxjs';
+import { LabelComponent, ToggleGroupComponent, ToggleItem } from '@hypertrace/components';
+import { byText, createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { ToggleItemComponent } from './toggle-item.component';
 
 describe('Toggle Group Component', () => {
   let spectator: Spectator<ToggleGroupComponent>;
 
   const createHost = createHostFactory({
     component: ToggleGroupComponent,
-    declareComponent: false,
-    imports: [ToggleGroupModule],
-    providers: [
-      mockProvider(NavigationService, {
-        navigation$: EMPTY,
-        navigateWithinApp: jest.fn()
-      })
-    ]
+    shallow: true,
+    declarations: [ToggleItemComponent, LabelComponent]
   });
 
   test('should toggle items', fakeAsync(() => {
@@ -51,7 +44,6 @@ describe('Toggle Group Component', () => {
     expect(activeItemChangeSpy).toHaveBeenCalledWith(items[1]);
 
     spectator.click(spectator.query(byText('First'))!);
-    spectator.tick();
     expect(activeItemChangeSpy).toHaveBeenCalledWith(items[0]);
   }));
 });
