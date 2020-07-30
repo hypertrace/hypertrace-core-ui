@@ -22,7 +22,7 @@
   background: $gray-9;
 
   border-radius: 4px;
-  @include box-shadow();
+  @include dropdown-box-shadow();
 
   .label {
     @include body-2-medium(white);
