@@ -26,7 +26,7 @@ import { ToggleItemComponent } from './toggle-item.component';
         [style.width.px]="this.activeElementPosition.width"
       ></div>
       <div class="container" *ngFor="let item of this.items; let index = index">
-        <div class="divider" *ngIf="index !== 0" [class.adjacent-active]="this.isAdjacentActiveItem(index)"></div>
+        <div class="divider" *ngIf="index !== 0" [class.hide-divider]="this.shouldHideDivider(index)"></div>
         <htc-toggle-item class="tab" [label]="item.label" (click)="this.setActiveItem(item)"></htc-toggle-item>
       </div>
     </div>
@@ -81,7 +81,12 @@ export class ToggleGroupComponent implements AfterViewInit, OnChanges {
     this.activeItemChange.emit(activeItem);
   }
 
-  public isAdjacentActiveItem(index: number): boolean {
+  public shouldHideDivider(index: number): boolean {
+    /*
+     * Each item owns its left side vertical divider bar. This method is called by each item to see if it
+     * needs to remove the divider it owns. From an item perspective, if we are active or the item to our
+     * left is active, we want to remove our divider.
+     */
     return (
       this.activeItemIndex !== undefined && (index - this.activeItemIndex === 1 || index - this.activeItemIndex === 0)
     );
