@@ -1,6 +1,7 @@
 import { fakeAsync } from '@angular/core/testing';
 import { LabelComponent, ToggleGroupComponent, ToggleItem } from '@hypertrace/components';
-import { byText, createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
+import { MockComponent } from 'ng-mocks';
 import { ToggleItemComponent } from './toggle-item.component';
 
 describe('Toggle Group Component', () => {
@@ -9,7 +10,7 @@ describe('Toggle Group Component', () => {
   const createHost = createHostFactory({
     component: ToggleGroupComponent,
     shallow: true,
-    declarations: [ToggleItemComponent, LabelComponent]
+    declarations: [ToggleItemComponent, MockComponent(LabelComponent)]
   });
 
   test('should toggle items', fakeAsync(() => {
@@ -43,7 +44,7 @@ describe('Toggle Group Component', () => {
     spectator.tick();
     expect(activeItemChangeSpy).toHaveBeenCalledWith(items[1]);
 
-    spectator.click(spectator.query(byText('First'))!);
+    spectator.click(spectator.queryAll('htc-toggle-item')[0]);
     expect(activeItemChangeSpy).toHaveBeenCalledWith(items[0]);
   }));
 });
