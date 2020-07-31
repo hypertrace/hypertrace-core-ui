@@ -1,7 +1,4 @@
-@import 'font';
-@import 'color-palette';
-@import 'layout';
-@import 'interaction';
+@import 'mixins';
 
 .popover-trigger {
   display: flex;

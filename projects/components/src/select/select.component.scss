@@ -1,7 +1,4 @@
-@import 'color-palette';
-@import 'font';
-@import 'layout';
-@import 'interaction';
+@import 'mixins';
 
 :host {
   width: 100%;
