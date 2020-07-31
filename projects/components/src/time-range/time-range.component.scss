@@ -1,6 +1,7 @@
 @import 'color-palette';
 @import 'font';
 @import 'layout';
+@import 'interaction';
 
 @mixin top-bar-button() {
   // Custom styling for top bar different shades than normal buttons
