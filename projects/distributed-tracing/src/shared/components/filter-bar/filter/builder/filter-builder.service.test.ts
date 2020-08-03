@@ -16,7 +16,8 @@ describe('Filter Builder service', () => {
       type: AttributeMetadataType.Number,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'duration',
@@ -25,7 +26,8 @@ describe('Filter Builder service', () => {
       type: AttributeMetadataType.Number,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'name',
@@ -34,7 +36,8 @@ describe('Filter Builder service', () => {
       type: AttributeMetadataType.String,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'endTime',
@@ -43,7 +46,8 @@ describe('Filter Builder service', () => {
       type: AttributeMetadataType.Timestamp,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'tags',
@@ -52,7 +56,8 @@ describe('Filter Builder service', () => {
       type: AttributeMetadataType.StringMap,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     }
   ];
 
