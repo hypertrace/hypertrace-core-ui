@@ -19,6 +19,10 @@ export * from './navigation/breadcrumb';
 export * from './navigation/navigation.service';
 export * from './navigation/route-data';
 export * from './navigation/trace-route';
+
+// Preferences
+export * from './preference/preference.service';
+
 // Time
 export * from './time/fixed-time-range';
 export * from './time/interval-duration.service';
@@ -37,6 +41,7 @@ export { DynamicComponentService } from './utilities/angular/dynamic-component.s
 export { CookieService } from './utilities/browser/cookies/cookie.service';
 export { LocalStorage } from './utilities/browser/storage/local-storage';
 // Coercers
+export * from './utilities/coercers/boolean-coercer';
 export * from './utilities/coercers/coercer';
 export * from './utilities/coercers/date-coercer';
 export * from './utilities/coercers/noop-coercer';
