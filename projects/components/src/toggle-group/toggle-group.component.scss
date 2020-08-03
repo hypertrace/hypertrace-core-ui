@@ -1,8 +1,12 @@
 @import 'mixins';
 
+:host {
+  display: flex;
+}
+
 .toggle-group {
-  @include flex-layout(row);
   @include body-1-medium($gray-5);
+  display: flex;
   position: relative;
   border: 1px solid $color-border;
   border-radius: 6px;
@@ -34,7 +38,8 @@
     background: white;
     border-radius: 5px; // 5px since its inside another bordered element of 6px
     cursor: pointer;
-    transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease;
+    transition-property: left, width; // Not color, background (for hover)
 
     &:hover {
       color: $gray-6;
