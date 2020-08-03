@@ -1,6 +1,4 @@
-@import 'color-palette';
-@import 'font';
-@import 'layout';
+@import 'mixins';
 
 @mixin top-bar-button() {
   // Custom styling for top bar different shades than normal buttons

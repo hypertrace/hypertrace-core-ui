@@ -1,6 +1,4 @@
-@import 'layout';
-@import 'font';
-@import 'color-palette';
+@import 'mixins';
 
 .toggle-item {
   @include center-contents();
