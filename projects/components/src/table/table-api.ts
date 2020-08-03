@@ -37,6 +37,7 @@ export interface TableRowState {
   parent?: StatefulTableRow;
   children?: StatefulPrefetchedTreeTableRow[];
   expanded: boolean;
+  selected: boolean;
   root: boolean;
   leaf: boolean;
   depth: number;
@@ -73,7 +74,7 @@ export const enum TableStyle {
 }
 
 export const enum TableSelectionMode {
-  // These values are used in css
   None = 'none',
-  Single = 'single'
+  Single = 'single',
+  Multiple = 'multiple'
 }

@@ -2,9 +2,11 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { Inject, InjectionToken, NgModule } from '@angular/core';
 import { FormattingModule } from '@hypertrace/common';
+import { TraceCheckboxModule } from '../../checkbox/checkbox.module';
 import { ExpanderToggleModule } from '../../expander/expander-toggle.module';
 import { IconModule } from '../../icon/icon.module';
 import { TooltipModule } from '../../tooltip/tooltip.module';
+import { TableCheckboxCellRendererComponent } from './checkbox-cell/table-checkbox-cell-renderer.component';
 import { IconTableCellRendererComponent } from './data-cell/icon/icon-table-cell-renderer.component';
 import { NumericTableCellRendererComponent } from './data-cell/numeric/numeric-table-cell-renderer.component';
 import { TableDataCellRendererComponent } from './data-cell/table-data-cell-renderer.component';
@@ -19,31 +21,41 @@ import { TableCellRendererService } from './table-cell-renderer.service';
 export const TABLE_CELL_RENDERERS = new InjectionToken<unknown[][]>('TABLE_CELL_RENDERERS');
 
 @NgModule({
-  imports: [CommonModule, CdkTableModule, IconModule, TooltipModule, FormattingModule, ExpanderToggleModule],
+  imports: [
+    CommonModule,
+    CdkTableModule,
+    ExpanderToggleModule,
+    FormattingModule,
+    IconModule,
+    TooltipModule,
+    TraceCheckboxModule
+  ],
   exports: [
     TableHeaderCellRendererComponent,
     TableDataCellRendererComponent,
     TableExpandedDetailRowCellRendererComponent
   ],
   declarations: [
-    TableHeaderCellRendererComponent,
+    IconTableCellRendererComponent,
+    NumericTableCellRendererComponent,
+    TableCheckboxCellRendererComponent,
     TableDataCellRendererComponent,
     TableExpandedDetailRowCellRendererComponent,
     TableExpanderCellRendererComponent,
+    TableHeaderCellRendererComponent,
     TextTableCellRendererComponent,
-    NumericTableCellRendererComponent,
-    TimestampTableCellRendererComponent,
-    IconTableCellRendererComponent
+    TimestampTableCellRendererComponent
   ],
   providers: [
     {
       provide: TABLE_CELL_RENDERERS,
       useValue: [
-        TextTableCellRendererComponent,
-        NumericTableCellRendererComponent,
-        TimestampTableCellRendererComponent,
         IconTableCellRendererComponent,
-        TableExpanderCellRendererComponent
+        NumericTableCellRendererComponent,
+        TableCheckboxCellRendererComponent,
+        TableExpanderCellRendererComponent,
+        TextTableCellRendererComponent,
+        TimestampTableCellRendererComponent
       ],
       multi: true
     }
