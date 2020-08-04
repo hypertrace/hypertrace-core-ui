@@ -20,14 +20,16 @@ import { ToggleItemComponent } from './toggle-item.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="toggle-group">
-      <div
-        class="active"
-        [style.left.px]="this.activeElementPosition.left"
-        [style.width.px]="this.activeElementPosition.width"
-      ></div>
-      <div class="container" *ngFor="let item of this.items; let index = index">
-        <div class="divider" *ngIf="index !== 0" [class.hide-divider]="this.shouldHideDivider(index)"></div>
-        <htc-toggle-item class="tab" [label]="item.label" (click)="this.setActiveItem(item)"></htc-toggle-item>
+      <div class="items">
+        <div
+          class="active"
+          [style.left.px]="this.activeElementPosition.left"
+          [style.width.px]="this.activeElementPosition.width"
+        ></div>
+        <div class="container" *ngFor="let item of this.items; let index = index">
+          <div class="divider" *ngIf="index !== 0" [class.hide-divider]="this.shouldHideDivider(index)"></div>
+          <htc-toggle-item class="tab" [label]="item.label" (click)="this.setActiveItem(item)"></htc-toggle-item>
+        </div>
       </div>
     </div>
   `
