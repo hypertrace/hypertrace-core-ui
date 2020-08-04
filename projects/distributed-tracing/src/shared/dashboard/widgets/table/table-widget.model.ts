@@ -1,4 +1,4 @@
-import { TableDataSource, TableMode, TableRow, TableStyle } from '@hypertrace/components';
+import { TableDataSource, TableMode, TableRow, TableSelectionMode, TableStyle } from '@hypertrace/components';
 import {
   ArrayPropertyTypeInstance,
   EnumPropertyTypeInstance,
@@ -68,6 +68,17 @@ export class TableWidgetModel {
     } as EnumPropertyTypeInstance
   })
   public mode: TableMode = TableMode.Flat;
+
+  @ModelProperty({
+    key: 'selection-mode',
+    displayName: 'Table Selection Mode',
+    // tslint:disable-next-line: no-object-literal-type-assertion
+    type: {
+      key: ENUM_TYPE.type,
+      values: [TableSelectionMode.None, TableSelectionMode.Single, TableSelectionMode.Multiple]
+    } as EnumPropertyTypeInstance
+  })
+  public selectionMode: TableSelectionMode = TableSelectionMode.Single;
 
   @ModelProperty({
     key: 'style',

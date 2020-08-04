@@ -11,15 +11,18 @@ describe('Table column util', () => {
   beforeEach(() => {
     dataColumnConfigs = [
       {
-        field: 'test-default'
+        field: 'test-default',
+        visible: true
       },
       {
         field: 'test-text',
-        renderer: StandardTableCellRendererType.Text
+        renderer: StandardTableCellRendererType.Text,
+        visible: true
       },
       {
         field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number
+        renderer: StandardTableCellRendererType.Number,
+        visible: true
       }
     ];
 
@@ -33,16 +36,19 @@ describe('Table column util', () => {
 
     sortedColumnConfigs = [
       {
-        field: 'test-default'
+        field: 'test-default',
+        visible: true
       },
       {
         field: 'test-text',
         renderer: StandardTableCellRendererType.Text,
-        sort: TableSortDirection.Ascending
+        sort: TableSortDirection.Ascending,
+        visible: true
       },
       {
         field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number
+        renderer: StandardTableCellRendererType.Number,
+        visible: true
       }
     ];
   });
@@ -53,7 +59,7 @@ describe('Table column util', () => {
   });
 
   test('should remove row expander', () => {
-    expect(TableCdkColumnUtil.removeNonDataConfigs(columnConfigs)).toEqual(dataColumnConfigs);
+    expect(TableCdkColumnUtil.fetchableColumnConfigs(columnConfigs)).toEqual(dataColumnConfigs);
   });
 
   test('should unsort other columns when others already sorted', () => {

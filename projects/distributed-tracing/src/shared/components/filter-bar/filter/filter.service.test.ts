@@ -22,7 +22,8 @@ describe('Filter service', () => {
       type: AttributeMetadataType.Number,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'duration',
@@ -31,7 +32,8 @@ describe('Filter service', () => {
       type: AttributeMetadataType.Number,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'durationSelf',
@@ -40,7 +42,8 @@ describe('Filter service', () => {
       type: AttributeMetadataType.String,
       scope: TRACE_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     }
   ];
 
