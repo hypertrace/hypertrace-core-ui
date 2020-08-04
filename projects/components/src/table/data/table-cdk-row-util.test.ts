@@ -58,6 +58,7 @@ describe('Table row util', () => {
       $$state: {
         parent: undefined,
         expanded: false,
+        selected: false,
         root: true,
         leaf: false,
         depth: 0
@@ -71,6 +72,7 @@ describe('Table row util', () => {
       $$state: {
         parent: parentStatefulTableRow,
         expanded: false,
+        selected: false,
         root: false,
         leaf: true,
         depth: 1
@@ -88,6 +90,7 @@ describe('Table row util', () => {
       $$state: {
         parent: undefined,
         expanded: true,
+        selected: false,
         root: true,
         leaf: false,
         depth: 0
@@ -102,6 +105,7 @@ describe('Table row util', () => {
       $$state: {
         parent: parentStatefulTreeTableRow,
         expanded: false,
+        selected: false,
         root: false,
         leaf: false,
         depth: 1
@@ -116,6 +120,7 @@ describe('Table row util', () => {
       $$state: {
         parent: childStatefulTreeTableRow,
         expanded: false,
+        selected: false,
         root: false,
         leaf: true,
         depth: 2
@@ -134,6 +139,7 @@ describe('Table row util', () => {
       $$state: {
         children: [],
         expanded: true,
+        selected: false,
         root: true,
         leaf: false,
         depth: 0
@@ -149,6 +155,7 @@ describe('Table row util', () => {
         parent: parentStatefulPrefetchedTreeTableRow,
         children: [],
         expanded: true,
+        selected: false,
         root: false,
         leaf: false,
         depth: 1
@@ -166,6 +173,7 @@ describe('Table row util', () => {
         parent: childStatefulPrefetchedTreeTableRow,
         children: [],
         expanded: false,
+        selected: false,
         root: false,
         leaf: true,
         depth: 2
@@ -181,6 +189,7 @@ describe('Table row util', () => {
         parent: childStatefulPrefetchedTreeTableRow,
         children: [],
         expanded: false,
+        selected: false,
         root: false,
         leaf: true,
         depth: 2
@@ -234,6 +243,7 @@ describe('Table row util', () => {
     expect(parent.$$state).toEqual({
       parent: undefined,
       expanded: false,
+      selected: false,
       root: true,
       leaf: false,
       depth: 0
@@ -246,6 +256,7 @@ describe('Table row util', () => {
 
     expect(child.$$state).toEqual({
       expanded: false,
+      selected: false,
       root: false,
       leaf: false,
       depth: 1
@@ -258,6 +269,7 @@ describe('Table row util', () => {
 
     expect(grandchild1.$$state).toEqual({
       expanded: false,
+      selected: false,
       root: false,
       leaf: true,
       depth: 2
@@ -270,6 +282,7 @@ describe('Table row util', () => {
 
     expect(grandchild2.$$state).toEqual({
       expanded: false,
+      selected: false,
       root: false,
       leaf: true,
       depth: 2

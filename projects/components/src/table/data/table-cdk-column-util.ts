@@ -7,8 +7,13 @@ export namespace TableCdkColumnUtil {
     changedColumn: TableColumnConfig | undefined
   ): changedColumn is TableColumnConfig => changedColumn !== undefined;
 
-  export const removeNonDataConfigs = (columnConfigs: TableColumnConfig[]): TableColumnConfig[] =>
-    columnConfigs.filter(columnConfig => columnConfig.renderer !== StandardTableCellRendererType.RowExpander);
+  export const fetchableColumnConfigs = (columnConfigs: TableColumnConfig[]): TableColumnConfig[] =>
+    columnConfigs.filter(
+      columnConfig =>
+        columnConfig.renderer !== StandardTableCellRendererType.RowExpander &&
+        columnConfig.renderer !== StandardTableCellRendererType.Checkbox &&
+        columnConfig.visible
+    );
 
   export const unsortOtherColumns = (sortedColumn: TableColumnConfig, otherColumns: TableColumnConfig[]): void =>
     otherColumns

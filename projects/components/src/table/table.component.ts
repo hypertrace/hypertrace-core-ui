@@ -169,6 +169,16 @@ export class TableComponent
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
   };
 
+  private readonly multiSelectRowColumnConfig: TableColumnConfig = {
+    field: '$$state',
+    width: '32px',
+    visible: true,
+    renderer: StandardTableCellRendererType.Checkbox,
+    onClick: (row: StatefulTableRow) => {
+      this.toggleRowSelection(row);
+    }
+  };
+
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
     field: '$$detail'
   };
@@ -204,7 +214,7 @@ export class TableComponent
   public initialExpandAll?: boolean = false;
 
   @Input()
-  public selection?: StatefulTableRow;
+  public selections?: StatefulTableRow[] = [];
 
   @Input()
   public hovered?: StatefulTableRow;
@@ -213,9 +223,7 @@ export class TableComponent
   public syncWithUrl?: boolean = false;
 
   @Output()
-  public readonly selectionChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
-    StatefulTableRow | undefined
-  >();
+  public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
 
   @Output()
   public readonly hoveredChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -311,6 +319,12 @@ export class TableComponent
       return;
     }
 
+    if (this.isCheckboxColumn(columnConfig)) {
+      this.toggleRowSelection(row);
+
+      return;
+    }
+
     columnConfig.onClick && columnConfig.onClick(row, columnConfig);
 
     // Propagate the cell click to the row
@@ -363,6 +377,10 @@ export class TableComponent
       return [this.expandableToggleColumnConfig, ...this.columnConfigs];
     }
 
+    if (this.hasMultiSelectableRows()) {
+      return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
+    }
+
     return this.columnConfigs;
   }
 
@@ -390,8 +408,14 @@ export class TableComponent
   }
 
   public toggleRowSelection(row: StatefulTableRow): void {
-    this.selection = this.selection === row ? undefined : row;
-    this.selectionChange.emit(this.selection);
+    row.$$state.selected = !row.$$state.selected;
+
+    const rowSelections = this.selections ?? [];
+    this.selections = rowSelections.includes(row)
+      ? rowSelections.filter(selection => selection !== row)
+      : rowSelections.concat(row);
+    this.selectionsChange.emit(this.selections);
+
     this.changeDetector.markForCheck();
   }
 
@@ -422,8 +446,15 @@ export class TableComponent
     return columnConfig === this.expandableToggleColumnConfig;
   }
 
+  public isCheckboxColumn(columnConfig: TableColumnConfig): boolean {
+    return columnConfig === this.multiSelectRowColumnConfig;
+  }
+
   public isSelectedRow(row: StatefulTableRow): boolean {
-    return this.selection !== undefined && TableCdkRowUtil.isEqualExceptState(row, this.selection);
+    return (
+      this.selections !== undefined &&
+      this.selections.some(selection => TableCdkRowUtil.isEqualExceptState(row, selection))
+    );
   }
 
   public isHoveredRow(row: StatefulTableRow): boolean {
@@ -432,6 +463,10 @@ export class TableComponent
 
   public isChildRow(row: StatefulTableRow): boolean {
     return !!row.$$state.parent;
+  }
+
+  public isFlatType(): boolean {
+    return this.mode === TableMode.Flat;
   }
 
   public isDetailType(): boolean {
@@ -446,8 +481,16 @@ export class TableComponent
     return this.display !== TableStyle.List;
   }
 
+  public isMultiSelect(): boolean {
+    return this.selectionMode === TableSelectionMode.Multiple;
+  }
+
   public hasExpandableRows(): boolean {
     return this.isDetailType() || this.isTreeType();
+  }
+
+  public hasMultiSelectableRows(): boolean {
+    return this.isFlatType() && this.isMultiSelect();
   }
 
   public isDetailExpanded(row: StatefulTableRow): boolean {

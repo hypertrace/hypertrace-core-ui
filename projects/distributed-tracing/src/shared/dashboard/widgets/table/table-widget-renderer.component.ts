@@ -24,6 +24,7 @@ import { TableWidgetModel } from './table-widget.model';
         [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
         [columnConfigs]="this.columnDefs"
         [mode]="this.model.mode"
+        [selectionMode]="this.model.selectionMode"
         [display]="this.model.style"
         [data]="this.data$ | async"
         [searchable]="this.api.model.searchable"
