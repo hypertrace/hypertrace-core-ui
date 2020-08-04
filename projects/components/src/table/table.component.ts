@@ -242,9 +242,9 @@ export class TableComponent
   @ViewChild(PaginatorComponent)
   public paginator?: PaginatorComponent;
 
-  private readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<
-    TableColumnConfig[]
-  >([]);
+  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<TableColumnConfig[]>(
+    []
+  );
   private readonly filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private readonly rowStateSubject: BehaviorSubject<StatefulTableRow | undefined> = new BehaviorSubject<
     StatefulTableRow | undefined
