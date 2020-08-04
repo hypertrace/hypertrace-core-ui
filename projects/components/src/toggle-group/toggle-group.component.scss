@@ -1,17 +1,17 @@
 @import 'mixins';
 
-:host {
-  display: flex;
-}
-
 .toggle-group {
-  @include body-1-medium($gray-5);
   display: flex;
-  position: relative;
-  border: 1px solid $color-border;
-  border-radius: 6px;
-  background: $gray-1;
-  height: 36px;
+
+  .items {
+    @include body-1-medium($gray-5);
+    display: flex;
+    position: relative;
+    border: 1px solid $color-border;
+    border-radius: 6px;
+    background: $gray-1;
+    height: 36px;
+  }
 
   .container {
     display: flex;
