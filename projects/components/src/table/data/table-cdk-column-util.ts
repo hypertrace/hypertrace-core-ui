@@ -7,7 +7,7 @@ export namespace TableCdkColumnUtil {
     changedColumn: TableColumnConfig | undefined
   ): changedColumn is TableColumnConfig => changedColumn !== undefined;
 
-  export const removeNonDataConfigs = (columnConfigs: TableColumnConfig[]): TableColumnConfig[] =>
+  export const fetchableColumnConfigs = (columnConfigs: TableColumnConfig[]): TableColumnConfig[] =>
     columnConfigs.filter(
       columnConfig =>
         columnConfig.renderer !== StandardTableCellRendererType.RowExpander &&

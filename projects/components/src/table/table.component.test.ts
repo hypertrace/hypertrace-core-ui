@@ -1,6 +1,13 @@
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
-import { LetAsyncModule, TableSortDirection } from '@hypertrace/components';
+import {
+  LetAsyncModule,
+  StandardTableCellRendererType,
+  TableMode,
+  TableSelectionMode,
+  TableSortDirection
+} from '@hypertrace/components';
+import { runFakeRxjs } from '@hypertrace/test-utils';
 import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { EMPTY, of } from 'rxjs';
@@ -163,6 +170,91 @@ describe('Table component', () => {
     expect(spectator.inject(NavigationService).addQueryParametersToUrl).toHaveBeenCalledWith({
       'sort-by': 'foo',
       'sort-direction': TableSortDirection.Ascending
+    });
+  });
+
+  test('adds the multi select row column config for multi select mode', () => {
+    const columns = buildColumns();
+    const spectator = createHost(
+      '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: buildData(),
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Flat
+        }
+      }
+    );
+
+    runFakeRxjs(({ expectObservable }) => {
+      expectObservable(spectator.component.columnConfigs$).toBe('x', {
+        x: [
+          expect.objectContaining({
+            field: '$$state',
+            renderer: StandardTableCellRendererType.Checkbox,
+            visible: true
+          }),
+          {
+            field: 'foo'
+          }
+        ]
+      });
+    });
+  });
+
+  test('skips the multi select row column config for single select mode', () => {
+    const columns = buildColumns();
+    const spectator = createHost(
+      '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: buildData(),
+          selectionMode: TableSelectionMode.Single,
+          mode: TableMode.Flat
+        }
+      }
+    );
+
+    runFakeRxjs(({ expectObservable }) => {
+      expectObservable(spectator.component.columnConfigs$).toBe('x', {
+        x: [
+          {
+            field: 'foo'
+          }
+        ]
+      });
+    });
+  });
+
+  test('expander column config and no multi select row column config for non flat table mode', () => {
+    const columns = buildColumns();
+    const spectator = createHost(
+      '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: buildData(),
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Tree
+        }
+      }
+    );
+
+    runFakeRxjs(({ expectObservable }) => {
+      expectObservable(spectator.component.columnConfigs$).toBe('x', {
+        x: [
+          expect.objectContaining({
+            field: '$$state',
+            renderer: StandardTableCellRendererType.RowExpander,
+            visible: true
+          }),
+          {
+            field: 'foo'
+          }
+        ]
+      });
     });
   });
 });

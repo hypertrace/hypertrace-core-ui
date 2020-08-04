@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
-import { find, remove } from 'lodash-es';
+import { remove } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
@@ -170,12 +170,7 @@ export class TableComponent
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
   };
 
-  private readonly selectableRowColumnConfig: TableColumnConfig = {
-    field: '$$state',
-    visible: false
-  };
-
-  private readonly checkboxColumnConfig: TableColumnConfig = {
+  private readonly multiSelectRowColumnConfig: TableColumnConfig = {
     field: '$$state',
     width: '32px',
     visible: true,
@@ -220,7 +215,7 @@ export class TableComponent
   public initialExpandAll?: boolean = false;
 
   @Input()
-  public selections: StatefulTableRow[] = [];
+  public selections?: StatefulTableRow[] = [];
 
   @Input()
   public hovered?: StatefulTableRow;
@@ -229,7 +224,9 @@ export class TableComponent
   public syncWithUrl?: boolean = false;
 
   @Output()
-  public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
+  public readonly selectionsChange: EventEmitter<StatefulTableRow[] | undefined> = new EventEmitter<
+    StatefulTableRow[] | undefined
+  >();
 
   @Output()
   public readonly hoveredChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -245,9 +242,9 @@ export class TableComponent
   @ViewChild(PaginatorComponent)
   public paginator?: PaginatorComponent;
 
-  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<TableColumnConfig[]>(
-    []
-  );
+  private readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<
+    TableColumnConfig[]
+  >([]);
   private readonly filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private readonly rowStateSubject: BehaviorSubject<StatefulTableRow | undefined> = new BehaviorSubject<
     StatefulTableRow | undefined
@@ -383,12 +380,8 @@ export class TableComponent
       return [this.expandableToggleColumnConfig, ...this.columnConfigs];
     }
 
-    if (this.hasSelectableRows()) {
-      return [this.selectableRowColumnConfig, ...this.columnConfigs];
-    }
-
     if (this.hasMultiSelectableRows()) {
-      return [this.checkboxColumnConfig, ...this.columnConfigs];
+      return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
     }
 
     return this.columnConfigs;
@@ -419,7 +412,7 @@ export class TableComponent
 
   public toggleRowSelection(row: StatefulTableRow): void {
     row.$$state.selected = !row.$$state.selected;
-    this.selections = find(this.selections, row) ? remove(this.selections, row) : this.selections.concat(row);
+    this.selections = this.selections?.includes(row) ? remove(this.selections, row) : this.selections?.concat(row);
     this.selectionsChange.emit(this.selections);
     this.changeDetector.markForCheck();
   }
@@ -452,11 +445,14 @@ export class TableComponent
   }
 
   public isCheckboxColumn(columnConfig: TableColumnConfig): boolean {
-    return columnConfig === this.checkboxColumnConfig;
+    return columnConfig === this.multiSelectRowColumnConfig;
   }
 
   public isSelectedRow(row: StatefulTableRow): boolean {
-    return this.selections.some(selection => TableCdkRowUtil.isEqualExceptState(row, selection));
+    return (
+      this.selections !== undefined &&
+      this.selections.some(selection => TableCdkRowUtil.isEqualExceptState(row, selection))
+    );
   }
 
   public isHoveredRow(row: StatefulTableRow): boolean {

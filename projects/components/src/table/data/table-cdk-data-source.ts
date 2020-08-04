@@ -217,7 +217,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
 
   private buildRequest(columnConfigs: TableColumnConfig[], pageConfig: PageEvent, filter: string): TableDataRequest {
     const request: TableDataRequest = {
-      columns: TableCdkColumnUtil.removeNonDataConfigs(columnConfigs),
+      columns: TableCdkColumnUtil.fetchableColumnConfigs(columnConfigs),
       position: {
         startIndex: pageConfig.pageIndex * pageConfig.pageSize,
         limit: pageConfig.pageSize
