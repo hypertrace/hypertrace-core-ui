@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
-import { remove } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
@@ -224,9 +223,7 @@ export class TableComponent
   public syncWithUrl?: boolean = false;
 
   @Output()
-  public readonly selectionsChange: EventEmitter<StatefulTableRow[] | undefined> = new EventEmitter<
-    StatefulTableRow[] | undefined
-  >();
+  public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
 
   @Output()
   public readonly hoveredChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -412,8 +409,13 @@ export class TableComponent
 
   public toggleRowSelection(row: StatefulTableRow): void {
     row.$$state.selected = !row.$$state.selected;
-    this.selections = this.selections?.includes(row) ? remove(this.selections, row) : this.selections?.concat(row);
+
+    const rowSelections = this.selections ?? [];
+    this.selections = rowSelections.includes(row)
+      ? rowSelections.filter(selection => selection !== row)
+      : rowSelections.concat(row);
     this.selectionsChange.emit(this.selections);
+
     this.changeDetector.markForCheck();
   }
 

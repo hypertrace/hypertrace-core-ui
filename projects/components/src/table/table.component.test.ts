@@ -3,6 +3,7 @@ import { NavigationService } from '@hypertrace/common';
 import {
   LetAsyncModule,
   StandardTableCellRendererType,
+  StatefulTableRow,
   TableMode,
   TableSelectionMode,
   TableSortDirection
@@ -12,7 +13,6 @@ import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { EMPTY, of } from 'rxjs';
 import { PaginatorComponent } from '../paginator/paginator.component';
-import { TableHeaderCellRendererComponent } from './renderers/header-cell/table-header-cell-renderer.component';
 import { TableComponent } from './table.component';
 
 describe('Table component', () => {
@@ -43,7 +43,7 @@ describe('Table component', () => {
       }),
       mockProvider(NavigationService)
     ],
-    declarations: [MockComponent(PaginatorComponent), MockComponent(TableHeaderCellRendererComponent)],
+    declarations: [MockComponent(PaginatorComponent)],
     template: `
     <htc-table
       [columnConfigs]="columnConfigs"
@@ -256,5 +256,87 @@ describe('Table component', () => {
         ]
       });
     });
+  });
+
+  test('should trigger toggle row selection for multi row select config', () => {
+    const columns = buildColumns();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode"
+         [mode]="mode" (selectionsChange)="selectionsChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: buildData(),
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Flat
+        }
+      }
+    );
+
+    const row: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: false,
+        selected: false,
+        root: false,
+        leaf: true,
+        depth: 1
+      }
+    };
+
+    const multiSelectRowColumnConfig = spectator.component.columnConfigsSubject.value[0];
+    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelection');
+    spectator.component.onDataCellClick(multiSelectRowColumnConfig, row);
+    expect(spyToggleRowSelection).toHaveBeenCalledWith(row);
+  });
+
+  test('should toggle selection state and emit selections', () => {
+    const mockSelectionsChange = jest.fn();
+    const columns = buildColumns();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode"
+         [mode]="mode" (selectionsChange)="selectionsChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: buildData(),
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Flat,
+          selectionsChange: mockSelectionsChange
+        }
+      }
+    );
+
+    const row: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: false,
+        selected: false,
+        root: false,
+        leaf: true,
+        depth: 1
+      }
+    };
+
+    {
+      spectator.component.toggleRowSelection(row);
+
+      const selections = spectator.component.selections;
+      expect(row.$$state.selected).toBeTruthy();
+      expect(selections).toBeDefined();
+      expect(selections!.length).toEqual(1);
+      expect(selections![0]).toEqual(row);
+      expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
+    }
+
+    {
+      spectator.component.toggleRowSelection(row);
+
+      const selections = spectator.component.selections;
+      expect(row.$$state.selected).toBeFalsy();
+      expect(selections).toBeDefined();
+      expect(selections!.length).toEqual(0);
+      expect(mockSelectionsChange).toHaveBeenCalledWith([]);
+    }
   });
 });
