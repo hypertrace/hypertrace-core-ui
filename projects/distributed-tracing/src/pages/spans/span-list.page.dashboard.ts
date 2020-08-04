@@ -11,7 +11,6 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
       {
         type: 'table-widget-column',
         title: 'Name',
-        width: '50%',
         value: {
           type: 'attribute-specification',
           attribute: 'displaySpanName'
@@ -23,7 +22,7 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
       {
         type: 'table-widget-column',
         title: 'Status',
-        width: '20%', // Use Status Cell Renderer
+        width: '100px', // Use Status Cell Renderer
         value: {
           type: 'attribute-specification',
           attribute: 'statusCode'
@@ -35,7 +34,7 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
       {
         type: 'table-widget-column',
         title: 'Latency',
-        width: '10%',
+        width: '120px',
         display: TracingTableCellRenderer.Metric,
         value: {
           type: 'attribute-specification',
@@ -48,7 +47,7 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
       {
         type: 'table-widget-column',
         title: 'Timestamp',
-        width: '20%',
+        width: '220px',
         display: StandardTableCellRendererType.Timestamp,
         value: {
           type: 'attribute-specification',
