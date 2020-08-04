@@ -18,7 +18,8 @@ describe('Metadata Service', () => {
       type: AttributeMetadataType.String,
       scope: 'Scope1',
       allowedAggregations: [],
-      requiresAggregation: false
+      requiresAggregation: false,
+      groupable: true
     },
     {
       name: 'attr2',
@@ -27,7 +28,8 @@ describe('Metadata Service', () => {
       type: AttributeMetadataType.Number,
       scope: SPAN_SCOPE,
       allowedAggregations: [MetricAggregationType.Average, MetricAggregationType.Sum],
-      requiresAggregation: false
+      requiresAggregation: false,
+      groupable: false
     },
     {
       name: 'attr3',
@@ -36,7 +38,8 @@ describe('Metadata Service', () => {
       type: AttributeMetadataType.Number,
       scope: SPAN_SCOPE,
       allowedAggregations: [],
-      requiresAggregation: false
+      requiresAggregation: false,
+      groupable: false
     }
   ];
   const specBuilder = new SpecificationBuilder();
@@ -122,7 +125,7 @@ describe('Metadata Service', () => {
     ]);
   });
 
-  test('returns only string attributes for group by', () => {
+  test('returns only groupable true attributes when requested', () => {
     const spectator = createService();
 
     expectSingleValueObservable(spectator.service.getGroupableAttributes(SPAN_SCOPE), []);
