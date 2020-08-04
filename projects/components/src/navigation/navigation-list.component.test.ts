@@ -1,8 +1,8 @@
 import { IconType } from '@hypertrace/assets-library';
-import { NavigationService } from '@hypertrace/common';
+import { NavigationService, PreferenceService } from '@hypertrace/common';
 import { createHostFactory, mockProvider, SpectatorHost } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
-import { EMPTY, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { IconComponent } from '../icon/icon.component';
 import { LetAsyncModule } from '../let-async/let-async.module';
 import { FooterItemConfig, NavigationListComponent, NavItemConfig, NavItemType } from './navigation-list.component';
@@ -14,6 +14,7 @@ describe('Navigation List Component', () => {
     declarations: [MockComponent(IconComponent)],
     imports: [LetAsyncModule],
     providers: [
+      mockProvider(PreferenceService, { get: jest.fn().mockReturnValue(of(false)) }),
       mockProvider(NavigationService, {
         navigation$: EMPTY,
         navigateWithinApp: jest.fn(),
@@ -63,18 +64,27 @@ describe('Navigation List Component', () => {
     const footerItemsCount = spectator.component.footerItems?.length;
     expect(spectator.queryAll('.footer-item').length).toBe(footerItemsCount);
   });
-  test('should collapse when collapse nav-item element is clicked', () => {
-    const navItems: NavItemConfig[] = [
-      {
-        type: NavItemType.Link,
-        icon: 'icon',
-        label: 'label',
-        matchPaths: ['']
-      }
-    ];
-    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`, { props: { navItems: navItems } });
-    expect(spectator.query(IconComponent)!.icon).toEqual(IconType.TriangleLeft);
-    spectator.triggerEventHandler('.resize-tab-button', 'click', undefined);
-    expect(spectator.query(IconComponent)!.icon).toEqual(IconType.TriangleRight);
+
+  test('should update preference when collapse nav-item element is clicked', () => {
+    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`);
+    spectator.click('.resize-tab-button');
+    expect(spectator.inject(PreferenceService).set).toHaveBeenCalledWith('navigation-list.collapsed', true);
+  });
+
+  test('should update layout when collapsed preference is updated', () => {
+    const collapsedSubject = new BehaviorSubject(false);
+    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`, {
+      providers: [
+        mockProvider(PreferenceService, {
+          get: jest.fn().mockReturnValue(collapsedSubject)
+        })
+      ]
+    });
+    expect(spectator.query('.navigation-list')).toHaveClass('expanded');
+    expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleLeft);
+    collapsedSubject.next(true);
+    spectator.detectChanges();
+    expect(spectator.query('.navigation-list')).not.toHaveClass('expanded');
+    expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleRight);
   });
 });
