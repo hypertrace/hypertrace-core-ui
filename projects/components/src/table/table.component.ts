@@ -277,13 +277,12 @@ export class TableComponent
     }
 
     if (changes.selections && this.selections) {
-      // unmark the selections which don't exist in existing row selections
+      // Unmark the selections which don't exist in existing row selections
       if (this.rowSelections.length !== this.selections.length) {
         this.rowSelections.forEach(row => {
-          this.selections!.includes(row) ? row.$$state.selected = true : row.$$state.selected = false;
+          row.$$state.selected = this.selections!.includes(row);
           this.rowStateSubject.next(row);
         });
-
         this.rowSelections = this.selections;
         this.changeDetector.markForCheck();
       }
@@ -420,6 +419,7 @@ export class TableComponent
 
   public toggleRowSelection(row: StatefulTableRow): void {
     row.$$state.selected = !row.$$state.selected;
+    this.rowStateSubject.next(row);
 
     const rowSelections = this.selections ?? [];
     this.selections = rowSelections.includes(row)
@@ -427,7 +427,6 @@ export class TableComponent
       : rowSelections.concat(row);
 
     this.rowSelections = this.selections;
-    this.rowStateSubject.next(row);
     this.selectionsChange.emit(this.selections);
 
     this.changeDetector.markForCheck();
