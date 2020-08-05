@@ -173,10 +173,7 @@ export class TableComponent
     field: '$$state',
     width: '32px',
     visible: true,
-    renderer: StandardTableCellRendererType.Checkbox,
-    onClick: (row: StatefulTableRow) => {
-      this.toggleRowSelection(row);
-    }
+    renderer: StandardTableCellRendererType.Checkbox
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
@@ -281,11 +278,15 @@ export class TableComponent
 
     if (changes.selections && this.selections) {
       // unmark the selections which don't exist in existing row selections
-      this.rowSelections.forEach(row => {
-        this.selections!.includes(row) ? row.$$state.selected = true : row.$$state.selected = false
-      });
-      this.rowSelections = this.selections;
-      this.changeDetector.detectChanges();
+      if (this.rowSelections.length !== this.selections.length) {
+        this.rowSelections.forEach(row => {
+          this.selections!.includes(row) ? row.$$state.selected = true : row.$$state.selected = false;
+          this.rowStateSubject.next(row);
+        });
+
+        this.rowSelections = this.selections;
+        this.changeDetector.markForCheck();
+      }
     }
 
     if (this.dataSource && changes.data) {
@@ -426,6 +427,7 @@ export class TableComponent
       : rowSelections.concat(row);
 
     this.rowSelections = this.selections;
+    this.rowStateSubject.next(row);
     this.selectionsChange.emit(this.selections);
 
     this.changeDetector.markForCheck();
