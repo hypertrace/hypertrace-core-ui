@@ -249,6 +249,7 @@ export class TableComponent
   private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
     TableColumnConfig | undefined
   >(undefined);
+  private rowSelections: StatefulTableRow[] = [];
 
   public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
@@ -276,6 +277,15 @@ export class TableComponent
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfigs || changes.detailContent) {
       this.columnConfigsSubject.next(this.buildColumnConfigs());
+    }
+
+    if (changes.selections && this.selections) {
+      // unmark the selections which don't exist in existing row selections
+      this.rowSelections.forEach(row => {
+        this.selections!.includes(row) ? row.$$state.selected = true : row.$$state.selected = false
+      });
+      this.rowSelections = this.selections;
+      this.changeDetector.detectChanges();
     }
 
     if (this.dataSource && changes.data) {
@@ -414,6 +424,8 @@ export class TableComponent
     this.selections = rowSelections.includes(row)
       ? rowSelections.filter(selection => selection !== row)
       : rowSelections.concat(row);
+
+    this.rowSelections = this.selections;
     this.selectionsChange.emit(this.selections);
 
     this.changeDetector.markForCheck();
