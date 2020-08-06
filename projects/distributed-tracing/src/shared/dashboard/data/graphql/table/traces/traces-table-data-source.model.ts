@@ -34,7 +34,7 @@ export class TracesTableDataSourceModel extends TableDataSourceModel {
       requestType: TRACES_GQL_REQUEST,
       traceType: this.traceType,
       properties: request.columns.map(column => column.specification),
-      limit: request.position.limit * 10, // Prefetch 10 pages
+      limit: request.position.limit * 4, // Prefetch 4 pages
       offset: request.position.startIndex,
       sort: request.sort && {
         direction: request.sort.direction,
