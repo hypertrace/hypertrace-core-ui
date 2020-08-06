@@ -1,3 +1,4 @@
+import { FilterType } from '../../filter-type';
 import { UserFilterOperator } from '../filter-api';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 
@@ -24,8 +25,8 @@ export class StringArrayFilterBuilder extends AbstractFilterBuilder<string[] | u
     return converted === undefined ? '' : converted.join(StringArrayFilterBuilder.DELIMITER);
   }
 
-  public supportedValue(): string {
-    return 'STRING_MAP';
+  public supportedValue(): FilterType {
+    return FilterType.StringMap;
   }
 
   public supportedOperators(): UserFilterOperator[] {

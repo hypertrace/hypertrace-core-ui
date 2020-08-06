@@ -12,6 +12,7 @@ export interface AttributeMetadata {
 }
 
 export const enum AttributeMetadataType {
+  // Duplicated for FilterType in filter-type.ts
   String = 'STRING',
   Number = 'LONG',
   StringMap = 'STRING_MAP',

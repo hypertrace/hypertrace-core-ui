@@ -73,13 +73,11 @@ export class NavigableDashboardComponent implements OnChanges {
       );
     }
 
-    if (changeObject.filterConfig && this.hasFilterBarConfig()) {
-      this.attributes$ = this.metadataService.getFilterAttributes(this.filterConfig!.filterBar!.scope);
+    if (changeObject.filterConfig) {
+      this.attributes$ = this.filterConfig?.filterBar
+        ? this.metadataService.getFilterAttributes(this.filterConfig.filterBar.scope)
+        : of([]);
     }
-  }
-
-  private hasFilterBarConfig(): boolean {
-    return this.filterConfig !== undefined && this.filterConfig.filterBar !== undefined;
   }
 
   public onDashboardReady(dashboard: Dashboard): void {

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { assertUnreachable } from '@hypertrace/common';
-import { Filter, UserFilterOperator } from '@hypertrace/components';
+import { Filter, FilterType, UserFilterOperator } from '@hypertrace/components';
 import { GraphQlArgumentValue } from '@hypertrace/graphql-client';
-import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlFilter, GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 
@@ -14,7 +13,7 @@ export class GraphQlFilterBuilderService {
         new GraphQlFieldFilter(
           filter.field,
           this.toGraphQlOperator(filter.operator),
-          this.toGraphQlArgumentValue(filter.metadata.type as AttributeMetadataType, filter.value)
+          this.toGraphQlArgumentValue(filter.metadata.type, filter.value)
         )
     );
   }
@@ -42,12 +41,12 @@ export class GraphQlFilterBuilderService {
     }
   }
 
-  private toGraphQlArgumentValue(type: AttributeMetadataType, value: unknown): GraphQlArgumentValue {
+  private toGraphQlArgumentValue(type: FilterType, value: unknown): GraphQlArgumentValue {
     switch (type) {
-      case AttributeMetadataType.Number:
-      case AttributeMetadataType.String:
-      case AttributeMetadataType.StringMap:
-      case AttributeMetadataType.Timestamp:
+      case FilterType.Number:
+      case FilterType.String:
+      case FilterType.StringMap:
+      case FilterType.Timestamp:
         return value as GraphQlArgumentValue;
       default:
         return assertUnreachable(type);

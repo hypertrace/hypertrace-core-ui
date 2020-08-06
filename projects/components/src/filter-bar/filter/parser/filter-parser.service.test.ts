@@ -1,4 +1,4 @@
-import { FilterAttribute } from '@hypertrace/components';
+import { FilterAttribute, FilterType } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { FilterBuilderService } from '../builder/filter-builder.service';
 import { NumberFilterBuilder } from '../builder/number-filter-builder';
@@ -14,21 +14,13 @@ describe('Filter Parser service', () => {
       name: 'callMeMaybe',
       displayName: "Here's my number",
       units: '',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.String
     },
     {
       name: 'call',
       displayName: 'Call count',
       units: '',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     }
   ];
 
@@ -41,9 +33,9 @@ describe('Filter Parser service', () => {
       mockProvider(FilterBuilderService, {
         lookup: (attribute: FilterAttribute) => {
           switch (attribute.type) {
-            case 'LONG':
+            case FilterType.Number:
               return numberBuilder;
-            case 'STRING':
+            case FilterType.String:
             default:
               return stringBuilder;
           }

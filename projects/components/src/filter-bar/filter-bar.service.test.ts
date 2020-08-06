@@ -1,5 +1,5 @@
 import { NavigationService } from '@hypertrace/common';
-import { FilterAttribute } from '@hypertrace/components';
+import { FilterAttribute, FilterType } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { FilterBarService } from './filter-bar.service';
 import { NumberFilterBuilder } from './filter/builder/number-filter-builder';
@@ -16,21 +16,13 @@ describe('Filter Bar service', () => {
       name: 'duration',
       displayName: 'Latency',
       units: 'ms',
-      type: 'number',
-      scope: 'SPAN_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'apiName',
       displayName: 'API Name',
       units: '',
-      type: 'string',
-      scope: 'SPAN_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.String
     }
   ];
 

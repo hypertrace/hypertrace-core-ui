@@ -1,13 +1,12 @@
-import { UserFilterOperator } from '@hypertrace/components';
+import { FilterAttribute, FilterType, UserFilterOperator } from '@hypertrace/components';
 import { createServiceFactory } from '@ngneat/spectator/jest';
-import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterBuilderService } from './graphql-filter-builder.service';
 
 describe('Graphql filter builder service', () => {
   const serviceFactory = createServiceFactory({ service: GraphQlFilterBuilderService });
-  const buildFilter = (metadata: AttributeMetadata, operator: UserFilterOperator, value: string | number) => ({
+  const buildFilter = (metadata: FilterAttribute, operator: UserFilterOperator, value: string | number) => ({
     metadata: metadata,
     field: metadata.name,
     operator: operator,
@@ -16,20 +15,20 @@ describe('Graphql filter builder service', () => {
     urlString: ''
   });
   // tslint:disable-next-line: no-object-literal-type-assertion
-  const attribute1 = {
+  const attribute1: FilterAttribute = {
     name: 'attr1',
     displayName: 'Attribute 1',
-    type: AttributeMetadataType.Number
-  } as AttributeMetadata;
+    type: FilterType.Number
+  };
 
   // tslint:disable-next-line: no-object-literal-type-assertion
-  const attribute2 = {
+  const attribute2: FilterAttribute = {
     name: 'attr2',
     displayName: 'Attribute 2',
-    type: AttributeMetadataType.String
-  } as AttributeMetadata;
+    type: FilterType.String
+  };
 
-  test('can buid graphql filters', () => {
+  test('can build graphql filters', () => {
     const spectator = serviceFactory();
 
     expect(

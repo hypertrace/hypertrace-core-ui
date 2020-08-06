@@ -1,3 +1,4 @@
+import { FilterType } from '../../filter-type';
 import { UserFilterOperator } from '../filter-api';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 
@@ -12,8 +13,8 @@ export class StringFilterBuilder extends AbstractFilterBuilder<string | undefine
     return converted === undefined ? '' : converted;
   }
 
-  public supportedValue(): string {
-    return 'STRING';
+  public supportedValue(): FilterType {
+    return FilterType.String;
   }
 
   public supportedOperators(): UserFilterOperator[] {

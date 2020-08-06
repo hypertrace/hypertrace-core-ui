@@ -61,6 +61,7 @@ export * from './filter-bar/filter-bar.module';
 export * from './filter-bar/filter-bar.service';
 export * from './filter-bar/filter-bar.component';
 export * from './filter-bar/filter/filter-api';
+export * from './filter-bar/filter-type';
 export * from './filter-bar/filter-attribute';
 
 // Header

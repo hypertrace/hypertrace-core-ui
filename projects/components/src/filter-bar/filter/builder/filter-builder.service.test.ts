@@ -1,4 +1,4 @@
-import { FilterAttribute } from '@hypertrace/components';
+import { FilterAttribute, FilterType } from '@hypertrace/components';
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator/jest';
 import { FilterBuilderService } from './filter-builder.service';
 import { NumberFilterBuilder } from './number-filter-builder';
@@ -12,51 +12,31 @@ describe('Filter Builder service', () => {
       name: 'calls',
       displayName: 'Calls',
       units: '',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'duration',
       displayName: 'Latency',
       units: 'ms',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'name',
       displayName: 'Name',
       units: '',
-      type: 'STRING',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.String
     },
     {
       name: 'endTime',
       displayName: 'End Time',
       units: '',
-      type: 'TIMESTAMP',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Timestamp
     },
     {
       name: 'tags',
       displayName: 'Tags',
       units: '',
-      type: 'STRING_MAP',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.StringMap
     }
   ];
 

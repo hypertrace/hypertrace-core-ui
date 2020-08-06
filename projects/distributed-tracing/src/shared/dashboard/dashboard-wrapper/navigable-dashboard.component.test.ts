@@ -2,6 +2,7 @@ import {
   Filter,
   FilterAttribute,
   FilterBarComponent,
+  FilterType,
   LoadAsyncModule,
   UserFilterOperator
 } from '@hypertrace/components';
@@ -11,7 +12,6 @@ import { Dashboard } from '@hypertrace/hyperdash';
 import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { of } from 'rxjs';
-import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-filter-data-source.model';
@@ -24,31 +24,19 @@ describe('Navigable dashboard component', () => {
       name: 'calls',
       displayName: 'Calls',
       units: '',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'duration',
       displayName: 'Latency',
       units: 'ms',
-      type: 'LONG',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'durationSelf',
       displayName: 'Self Latency',
       units: 'ms',
-      type: 'STRING',
-      scope: 'TRACE_SCOPE',
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.String
     }
   ];
 
@@ -164,15 +152,19 @@ describe('Navigable dashboard component', () => {
       refresh: jest.fn()
     };
     spectator.component.onDashboardReady(mockDashboard as Dashboard);
-    const explicitFilter = {
+    const explicitFilter: Filter = {
       metadata: {
-        type: AttributeMetadataType.String
+        name: 'test',
+        displayName: 'Test',
+        type: FilterType.String
       },
       field: 'foo',
       operator: UserFilterOperator.Equals,
-      value: 'bar'
+      value: 'bar',
+      userString: '',
+      urlString: ''
     };
-    spectator.query(FilterBarComponent)?.filtersChange.next([explicitFilter as Filter]);
+    spectator.query(FilterBarComponent)?.filtersChange.next([explicitFilter]);
     expect(mockDataSource.addFilters).toHaveBeenCalledWith(
       expect.objectContaining({ key: 'foo', operator: GraphQlOperatorType.Equals, value: 'bar' })
     );

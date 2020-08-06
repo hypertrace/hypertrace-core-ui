@@ -1,11 +1,12 @@
 import { assertUnreachable, collapseWhitespace } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-attribute';
+import { FilterType } from '../../filter-type';
 import { Filter, UrlFilterOperator, UserFilterOperator } from '../filter-api';
 
 export abstract class AbstractFilterBuilder<T> {
   public abstract convertValue(value: unknown): T;
   public abstract convertValueToString(value: unknown): string;
-  public abstract supportedValue(): string;
+  public abstract supportedValue(): FilterType;
   public abstract supportedOperators(): UserFilterOperator[];
 
   public buildFiltersForAvailableOperators(attribute: FilterAttribute): Filter<T>[] {

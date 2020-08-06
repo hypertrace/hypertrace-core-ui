@@ -6,11 +6,11 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { TypedSimpleChanges } from '@hypertrace/common';
 import { IconSize } from '@hypertrace/components';
 import { FilterAttribute } from './filter-attribute';
 import { FilterBarService } from './filter-bar.service';
@@ -65,15 +65,15 @@ import { Filter } from './filter/filter-api';
     <div [innerHTML]="this.instructions" class="instructions"></div>
   `
 })
-export class FilterBarComponent implements OnChanges {
+export class FilterBarComponent implements OnChanges, OnInit {
   @Input()
-  public readonly attributes?: FilterAttribute[] | null; // Required
+  public attributes?: FilterAttribute[]; // Required
 
   @Input()
-  public readonly filters?: Filter[] = [];
+  public filters?: Filter[] = [];
 
   @Input()
-  public readonly syncWithUrl: boolean = false;
+  public syncWithUrl: boolean = false;
 
   @Output()
   public readonly filtersChange: EventEmitter<Filter[]> = new EventEmitter();
@@ -93,42 +93,31 @@ export class FilterBarComponent implements OnChanges {
     private readonly filterBarService: FilterBarService
   ) {}
 
-  public ngOnChanges(changes: TypedSimpleChanges<this>): void {
-    if (changes.attributes) {
-      this.onFiltersChanged(this.filters || []);
-      this.readFromUrlFilters();
-    }
-
-    if (changes.syncWithUrl && this.hasAttributes()) {
-      this.readFromUrlFilters();
-    }
-
-    if (changes.filters && this.hasAttributes()) {
-      this.onFiltersChanged(this.filters || []);
+  public ngOnChanges(): void {
+    if (!!this.attributes) {
+      this.syncWithUrl ? this.readFromUrlFilters() : this.onFiltersChanged(this.filters || [], false);
     }
   }
 
-  private hasAttributes(): boolean {
-    return this.attributes !== undefined && this.attributes !== null;
+  public ngOnInit(): void {
+    if (this.syncWithUrl && !!this.attributes) {
+      this.readFromUrlFilters();
+    }
   }
 
-  private onFiltersChanged(filters: Filter[]): void {
+  private onFiltersChanged(filters: Filter[], emit: boolean = true): void {
     this.internalFilters = [...filters];
     this.changeDetector.markForCheck();
 
-    this.filtersChange.emit(this.internalFilters);
-
-    if (this.syncWithUrl && this.hasAttributes()) {
+    if (this.syncWithUrl && !!this.attributes) {
       this.writeToUrlFilter();
     }
+
+    emit && this.filtersChange.emit(this.internalFilters);
   }
 
   private readFromUrlFilters(): void {
-    if (this.syncWithUrl) {
-      this.onFiltersChanged(this.filterBarService.getUrlFilters(this.attributes || []));
-    } else {
-      this.onFiltersChanged(this.filters || []);
-    }
+    this.internalFilters = this.filterBarService.getUrlFilters(this.attributes || []);
   }
 
   private writeToUrlFilter(): void {
