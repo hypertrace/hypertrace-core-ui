@@ -8,16 +8,15 @@
 
   height: 100%;
   width: 100%;
-  padding: 24px 5px 5px 8px;
+  padding-right: 5px;
   justify-content: space-between;
-  border-right: 1px solid $gray-2;
 
   .content {
     .nav-header {
       @include overline($gray-9);
-      padding-top: 20px;
+      padding-top: 24px;
       padding-left: 14px;
-      padding-bottom: 4px;
+      padding-bottom: 8px;
     }
   }
 
@@ -25,7 +24,7 @@
     position: absolute;
     display: flex;
     align-items: center;
-    top: 28px;
+    top: 6px;
     right: -12px;
     height: 28px;
     width: 12px;

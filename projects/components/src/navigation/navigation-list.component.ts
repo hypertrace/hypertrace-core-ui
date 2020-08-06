@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
 import { NavigationService } from '@hypertrace/common';
 import { Observable } from 'rxjs';
@@ -10,11 +10,11 @@ import { IconSize } from '../icon/icon-size';
   styleUrls: ['./navigation-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nav class="navigation-list" [ngClass]="{ expanded: !this.isCollapsed }">
-      <div class="content" *htcLetAsync="this.activeItem$ as activeItem" [htcLayoutChangeTrigger]="this.isCollapsed">
+    <nav class="navigation-list" [ngClass]="{ expanded: !this.collapsed }">
+      <div class="content" *htcLetAsync="this.activeItem$ as activeItem" [htcLayoutChangeTrigger]="this.collapsed">
         <ng-container *ngFor="let item of this.navItems">
           <ng-container [ngSwitch]="item.type">
-            <div *ngIf="!this.isCollapsed">
+            <div *ngIf="!this.collapsed">
               <div *ngSwitchCase="'${NavItemType.Header}'" class="nav-header">
                 {{ item.label }}
               </div>
@@ -26,7 +26,7 @@ import { IconSize } from '../icon/icon-size';
               <htc-nav-item
                 [config]="item"
                 [active]="item === activeItem"
-                [collapsed]="this.isCollapsed"
+                [collapsed]="this.collapsed"
                 (click)="this.navigate(item)"
               >
               </htc-nav-item>
@@ -35,8 +35,8 @@ import { IconSize } from '../icon/icon-size';
         </ng-container>
       </div>
 
-      <div class="resize-tab-button" (click)="this.toggleView()">
-        <htc-icon class="resize-icon" [icon]="this.resizeIcon" size="${IconSize.Small}"></htc-icon>
+      <div class="resize-tab-button" (click)="this.toggleView()" *ngIf="this.resizable">
+        <htc-icon class="resize-icon" [icon]="this.getResizeIcon()" size="${IconSize.Small}"></htc-icon>
       </div>
 
       <div class="footer" *ngIf="this.footerItems">
@@ -44,8 +44,8 @@ import { IconSize } from '../icon/icon-size';
 
         <div *ngFor="let footerItem of footerItems" class="footer-item">
           <htc-link class="link" [url]="footerItem.url">
-            <htc-icon *ngIf="this.isCollapsed" [icon]="footerItem.icon" size="${IconSize.Small}"></htc-icon>
-            <htc-label *ngIf="!this.isCollapsed" [label]="footerItem.label"></htc-label>
+            <htc-icon *ngIf="this.collapsed" [icon]="footerItem.icon" size="${IconSize.Small}"></htc-icon>
+            <htc-label *ngIf="!this.collapsed" [label]="footerItem.label"></htc-label>
           </htc-link>
         </div>
       </div>
@@ -59,10 +59,16 @@ export class NavigationListComponent {
   @Input()
   public footerItems?: FooterItemConfig[];
 
-  public readonly activeItem$: Observable<NavItemLinkConfig | undefined>;
+  @Input()
+  public collapsed?: boolean = false;
 
-  public isCollapsed: boolean = false;
-  public resizeIcon: IconType = IconType.TriangleLeft;
+  @Input()
+  public resizable?: boolean = true;
+
+  @Output()
+  public readonly collapsedChange: EventEmitter<boolean> = new EventEmitter();
+
+  public readonly activeItem$: Observable<NavItemLinkConfig | undefined>;
 
   public constructor(private readonly navigationService: NavigationService) {
     this.activeItem$ = this.navigationService.navigation$.pipe(
@@ -72,21 +78,25 @@ export class NavigationListComponent {
   }
 
   public navigate(item: NavItemLinkConfig): void {
-    this.navigationService.navigateWithinApp([item.matchPaths[0]]);
+    this.navigationService.navigateWithinApp(item.matchPaths);
   }
 
   public toggleView(): void {
-    this.isCollapsed = !this.isCollapsed;
-    this.resizeIcon = this.isCollapsed ? IconType.TriangleRight : IconType.TriangleLeft;
+    if (this.resizable) {
+      this.collapsed = !this.collapsed;
+      this.collapsedChange.emit(this.collapsed);
+    }
+  }
+
+  public getResizeIcon(): IconType {
+    return this.collapsed ? IconType.TriangleRight : IconType.TriangleLeft;
   }
 
   private findActiveItem(navItems: NavItemConfig[]): NavItemLinkConfig | undefined {
     return navItems
       .filter((item): item is NavItemLinkConfig => item.type === NavItemType.Link)
       .find(linkItem =>
-        linkItem.matchPaths.some(matchPath =>
-          this.navigationService.isRelativePathActive([matchPath], this.navigationService.rootRoute())
-        )
+        this.navigationService.isRelativePathActive(linkItem.matchPaths, this.navigationService.rootRoute())
       );
   }
 }

@@ -63,18 +63,16 @@ describe('Navigation List Component', () => {
     const footerItemsCount = spectator.component.footerItems?.length;
     expect(spectator.queryAll('.footer-item').length).toBe(footerItemsCount);
   });
-  test('should collapse when collapse nav-item element is clicked', () => {
-    const navItems: NavItemConfig[] = [
-      {
-        type: NavItemType.Link,
-        icon: 'icon',
-        label: 'label',
-        matchPaths: ['']
-      }
-    ];
-    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`, { props: { navItems: navItems } });
-    expect(spectator.query(IconComponent)!.icon).toEqual(IconType.TriangleLeft);
-    spectator.triggerEventHandler('.resize-tab-button', 'click', undefined);
-    expect(spectator.query(IconComponent)!.icon).toEqual(IconType.TriangleRight);
+
+  test('should update layout when collapsed preference is updated', () => {
+    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`);
+    expect(spectator.query('.navigation-list')).toHaveClass('expanded');
+    expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleLeft);
+    spectator.setInput({
+      collapsed: true
+    });
+    spectator.detectChanges();
+    expect(spectator.query('.navigation-list')).not.toHaveClass('expanded');
+    expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleRight);
   });
 });

@@ -34,7 +34,6 @@ const iconsRootPath = 'assets/icons';
         { key: IconType.Compare, url: `${iconsRootPath}/compare.svg` },
         { key: IconType.CopyToClipboard, url: `${iconsRootPath}/copy-to-clipboard.svg` },
         { key: IconType.Custom, url: `${iconsRootPath}/custom.svg` },
-        { key: IconType.CustomWebhook, url: 'assets/custom-webhook.svg' },
         { key: IconType.Dashboard, url: `${iconsRootPath}/dashboard.svg` },
         { key: IconType.Device, url: `${iconsRootPath}/device.svg` },
         { key: IconType.Edge, url: `${iconsRootPath}/edge.svg` },
