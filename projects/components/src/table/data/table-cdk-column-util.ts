@@ -11,8 +11,7 @@ export namespace TableCdkColumnUtil {
     columnConfigs.filter(
       columnConfig =>
         columnConfig.renderer !== StandardTableCellRendererType.RowExpander &&
-        columnConfig.renderer !== StandardTableCellRendererType.Checkbox &&
-        columnConfig.visible
+        columnConfig.renderer !== StandardTableCellRendererType.Checkbox
     );
 
   export const unsortOtherColumns = (sortedColumn: TableColumnConfig, otherColumns: TableColumnConfig[]): void =>
