@@ -277,6 +277,7 @@ export class TableComponent
     }
 
     if (changes.selections) {
+      // Unselect all the rows and only check the latest selected ones
       this.dataSource?.unselectAllRows();
       this.selections?.forEach(row => {
         row.$$state.selected = true;
@@ -409,7 +410,7 @@ export class TableComponent
   }
 
   public toggleRowSelected(row: StatefulTableRow): void {
-    const rowSelections = this.selections ?? [];
+    const rowSelections = [...(this.selections ?? [])];
     const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
     rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
     this.selectionsChange.emit(rowSelections);

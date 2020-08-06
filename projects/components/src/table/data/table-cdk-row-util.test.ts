@@ -475,37 +475,6 @@ describe('Table row util', () => {
     expect(TableCdkRowUtil.isEqualExceptState(cloned, childStatefulTableRow)).toEqual(false);
   });
 
-  test('should select all the rows', () => {
-    const row1: StatefulTableRow = {
-      $$state: {
-        parent: undefined,
-        expanded: true,
-        selected: false,
-        root: true,
-        leaf: false,
-        depth: 0
-      },
-      one: '1'
-    };
-
-    const row2: StatefulTableRow = {
-      $$state: {
-        parent: undefined,
-        expanded: true,
-        selected: false,
-        root: true,
-        leaf: false,
-        depth: 0
-      },
-      one: '1',
-      two: '2',
-      three: '3'
-    };
-
-    const rows = TableCdkRowUtil.selectAllRows([row1, row2]);
-    rows.forEach(row => expect(row.$$state.selected).toBeTruthy());
-  });
-
   test('should unselect all the rows', () => {
     const row1: StatefulTableRow = {
       $$state: {
