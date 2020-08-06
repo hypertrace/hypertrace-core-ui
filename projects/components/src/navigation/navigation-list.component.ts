@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { NavigationService, PreferenceService } from '@hypertrace/common';
+import { NavigationService } from '@hypertrace/common';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { IconSize } from '../icon/icon-size';
@@ -53,7 +53,6 @@ import { IconSize } from '../icon/icon-size';
   `
 })
 export class NavigationListComponent {
-  private static readonly COLLAPSED_PREFERENCE: string = 'navigation-list.collapsed';
   @Input()
   public navItems: NavItemConfig[] = [];
 
@@ -75,10 +74,6 @@ export class NavigationListComponent {
     this.activeItem$ = this.navigationService.navigation$.pipe(
       startWith(this.navigationService.getCurrentActivatedRoute()),
       map(() => this.findActiveItem(this.navItems))
-    );
-    this.isCollapsed$ = this.preferenceService.get(NavigationListComponent.COLLAPSED_PREFERENCE, false);
-    this.resizeIcon$ = this.isCollapsed$.pipe(
-      map(isCollapsed => (isCollapsed ? IconType.TriangleRight : IconType.TriangleLeft))
     );
   }
 

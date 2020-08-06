@@ -2,7 +2,7 @@ import { IconType } from '@hypertrace/assets-library';
 import { NavigationService, PreferenceService } from '@hypertrace/common';
 import { createHostFactory, mockProvider, SpectatorHost } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { IconComponent } from '../icon/icon.component';
 import { LetAsyncModule } from '../let-async/let-async.module';
 import { FooterItemConfig, NavigationListComponent, NavItemConfig, NavItemType } from './navigation-list.component';
