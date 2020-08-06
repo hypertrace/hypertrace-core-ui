@@ -9,6 +9,7 @@ import {
 } from '../table-api';
 import { TableCdkRowUtil } from './table-cdk-row-util';
 
+// tslint:disable max-file-line-count
 describe('Table row util', () => {
   let parentTableRow: TableRow;
   let childTableRow: TableRow;
@@ -472,5 +473,67 @@ describe('Table row util', () => {
 
     cloned.one = 'three';
     expect(TableCdkRowUtil.isEqualExceptState(cloned, childStatefulTableRow)).toEqual(false);
+  });
+
+  test('should select all the rows', () => {
+    const row1: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: false,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1'
+    };
+
+    const row2: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: false,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const rows = TableCdkRowUtil.selectAllRows([row1, row2]);
+    rows.forEach(row => expect(row.$$state.selected).toBeTruthy());
+  });
+
+  test('should unselect all the rows', () => {
+    const row1: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1'
+    };
+
+    const row2: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const rows = TableCdkRowUtil.unselectAllRows([row1, row2]);
+    rows.forEach(row => expect(row.$$state.selected).toBeFalsy());
   });
 });

@@ -285,7 +285,7 @@ describe('Table component', () => {
     };
 
     const multiSelectRowColumnConfig = spectator.component.columnConfigsSubject.value[0];
-    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelection');
+    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelected');
     spectator.component.onDataCellClick(multiSelectRowColumnConfig, row);
     expect(spyToggleRowSelection).toHaveBeenCalledWith(row);
   });
@@ -319,21 +319,19 @@ describe('Table component', () => {
     };
 
     {
-      spectator.component.toggleRowSelection(row);
+      spectator.component.toggleRowSelected(row);
 
       const selections = spectator.component.selections;
-      expect(row.$$state.selected).toBeTruthy();
       expect(selections).toBeDefined();
       expect(selections!.length).toEqual(1);
-      expect(selections![0]).toEqual(row);
+      expect(selections!.includes(row)).toBeTruthy();
       expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
     }
 
     {
-      spectator.component.toggleRowSelection(row);
+      spectator.component.toggleRowSelected(row);
 
       const selections = spectator.component.selections;
-      expect(row.$$state.selected).toBeFalsy();
       expect(selections).toBeDefined();
       expect(selections!.length).toEqual(0);
       expect(mockSelectionsChange).toHaveBeenCalledWith([]);
