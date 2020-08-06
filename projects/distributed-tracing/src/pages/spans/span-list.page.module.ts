@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TraceRoute } from '@hypertrace/common';
-import { FilterBarModule } from '../../shared/components/filter-bar/filter-bar.module';
+import { NavigableDashboardModule } from '../../shared/dashboard/dashboard-wrapper/navigable-dashboard.module';
 import { TracingDashboardModule } from '../../shared/dashboard/tracing-dashboard.module';
 import { SpanListPageComponent } from './span-list.page.component';
+import { spanListDashboard } from './span-list.page.dashboard';
 
 const ROUTE_CONFIG: TraceRoute[] = [
   {
@@ -14,7 +15,12 @@ const ROUTE_CONFIG: TraceRoute[] = [
 ];
 
 @NgModule({
-  imports: [TracingDashboardModule, CommonModule, FilterBarModule, RouterModule.forChild(ROUTE_CONFIG)],
+  imports: [
+    TracingDashboardModule,
+    CommonModule,
+    NavigableDashboardModule.withDefaultDashboards(spanListDashboard),
+    RouterModule.forChild(ROUTE_CONFIG)
+  ],
   declarations: [SpanListPageComponent]
 })
 export class SpanListPageModule {}

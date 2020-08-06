@@ -54,7 +54,7 @@ export class DateFormatter {
         return 'd MMM y h:mm a';
       case DateFormatMode.DateAndTimeWithSeconds:
       default:
-        return 'y-M-d hh:mm:ss a';
+        return 'y-MM-dd hh:mm:ss a';
     }
   }
 }

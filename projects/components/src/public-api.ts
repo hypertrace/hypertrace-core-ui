@@ -219,5 +219,10 @@ export { ToggleButtonGroupComponent } from './toggle-button-group/toggle-button-
 export { ToggleButtonModule } from './toggle-button-group/toggle-button.module';
 export { ToggleViewMode } from './toggle-button-group/toggle-button';
 
+// Toggle Group
+export * from './toggle-group/toggle-group.module';
+export * from './toggle-group/toggle-group.component';
+export * from './toggle-group/toggle-item';
+
 // Tooltip
 export { TooltipModule } from './tooltip/tooltip.module';

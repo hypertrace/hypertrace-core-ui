@@ -5,8 +5,8 @@ export const POPOVER_CONTAINER_DATA = new InjectionToken<PopoverContainerData>('
 
 @Component({
   selector: 'htc-popover-container',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./popover-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-container *ngIf="this.isComponentRenderer; else templateRenderer">
       <ng-container

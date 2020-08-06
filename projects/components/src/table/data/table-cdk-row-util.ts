@@ -35,6 +35,7 @@ export namespace TableCdkRowUtil {
   const buildInitialRowState = (row: TableRow, parent?: StatefulTableRow): TableRowState => ({
     parent: parent,
     expanded: false,
+    selected: false,
     root: !parent,
     children: isStatefulPrefetchedTreeTableRow(row) ? row.$$state.children : undefined,
     leaf: isStatefulPrefetchedTreeTableRow(row) ? row.$$state.children.length === 0 : !!parent,

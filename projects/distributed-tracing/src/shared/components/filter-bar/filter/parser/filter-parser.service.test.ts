@@ -17,7 +17,8 @@ describe('Filter Parser service', () => {
     type: AttributeMetadataType.Number,
     scope: TRACE_SCOPE,
     requiresAggregation: false,
-    allowedAggregations: []
+    allowedAggregations: [],
+    groupable: false
   };
 
   const numberBuilder = new NumberFilterBuilder();

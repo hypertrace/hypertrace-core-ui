@@ -6,12 +6,16 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   Output,
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { TypedSimpleChanges } from '@hypertrace/common';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
@@ -34,6 +38,7 @@ import {
   TableStyle
 } from './table-api';
 
+// tslint:disable max-file-line-count
 @Component({
   selector: 'htc-table',
   styleUrls: ['./table.component.scss'],
@@ -133,7 +138,12 @@ import {
 
     <!-- Pagination -->
     <div class="pagination-controls" *ngIf="this.pageable">
-      <htc-paginator></htc-paginator>
+      <htc-paginator
+        *htcLetAsync="this.urlPageData$ as pageData"
+        (pageChange)="this.onPageChange($event)"
+        [pageSize]="pageData?.pageSize"
+        [pageIndex]="pageData?.pageIndex"
+      ></htc-paginator>
     </div>
   `
 })
@@ -141,17 +151,32 @@ export class TableComponent
   implements
     OnChanges,
     AfterViewInit,
+    OnDestroy,
     ColumnConfigProvider,
     TableDataSourceProvider,
     FilterProvider,
     ColumnStateChangeProvider,
     RowStateChangeProvider {
+  private static readonly PAGE_INDEX_URL_PARAM: string = 'page';
+  private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
+  private static readonly SORT_COLUMN_URL_PARAM: string = 'sort-by';
+  private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
     field: '$$state',
     width: '32px',
     visible: true,
     renderer: StandardTableCellRendererType.RowExpander,
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
+  };
+
+  private readonly multiSelectRowColumnConfig: TableColumnConfig = {
+    field: '$$state',
+    width: '32px',
+    visible: true,
+    renderer: StandardTableCellRendererType.Checkbox,
+    onClick: (row: StatefulTableRow) => {
+      this.toggleRowSelection(row);
+    }
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
@@ -189,15 +214,16 @@ export class TableComponent
   public initialExpandAll?: boolean = false;
 
   @Input()
-  public selection?: StatefulTableRow;
+  public selections?: StatefulTableRow[] = [];
 
   @Input()
   public hovered?: StatefulTableRow;
 
+  @Input()
+  public syncWithUrl?: boolean = false;
+
   @Output()
-  public readonly selectionChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
-    StatefulTableRow | undefined
-  >();
+  public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
 
   @Output()
   public readonly hoveredChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -228,10 +254,24 @@ export class TableComponent
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
   public readonly rowState$: Observable<StatefulTableRow | undefined> = this.rowStateSubject.asObservable();
   public readonly columnState$: Observable<TableColumnConfig | undefined> = this.columnStateSubject.asObservable();
+  public readonly urlPageData$: Observable<Partial<PageEvent> | undefined> = this.activatedRoute.queryParamMap.pipe(
+    map(params => this.pageDataFromUrl(params))
+  );
 
   public dataSource?: TableCdkDataSource;
 
-  public constructor(private readonly changeDetector: ChangeDetectorRef) {}
+  public constructor(
+    private readonly changeDetector: ChangeDetectorRef,
+    private readonly navigationService: NavigationService,
+    private readonly activatedRoute: ActivatedRoute
+  ) {
+    combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
+      .pipe(
+        map(([queryParamMap, columns]) => this.sortDataFromUrl(queryParamMap, columns)),
+        filter((sort): sort is Required<SortedColumn> => sort !== undefined)
+      )
+      .subscribe(sort => this.updateSort(sort));
+  }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfigs || changes.detailContent) {
@@ -250,14 +290,37 @@ export class TableComponent
     this.changeDetector.detectChanges();
   }
 
+  public ngOnDestroy(): void {
+    this.filterSubject.complete();
+    this.rowStateSubject.complete();
+    this.columnStateSubject.complete();
+    this.columnConfigsSubject.complete();
+  }
+
   public onHeaderCellClick(columnConfig: TableColumnConfig): void {
-    this.toggleColumnSort(columnConfig);
+    this.updateSort({
+      column: columnConfig,
+      direction: this.getNextSortDirection(columnConfig.sort)
+    });
+
+    if (this.syncWithUrl) {
+      this.navigationService.addQueryParametersToUrl({
+        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.field,
+        [TableComponent.SORT_DIRECTION_URL_PARAM]: columnConfig.sort
+      });
+    }
   }
 
   public onDataCellClick(columnConfig: TableColumnConfig, row: StatefulTableRow): void {
     // NOTE: Cell Renderers generally handle their own clicks. We should only perform table actions here.
     if (this.isExpanderColumn(columnConfig)) {
       this.toggleRowExpanded(row);
+
+      return;
+    }
+
+    if (this.isCheckboxColumn(columnConfig)) {
+      this.toggleRowSelection(row);
 
       return;
     }
@@ -314,6 +377,10 @@ export class TableComponent
       return [this.expandableToggleColumnConfig, ...this.columnConfigs];
     }
 
+    if (this.hasMultiSelectableRows()) {
+      return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
+    }
+
     return this.columnConfigs;
   }
 
@@ -335,24 +402,20 @@ export class TableComponent
       .map(columnConfig => columnConfig.field);
   }
 
-  private toggleColumnSort(columnConfig: TableColumnConfig): void {
-    // Order: undefined -> Ascending -> Descending -> undefined
-    switch (columnConfig.sort) {
-      case TableSortDirection.Ascending:
-        columnConfig.sort = TableSortDirection.Descending;
-        break;
-      case TableSortDirection.Descending:
-        columnConfig.sort = undefined;
-        break;
-      default:
-        columnConfig.sort = TableSortDirection.Ascending;
-    }
-    this.columnStateSubject.next(columnConfig);
+  private updateSort(sort: SortedColumn): void {
+    sort.column.sort = sort.direction;
+    this.columnStateSubject.next(sort.column);
   }
 
   public toggleRowSelection(row: StatefulTableRow): void {
-    this.selection = this.selection === row ? undefined : row;
-    this.selectionChange.emit(this.selection);
+    row.$$state.selected = !row.$$state.selected;
+
+    const rowSelections = this.selections ?? [];
+    this.selections = rowSelections.includes(row)
+      ? rowSelections.filter(selection => selection !== row)
+      : rowSelections.concat(row);
+    this.selectionsChange.emit(this.selections);
+
     this.changeDetector.markForCheck();
   }
 
@@ -383,8 +446,15 @@ export class TableComponent
     return columnConfig === this.expandableToggleColumnConfig;
   }
 
+  public isCheckboxColumn(columnConfig: TableColumnConfig): boolean {
+    return columnConfig === this.multiSelectRowColumnConfig;
+  }
+
   public isSelectedRow(row: StatefulTableRow): boolean {
-    return this.selection !== undefined && TableCdkRowUtil.isEqualExceptState(row, this.selection);
+    return (
+      this.selections !== undefined &&
+      this.selections.some(selection => TableCdkRowUtil.isEqualExceptState(row, selection))
+    );
   }
 
   public isHoveredRow(row: StatefulTableRow): boolean {
@@ -393,6 +463,10 @@ export class TableComponent
 
   public isChildRow(row: StatefulTableRow): boolean {
     return !!row.$$state.parent;
+  }
+
+  public isFlatType(): boolean {
+    return this.mode === TableMode.Flat;
   }
 
   public isDetailType(): boolean {
@@ -407,8 +481,16 @@ export class TableComponent
     return this.display !== TableStyle.List;
   }
 
+  public isMultiSelect(): boolean {
+    return this.selectionMode === TableSelectionMode.Multiple;
+  }
+
   public hasExpandableRows(): boolean {
     return this.isDetailType() || this.isTreeType();
+  }
+
+  public hasMultiSelectableRows(): boolean {
+    return this.isFlatType() && this.isMultiSelect();
   }
 
   public isDetailExpanded(row: StatefulTableRow): boolean {
@@ -422,4 +504,55 @@ export class TableComponent
   public isRowExpanded(row: StatefulTableRow): boolean {
     return this.hasExpandableRows() && row.$$state.expanded;
   }
+
+  public onPageChange(pageEvent: PageEvent): void {
+    if (this.syncWithUrl) {
+      this.navigationService.addQueryParametersToUrl({
+        [TableComponent.PAGE_INDEX_URL_PARAM]: pageEvent.pageIndex,
+        [TableComponent.PAGE_SIZE_URL_PARAM]: pageEvent.pageSize
+      });
+    }
+  }
+
+  private getNextSortDirection(sortDirection?: TableSortDirection): TableSortDirection | undefined {
+    // Order: undefined -> Ascending -> Descending -> undefined
+    switch (sortDirection) {
+      case TableSortDirection.Ascending:
+        return TableSortDirection.Descending;
+      case TableSortDirection.Descending:
+        return undefined;
+      default:
+        return TableSortDirection.Ascending;
+    }
+  }
+
+  private pageDataFromUrl(params: ParamMap): Partial<PageEvent> | undefined {
+    return this.syncWithUrl
+      ? {
+          pageSize: new NumberCoercer().coerce(params.get(TableComponent.PAGE_SIZE_URL_PARAM)),
+          pageIndex: new NumberCoercer().coerce(params.get(TableComponent.PAGE_INDEX_URL_PARAM))
+        }
+      : undefined;
+  }
+
+  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfig[]): Required<SortedColumn> | undefined {
+    if (!this.syncWithUrl) {
+      return undefined;
+    }
+
+    const sortColumn = columns.find(column => column.field === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
+    const sortDirection = params.get(TableComponent.SORT_DIRECTION_URL_PARAM) as TableSortDirection | null;
+
+    return sortColumn && sortDirection
+      ? {
+          column: sortColumn,
+          direction: sortDirection
+        }
+      : undefined;
+  }
+}
+
+interface SortedColumn {
+  column: TableColumnConfig;
+  direction?: TableSortDirection;
 }

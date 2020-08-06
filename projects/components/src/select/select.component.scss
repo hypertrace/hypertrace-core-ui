@@ -1,5 +1,4 @@
-@import 'color-palette';
-@import 'font';
+@import 'mixins';
 
 :host {
   width: 100%;
@@ -15,7 +14,7 @@
 .select {
   display: flex;
   align-items: center;
-  border: 1px solid $gray-2;
+  border: 1px solid $color-border;
   border-radius: 6px;
   height: 100%;
   width: 100%;
@@ -26,10 +25,6 @@
 
   &.disabled {
     opacity: 0.4;
-  }
-
-  &.primary {
-    background: $green-3;
   }
 
   &.border {
@@ -88,12 +83,9 @@
 }
 
 .select-content {
-  background: white;
-  border: $gray-1 solid 1px;
+  @include dropdown();
   min-width: 120px;
   max-height: 204px;
-  overflow-y: auto;
-  overflow-x: hidden;
 
   .select-option {
     display: flex;

@@ -7,18 +7,20 @@ import { IconSize } from '../icon/icon-size';
   styleUrls: ['./search-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="htc-search-box">
-      <htc-icon icon="${IconType.Search}" size="${IconSize.Large}" class="icon" (click)="onSubmit()"></htc-icon>
+    <div class="htc-search-box" [class.focused]="this.isFocused">
+      <htc-icon icon="${IconType.Search}" size="${IconSize.Medium}" class="icon" (click)="onSubmit()"></htc-icon>
       <input
+        class="input"
         type="text"
         [placeholder]="placeholder"
-        class="input"
         [(ngModel)]="value"
-        (input)="onValueChange()"
-        (keyup.enter)="onSubmit()"
+        (input)="this.onValueChange()"
+        (keyup.enter)="this.onSubmit()"
+        (focus)="this.isFocused = true"
+        (blur)="this.isFocused = false"
       />
       <htc-icon
-        icon="${IconType.Close}"
+        icon="${IconType.CloseCircleFilled}"
         size="${IconSize.Small}"
         class="icon close"
         *ngIf="value"
@@ -40,6 +42,8 @@ export class SearchBoxComponent {
   @Output()
   // tslint:disable-next-line:no-output-native
   public readonly submit: EventEmitter<string> = new EventEmitter();
+
+  public isFocused: boolean = false;
 
   public onSubmit(): void {
     this.submit.emit(this.value);

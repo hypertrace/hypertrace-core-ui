@@ -7,7 +7,7 @@ describe('Color palette', () => {
   });
 
   test('should return first color if one color requested', () => {
-    const colors = ['rgb(0, 0, 0)', 'rgb(100, 100, 100)'];
+    const colors = ['rgb(1, 1, 1)', 'rgb(100, 100, 100)'];
     expect(new ColorPalette(colors).forNColors(1)).toEqual([colors[0]]);
   });
 

@@ -24,7 +24,8 @@ describe('Filter Bar service', () => {
       type: AttributeMetadataType.Number,
       scope: SPAN_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     },
     {
       name: 'apiName',
@@ -33,7 +34,8 @@ describe('Filter Bar service', () => {
       type: AttributeMetadataType.String,
       scope: SPAN_SCOPE,
       requiresAggregation: false,
-      allowedAggregations: []
+      allowedAggregations: [],
+      groupable: false
     }
   ];
 

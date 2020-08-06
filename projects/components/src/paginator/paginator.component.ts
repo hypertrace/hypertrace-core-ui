@@ -64,12 +64,24 @@ export class PaginatorComponent implements OnChanges, PaginationProvider {
   public pageSizeOptions: number[] = [25, 50, 100];
 
   @Input()
-  public pageIndex: number = 0;
+  public set pageIndex(pageIndex: number) {
+    this._pageIndex = pageIndex;
+  }
+  public get pageIndex(): number {
+    return this._pageIndex ?? 0;
+  }
+  private _pageIndex?: number;
 
   @Input()
-  public pageSize: number = 50;
+  public set pageSize(pageSize: number) {
+    this._pageSize = pageSize;
+  }
+  public get pageSize(): number {
+    return this._pageSize ?? 50;
+  }
+  private _pageSize?: number;
 
-  @Input('totalItems')
+  @Input()
   public set totalItems(totalItems: number) {
     this._totalItems = totalItems;
     // This is for supporting the programmatic usage of paginator for the Table chart. This should go away with the Table refactor

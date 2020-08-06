@@ -2,6 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { IconModule } from '../icon/icon.module';
+import { LetAsyncModule } from '../let-async/let-async.module';
 import { LoadAsyncModule } from '../load-async/load-async.module';
 import { PaginatorModule } from '../paginator/paginator.module';
 import { TraceSearchBoxModule } from '../search-box/search-box.module';
@@ -19,7 +20,8 @@ import { TableComponent } from './table.component';
     TableCellRendererModule,
     PaginatorModule,
     TraceSearchBoxModule,
-    LoadAsyncModule
+    LoadAsyncModule,
+    LetAsyncModule
   ],
   declarations: [TableComponent],
   exports: [TableComponent]

@@ -49,6 +49,9 @@ describe('Metadata graphql query handler service', () => {
         },
         {
           path: 'supportedAggregations'
+        },
+        {
+          path: 'groupable'
         }
       ]
     });
@@ -72,7 +75,8 @@ describe('Metadata graphql query handler service', () => {
           GraphQlMetricAggregationType.Avgrate,
           GraphQlMetricAggregationType.Count,
           GraphQlMetricAggregationType.Percentile
-        ]
+        ],
+        groupable: false
       },
       {
         name: 'second',
@@ -81,7 +85,8 @@ describe('Metadata graphql query handler service', () => {
         units: 'ms',
         type: AttributeMetadataType.String,
         onlyAggregationsAllowed: false,
-        supportedAggregations: []
+        supportedAggregations: [],
+        groupable: true
       },
       {
         name: 'Third',
@@ -90,7 +95,8 @@ describe('Metadata graphql query handler service', () => {
         units: 'ms',
         type: AttributeMetadataType.StringMap,
         onlyAggregationsAllowed: false,
-        supportedAggregations: []
+        supportedAggregations: [],
+        groupable: false
       }
     ];
 
@@ -114,7 +120,8 @@ describe('Metadata graphql query handler service', () => {
           MetricAggregationType.P95,
           MetricAggregationType.P90,
           MetricAggregationType.P50
-        ]
+        ],
+        groupable: false
       },
       {
         name: 'second',
@@ -123,7 +130,8 @@ describe('Metadata graphql query handler service', () => {
         units: 'ms',
         type: AttributeMetadataType.String,
         requiresAggregation: false,
-        allowedAggregations: []
+        allowedAggregations: [],
+        groupable: true
       },
       {
         name: 'Third',
@@ -132,7 +140,8 @@ describe('Metadata graphql query handler service', () => {
         units: 'ms',
         type: AttributeMetadataType.StringMap,
         requiresAggregation: false,
-        allowedAggregations: []
+        allowedAggregations: [],
+        groupable: false
       }
     ]);
   });

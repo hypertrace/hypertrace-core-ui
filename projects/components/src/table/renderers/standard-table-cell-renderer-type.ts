@@ -1,7 +1,8 @@
 export const enum StandardTableCellRendererType {
-  Text = 'text',
-  Number = 'number',
-  Timestamp = 'timestamp',
+  Checkbox = 'checkbox',
   Icon = 'icon',
-  RowExpander = 'row-expander'
+  Number = 'number',
+  RowExpander = 'row-expander',
+  Text = 'text',
+  Timestamp = 'timestamp'
 }

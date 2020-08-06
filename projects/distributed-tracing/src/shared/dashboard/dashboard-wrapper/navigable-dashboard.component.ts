@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { TypedSimpleChanges } from '@hypertrace/common';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
 import { EMPTY, Observable } from 'rxjs';
@@ -16,8 +17,8 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
     <div class="navigable-dashboard" *htcLoadAsync="this.dashboardJson$ as dashboardJson">
       <htc-filter-bar
         class="filter-bar"
-        *ngIf="this.showFilterBar"
-        [scope]="this.filterConfig?.scope"
+        *ngIf="this.filterConfig?.filterBar"
+        [scope]="this.filterConfig!.filterBar!.scope"
         [syncWithUrl]="true"
         (filtersChange)="this.onFilterChange($event)"
       >
@@ -31,22 +32,18 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
     </div>
   `
 })
-export class NavigableDashboardComponent implements OnInit {
+export class NavigableDashboardComponent implements OnChanges {
   @Input()
   public readonly defaultJson?: ModelJson;
 
   @Input()
-  public navLocation!: string;
+  public navLocation?: string;
 
   @Input()
   public filterConfig?: NavigableDashboardFilterConfig;
 
   @Output()
   public readonly dashboardReady: EventEmitter<Dashboard> = new EventEmitter();
-
-  public get showFilterBar(): boolean {
-    return !!this.filterConfig && !this.filterConfig.hideFilterBar;
-  }
 
   public dashboardJson$?: Observable<ModelJson>;
   private explicitFilters: Filter[] = [];
@@ -60,12 +57,16 @@ export class NavigableDashboardComponent implements OnInit {
     private readonly graphQlFilterBuilderService: GraphQlFilterBuilderService
   ) {}
 
-  public ngOnInit(): void {
-    this.dashboardJson$ = this.dashboardPersistenceService.getForLocation(this.navLocation).pipe(
-      map(dashboard => dashboard.content),
-      catchError(() => EMPTY),
-      defaultIfEmpty(this.defaultJson)
-    );
+  public ngOnChanges(changeObject: TypedSimpleChanges<this>): void {
+    if (changeObject.navLocation) {
+      const persistedDashboard$ =
+        this.navLocation === undefined ? EMPTY : this.dashboardPersistenceService.getForLocation(this.navLocation);
+      this.dashboardJson$ = persistedDashboard$.pipe(
+        map(dashboard => dashboard.content),
+        catchError(() => EMPTY),
+        defaultIfEmpty(this.defaultJson)
+      );
+    }
   }
 
   public onDashboardReady(dashboard: Dashboard): void {
@@ -91,7 +92,8 @@ export class NavigableDashboardComponent implements OnInit {
 }
 
 export interface NavigableDashboardFilterConfig {
-  scope: string;
-  hideFilterBar?: boolean;
+  filterBar?: {
+    scope: string;
+  };
   implicitFilters?: GraphQlFilter[];
 }

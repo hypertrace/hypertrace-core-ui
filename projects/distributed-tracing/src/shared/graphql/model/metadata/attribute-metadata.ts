@@ -8,6 +8,7 @@ export interface AttributeMetadata {
   scope: string;
   requiresAggregation: boolean;
   allowedAggregations: MetricAggregationType[];
+  groupable: boolean;
 }
 
 export const enum AttributeMetadataType {

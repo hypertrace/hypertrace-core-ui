@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { TableColumnConfig, TableDataSource, TableRow } from '@hypertrace/components';
+import { TableColumnConfig, TableDataSource, TableRow, TableStyle } from '@hypertrace/components';
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
@@ -24,11 +24,13 @@ import { TableWidgetModel } from './table-widget.model';
         [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
         [columnConfigs]="this.columnDefs"
         [mode]="this.model.mode"
+        [selectionMode]="this.model.selectionMode"
         [display]="this.model.style"
         [data]="this.data$ | async"
         [searchable]="this.api.model.searchable"
         [pageable]="this.api.model.pageable"
         [detailContent]="childDetail"
+        [syncWithUrl]="this.syncWithUrl"
       >
       </htc-table>
     </htc-titled-content>
@@ -52,5 +54,9 @@ export class TableWidgetRendererComponent
 
   protected fetchData(): Observable<TableDataSource<TableRow> | undefined> {
     return this.model.getData().pipe(startWith(undefined));
+  }
+
+  public get syncWithUrl(): boolean {
+    return this.model.style === TableStyle.FullPage;
   }
 }

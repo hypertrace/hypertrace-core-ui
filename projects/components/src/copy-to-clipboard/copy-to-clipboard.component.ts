@@ -16,7 +16,7 @@ import { IconType } from '@hypertrace/assets-library';
 import { isNil } from 'lodash-es';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, finalize, switchMap } from 'rxjs/operators';
-import { ButtonStyle } from '../button/button';
+import { ButtonSize, ButtonStyle } from '../button/button';
 import { PopoverPositionType, PopoverRelativePositionLocation } from '../popover/popover';
 import { PopoverRef } from '../popover/popover-ref';
 import { PopoverService } from '../popover/popover.service';
@@ -27,7 +27,7 @@ import { PopoverService } from '../popover/popover.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="htc-copy-to-clipboard" (click)="this.onCopyToClipboard()">
-      <htc-button class="icon" [icon]="this.icon" [display]="this.display"></htc-button>
+      <htc-button class="icon" [icon]="this.icon" [display]="this.display" [size]="this.size"></htc-button>
       <span *ngIf="this.label" class="label">{{ this.label }}</span>
     </div>
     <ng-template #notification>
@@ -38,6 +38,9 @@ import { PopoverService } from '../popover/popover.service';
 export class CopyToClipboardComponent implements OnInit, OnDestroy {
   @Input()
   public display: ButtonStyle = ButtonStyle.Outlined;
+
+  @Input()
+  public size?: ButtonSize = ButtonSize.Medium;
 
   @Input()
   public icon?: IconType = IconType.CopyToClipboard;
