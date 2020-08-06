@@ -1,5 +1,5 @@
+import { UserFilterOperator } from '@hypertrace/components';
 import { createServiceFactory } from '@ngneat/spectator/jest';
-import { UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
 import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';

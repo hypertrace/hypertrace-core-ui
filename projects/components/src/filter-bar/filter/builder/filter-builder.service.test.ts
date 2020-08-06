@@ -1,6 +1,5 @@
+import { FilterAttribute } from '@hypertrace/components';
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator/jest';
-import { AttributeMetadata, AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
-import { TRACE_SCOPE } from '../../../../graphql/model/schema/trace';
 import { FilterBuilderService } from './filter-builder.service';
 import { NumberFilterBuilder } from './number-filter-builder';
 import { StringFilterBuilder } from './string-filter-builder';
@@ -8,13 +7,13 @@ import { StringFilterBuilder } from './string-filter-builder';
 describe('Filter Builder service', () => {
   let spectator: SpectatorService<FilterBuilderService>;
 
-  const attributes: AttributeMetadata[] = [
+  const attributes: FilterAttribute[] = [
     {
       name: 'calls',
       displayName: 'Calls',
       units: '',
-      type: AttributeMetadataType.Number,
-      scope: TRACE_SCOPE,
+      type: 'LONG',
+      scope: 'TRACE_SCOPE',
       requiresAggregation: false,
       allowedAggregations: [],
       groupable: false
@@ -23,8 +22,8 @@ describe('Filter Builder service', () => {
       name: 'duration',
       displayName: 'Latency',
       units: 'ms',
-      type: AttributeMetadataType.Number,
-      scope: TRACE_SCOPE,
+      type: 'LONG',
+      scope: 'TRACE_SCOPE',
       requiresAggregation: false,
       allowedAggregations: [],
       groupable: false
@@ -33,8 +32,8 @@ describe('Filter Builder service', () => {
       name: 'name',
       displayName: 'Name',
       units: '',
-      type: AttributeMetadataType.String,
-      scope: TRACE_SCOPE,
+      type: 'STRING',
+      scope: 'TRACE_SCOPE',
       requiresAggregation: false,
       allowedAggregations: [],
       groupable: false
@@ -43,8 +42,8 @@ describe('Filter Builder service', () => {
       name: 'endTime',
       displayName: 'End Time',
       units: '',
-      type: AttributeMetadataType.Timestamp,
-      scope: TRACE_SCOPE,
+      type: 'TIMESTAMP',
+      scope: 'TRACE_SCOPE',
       requiresAggregation: false,
       allowedAggregations: [],
       groupable: false
@@ -53,8 +52,8 @@ describe('Filter Builder service', () => {
       name: 'tags',
       displayName: 'Tags',
       units: '',
-      type: AttributeMetadataType.StringMap,
-      scope: TRACE_SCOPE,
+      type: 'STRING_MAP',
+      scope: 'TRACE_SCOPE',
       requiresAggregation: false,
       allowedAggregations: [],
       groupable: false

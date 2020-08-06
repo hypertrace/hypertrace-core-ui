@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { assertUnreachable } from '@hypertrace/common';
-import { AttributeMetadata } from '../../../../graphql/model/metadata/attribute-metadata';
+import { FilterAttribute } from '../../filter-attribute';
 import { FilterBuilderService } from '../builder/filter-builder.service';
 import {
   Filter,
@@ -11,7 +11,7 @@ import {
 } from '../filter-api';
 
 interface ParsedFilter {
-  metadata: AttributeMetadata;
+  metadata: FilterAttribute;
   field: string;
   operator?: string;
   value?: unknown;
@@ -23,7 +23,7 @@ interface ParsedFilter {
 export class FilterParserService {
   public constructor(private readonly filterBuilderService: FilterBuilderService) {}
 
-  public parseUserFilterString(filterString: string, attribute: AttributeMetadata): Filter | undefined {
+  public parseUserFilterString(filterString: string, attribute: FilterAttribute): Filter | undefined {
     const parsed = this.parseFilterString(filterString, attribute, USER_FILTER_OPERATORS, attribute.displayName);
 
     if (parsed === undefined) {
@@ -35,26 +35,33 @@ export class FilterParserService {
       .buildFilter(attribute, parsed.operator as UserFilterOperator, parsed.value);
   }
 
-  public parseUrlFilterString(filterString: string, attribute: AttributeMetadata): Filter | undefined {
-    const parsed = this.parseFilterString(
-      decodeURIComponent(filterString),
-      attribute,
-      URL_FILTER_OPERATORS,
-      attribute.name
-    );
+  public parseUrlFilterString(filterString: string, attributes: FilterAttribute[]): Filter | undefined {
+    const possibleMatches = attributes.filter(attribute => filterString.startsWith(attribute.name));
 
-    if (parsed === undefined) {
+    if (possibleMatches.length === 0) {
       return undefined;
     }
 
-    return this.filterBuilderService
-      .lookup(attribute)
-      .buildFilter(attribute, this.toUserFilterOperator(parsed.operator as UrlFilterOperator), parsed.value);
+    const possibleFilters = possibleMatches
+      .map(attr => {
+        const parsed = this.parseFilterString(decodeURIComponent(filterString), attr, URL_FILTER_OPERATORS, attr.name);
+
+        if (parsed === undefined) {
+          return undefined;
+        }
+
+        return this.filterBuilderService
+          .lookup(attr)
+          .buildFilter(attr, this.toUserFilterOperator(parsed.operator as UrlFilterOperator), parsed.value);
+      })
+      .filter((parsedFilter): parsedFilter is Filter => parsedFilter !== undefined);
+
+    return possibleFilters.length === 1 ? possibleFilters[0] : undefined;
   }
 
   private parseFilterString(
     filterString: string,
-    attribute: AttributeMetadata,
+    attribute: FilterAttribute,
     availableOperators: string[],
     attributeMatchString: string
   ): ParsedFilter | undefined {

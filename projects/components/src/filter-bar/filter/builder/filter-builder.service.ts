@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AttributeMetadata, AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
+import { FilterAttribute } from '../../filter-attribute';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 import { FilterBuilderConstructor } from './filter-builder';
 
@@ -7,7 +7,7 @@ import { FilterBuilderConstructor } from './filter-builder';
   providedIn: 'root'
 })
 export class FilterBuilderService {
-  private readonly filterBuilders: Map<AttributeMetadataType, AbstractFilterBuilder<unknown>> = new Map();
+  private readonly filterBuilders: Map<string, AbstractFilterBuilder<unknown>> = new Map();
 
   public registerAll(filterBuilderConstructors: FilterBuilderConstructor<unknown>[]): void {
     filterBuilderConstructors.forEach(filterBuilderConstructor => {
@@ -16,7 +16,7 @@ export class FilterBuilderService {
     });
   }
 
-  public lookup(attribute: AttributeMetadata): AbstractFilterBuilder<unknown> {
+  public lookup(attribute: FilterAttribute): AbstractFilterBuilder<unknown> {
     const filterBuilder = this.filterBuilders.get(attribute.type);
 
     if (filterBuilder === undefined) {
@@ -26,7 +26,7 @@ export class FilterBuilderService {
     return filterBuilder;
   }
 
-  public isSupportedType(attribute: AttributeMetadata): boolean {
+  public isSupportedType(attribute: FilterAttribute): boolean {
     try {
       this.lookup(attribute);
 

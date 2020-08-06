@@ -1,10 +1,16 @@
-import { LoadAsyncModule } from '@hypertrace/components';
+import {
+  Filter,
+  FilterAttribute,
+  FilterBarComponent,
+  LoadAsyncModule,
+  UserFilterOperator
+} from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
+import { MetadataService } from '@hypertrace/distributed-tracing';
 import { Dashboard } from '@hypertrace/hyperdash';
-import { createHostFactory } from '@ngneat/spectator/jest';
+import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
-import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
-import { Filter, UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
+import { of } from 'rxjs';
 import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
@@ -13,16 +19,55 @@ import { ApplicationAwareDashboardComponent } from './application-aware-dashboar
 import { NavigableDashboardComponent } from './navigable-dashboard.component';
 
 describe('Navigable dashboard component', () => {
+  const attributes: FilterAttribute[] = [
+    {
+      name: 'calls',
+      displayName: 'Calls',
+      units: '',
+      type: 'LONG',
+      scope: 'TRACE_SCOPE',
+      requiresAggregation: false,
+      allowedAggregations: [],
+      groupable: false
+    },
+    {
+      name: 'duration',
+      displayName: 'Latency',
+      units: 'ms',
+      type: 'LONG',
+      scope: 'TRACE_SCOPE',
+      requiresAggregation: false,
+      allowedAggregations: [],
+      groupable: false
+    },
+    {
+      name: 'durationSelf',
+      displayName: 'Self Latency',
+      units: 'ms',
+      type: 'STRING',
+      scope: 'TRACE_SCOPE',
+      requiresAggregation: false,
+      allowedAggregations: [],
+      groupable: false
+    }
+  ];
+
   const hostFactory = createHostFactory({
     component: NavigableDashboardComponent,
     imports: [LoadAsyncModule],
     declarations: [MockComponent(ApplicationAwareDashboardComponent), MockComponent(FilterBarComponent)],
+    providers: [
+      mockProvider(MetadataService, {
+        getFilterAttributes: () => of(attributes)
+      })
+    ],
     template: `
-    <htc-navigable-dashboard 
-      [defaultJson]="defaultJson" 
-      [navLocation]="navLocation" 
-      [filterConfig]="filterConfig">
-    </htc-navigable-dashboard>`
+      <htc-navigable-dashboard
+        [defaultJson]="defaultJson"
+        [navLocation]="navLocation"
+        [filterConfig]="filterConfig">
+      </htc-navigable-dashboard>
+    `
   });
 
   test('uses default JSON if no dashboard registered', () => {

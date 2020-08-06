@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { assertUnreachable } from '@hypertrace/common';
+import { Filter, UserFilterOperator } from '@hypertrace/components';
 import { GraphQlArgumentValue } from '@hypertrace/graphql-client';
-import { Filter, UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
 import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlFilter, GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
@@ -14,7 +14,7 @@ export class GraphQlFilterBuilderService {
         new GraphQlFieldFilter(
           filter.field,
           this.toGraphQlOperator(filter.operator),
-          this.toGraphQlArgumentValue(filter.metadata.type, filter.value)
+          this.toGraphQlArgumentValue(filter.metadata.type as AttributeMetadataType, filter.value)
         )
     );
   }

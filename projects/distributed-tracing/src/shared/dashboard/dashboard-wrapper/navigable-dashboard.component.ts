@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
+import { Filter } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { Dashboard, ModelJson } from '@hypertrace/hyperdash';
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { catchError, defaultIfEmpty, map } from 'rxjs/operators';
-import { Filter } from '../../components/filter-bar/filter/filter-api';
+import { AttributeMetadata } from '../../graphql/model/metadata/attribute-metadata';
 import { GraphQlFilter } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterBuilderService } from '../../services/filter-builder/graphql-filter-builder.service';
+import { MetadataService } from '../../services/metadata/metadata.service';
 import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-filter-data-source.model';
 
 @Component({
@@ -18,7 +20,7 @@ import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-fil
       <htc-filter-bar
         class="filter-bar"
         *ngIf="this.filterConfig?.filterBar"
-        [scope]="this.filterConfig!.filterBar!.scope"
+        [attributes]="this.attributes$ | async"
         [syncWithUrl]="true"
         (filtersChange)="this.onFilterChange($event)"
       >
@@ -46,13 +48,16 @@ export class NavigableDashboardComponent implements OnChanges {
   public readonly dashboardReady: EventEmitter<Dashboard> = new EventEmitter();
 
   public dashboardJson$?: Observable<ModelJson>;
+  public attributes$: Observable<AttributeMetadata[]> = of([]);
   private explicitFilters: Filter[] = [];
   private dashboard?: Dashboard;
+
   private get implicitFilters(): GraphQlFilter[] {
     return this.filterConfig?.implicitFilters ?? [];
   }
 
   public constructor(
+    private readonly metadataService: MetadataService,
     private readonly dashboardPersistenceService: DashboardPersistenceService,
     private readonly graphQlFilterBuilderService: GraphQlFilterBuilderService
   ) {}
@@ -67,6 +72,14 @@ export class NavigableDashboardComponent implements OnChanges {
         defaultIfEmpty(this.defaultJson)
       );
     }
+
+    if (changeObject.filterConfig && this.hasFilterBarConfig()) {
+      this.attributes$ = this.metadataService.getFilterAttributes(this.filterConfig!.filterBar!.scope);
+    }
+  }
+
+  private hasFilterBarConfig(): boolean {
+    return this.filterConfig !== undefined && this.filterConfig.filterBar !== undefined;
   }
 
   public onDashboardReady(dashboard: Dashboard): void {

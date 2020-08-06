@@ -1,36 +1,36 @@
 import { assertUnreachable, collapseWhitespace } from '@hypertrace/common';
-import { AttributeMetadata, AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
+import { FilterAttribute } from '../../filter-attribute';
 import { Filter, UrlFilterOperator, UserFilterOperator } from '../filter-api';
 
 export abstract class AbstractFilterBuilder<T> {
   public abstract convertValue(value: unknown): T;
   public abstract convertValueToString(value: unknown): string;
-  public abstract supportedValue(): AttributeMetadataType;
+  public abstract supportedValue(): string;
   public abstract supportedOperators(): UserFilterOperator[];
 
-  public buildFiltersForAvailableOperators(metadata: AttributeMetadata): Filter<T>[] {
-    return this.supportedOperators().map(operator => this.buildFilter(metadata, operator));
+  public buildFiltersForAvailableOperators(attribute: FilterAttribute): Filter<T>[] {
+    return this.supportedOperators().map(operator => this.buildFilter(attribute, operator));
   }
 
-  public buildFilter(metadata: AttributeMetadata, operator: UserFilterOperator, value?: T): Filter<T> {
+  public buildFilter(attribute: FilterAttribute, operator: UserFilterOperator, value?: T): Filter<T> {
     return {
-      metadata: metadata,
-      field: metadata.name,
+      metadata: attribute,
+      field: attribute.name,
       operator: operator,
       value: this.convertValue(value),
-      userString: this.buildUserFilterString(metadata, operator, value),
-      urlString: this.buildUrlFilterString(metadata, this.toUrlFilterOperator(operator), value)
+      userString: this.buildUserFilterString(attribute, operator, value),
+      urlString: this.buildUrlFilterString(attribute, this.toUrlFilterOperator(operator), value)
     };
   }
 
-  public buildUserFilterString(metadata: AttributeMetadata, operator?: UserFilterOperator, value?: unknown): string {
+  public buildUserFilterString(attribute: FilterAttribute, operator?: UserFilterOperator, value?: unknown): string {
     return collapseWhitespace(
-      `${metadata.displayName} ${operator !== undefined ? operator : ''} ${this.convertValueToString(value)}`
+      `${attribute.displayName} ${operator !== undefined ? operator : ''} ${this.convertValueToString(value)}`
     ).trim();
   }
 
-  protected buildUrlFilterString(metadata: AttributeMetadata, operator: UrlFilterOperator, value: unknown): string {
-    return encodeURIComponent(`${metadata.name}${operator}${this.convertValueToString(value)}`);
+  protected buildUrlFilterString(attribute: FilterAttribute, operator: UrlFilterOperator, value: unknown): string {
+    return encodeURIComponent(`${attribute.name}${operator}${this.convertValueToString(value)}`);
   }
 
   private toUrlFilterOperator(operator: UserFilterOperator): UrlFilterOperator {

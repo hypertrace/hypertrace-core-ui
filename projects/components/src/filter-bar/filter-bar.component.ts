@@ -12,7 +12,7 @@ import {
 import { IconType } from '@hypertrace/assets-library';
 import { TypedSimpleChanges } from '@hypertrace/common';
 import { IconSize } from '@hypertrace/components';
-import { Subscription } from 'rxjs';
+import { FilterAttribute } from './filter-attribute';
 import { FilterBarService } from './filter-bar.service';
 import { Filter } from './filter/filter-api';
 
@@ -37,7 +37,7 @@ import { Filter } from './filter/filter-api';
             *ngFor="let filter of this.internalFilters; let index = index"
             class="filter"
             [filter]="filter"
-            [scope]="this.scope"
+            [attributes]="this.attributes"
             (apply)="this.onApply($event)"
             (clear)="this.onClear(filter)"
           ></htc-filter>
@@ -45,7 +45,7 @@ import { Filter } from './filter/filter-api';
             #filterInput
             class="filter filter-input"
             [clearOnEnter]="true"
-            [scope]="this.scope"
+            [attributes]="this.attributes"
             (apply)="this.onInputApply($event)"
           ></htc-filter>
         </div>
@@ -67,13 +67,13 @@ import { Filter } from './filter/filter-api';
 })
 export class FilterBarComponent implements OnChanges {
   @Input()
-  public scope!: string; // Required
+  public readonly attributes?: FilterAttribute[] | null; // Required
 
   @Input()
-  public filters?: Filter[] = [];
+  public readonly filters?: Filter[] = [];
 
   @Input()
-  public syncWithUrl: boolean = false;
+  public readonly syncWithUrl: boolean = false;
 
   @Output()
   public readonly filtersChange: EventEmitter<Filter[]> = new EventEmitter();
@@ -83,7 +83,6 @@ export class FilterBarComponent implements OnChanges {
 
   public isFocused: boolean = false;
 
-  private subscription?: Subscription;
   public internalFilters: Filter[] = [];
   public readonly instructions: string =
     'Select <b>one or more</b> parameters to filter by. The value is ' +
@@ -95,32 +94,22 @@ export class FilterBarComponent implements OnChanges {
   ) {}
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
-    if (changes.scope) {
+    if (changes.attributes) {
       this.onFiltersChanged(this.filters || []);
-      this.subscribeToUrlFilters();
+      this.readFromUrlFilters();
     }
 
-    if (changes.syncWithUrl) {
-      this.subscribeToUrlFilters();
+    if (changes.syncWithUrl && this.hasAttributes()) {
+      this.readFromUrlFilters();
     }
 
-    if (changes.filters) {
+    if (changes.filters && this.hasAttributes()) {
       this.onFiltersChanged(this.filters || []);
     }
   }
 
-  private subscribeToUrlFilters(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-
-    if (this.syncWithUrl) {
-      this.subscription = this.filterBarService
-        .getUrlFilters(this.scope)
-        .subscribe(filters => this.onFiltersChanged(filters));
-    } else {
-      this.onFiltersChanged(this.filters || []);
-    }
+  private hasAttributes(): boolean {
+    return this.attributes !== undefined && this.attributes !== null;
   }
 
   private onFiltersChanged(filters: Filter[]): void {
@@ -129,12 +118,20 @@ export class FilterBarComponent implements OnChanges {
 
     this.filtersChange.emit(this.internalFilters);
 
-    if (this.syncWithUrl) {
-      this.publishToUrlFilter();
+    if (this.syncWithUrl && this.hasAttributes()) {
+      this.writeToUrlFilter();
     }
   }
 
-  private publishToUrlFilter(): void {
+  private readFromUrlFilters(): void {
+    if (this.syncWithUrl) {
+      this.onFiltersChanged(this.filterBarService.getUrlFilters(this.attributes || []));
+    } else {
+      this.onFiltersChanged(this.filters || []);
+    }
+  }
+
+  private writeToUrlFilter(): void {
     this.filterBarService.setUrlFilters(this.internalFilters);
   }
 

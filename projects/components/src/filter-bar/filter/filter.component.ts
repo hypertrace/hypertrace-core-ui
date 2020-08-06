@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { ComboBoxMode, ComboBoxOption, ComboBoxResult } from '@hypertrace/components';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ComboBoxMode, ComboBoxOption, ComboBoxResult } from '../../combo-box/combo-box-api';
+import { FilterAttribute } from '../filter-attribute';
 import { Filter } from './filter-api';
 import { FilterService, IncompleteFilter } from './filter.service';
 
@@ -18,7 +17,7 @@ import { FilterService, IncompleteFilter } from './filter.service';
         [exactMatch]="false"
         [autoSize]="this.text !== undefined"
         [text]="this.text"
-        [options]="this.options | async"
+        [options]="this.options"
         (textChange)="this.onTextChange($event)"
         (enter)="this.onApply($event)"
         (selection)="this.onApply($event)"
@@ -30,7 +29,7 @@ import { FilterService, IncompleteFilter } from './filter.service';
 })
 export class FilterComponent implements OnInit, OnChanges {
   @Input()
-  public scope?: string;
+  public attributes?: FilterAttribute[];
 
   @Input()
   public filter?: Filter;
@@ -45,7 +44,7 @@ export class FilterComponent implements OnInit, OnChanges {
   public readonly clear: EventEmitter<void> = new EventEmitter();
 
   public text?: string;
-  public options?: Observable<ComboBoxOption<IncompleteFilter>[]>;
+  public options?: ComboBoxOption<IncompleteFilter>[];
 
   public constructor(private readonly filterService: FilterService) {}
 
@@ -54,7 +53,7 @@ export class FilterComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
-    if (changes.filter || changes.scope) {
+    if (changes.filter || changes.attributes) {
       this.onFilterChange();
     }
   }
@@ -91,12 +90,10 @@ export class FilterComponent implements OnInit, OnChanges {
     return result.option?.value !== undefined && result.option?.value.value !== undefined;
   }
 
-  private setOptions(): Observable<ComboBoxOption<IncompleteFilter>[]> {
-    return this.scope === undefined
-      ? of([])
-      : this.filterService
-          .lookupAvailableMatchingFilters(this.scope, this.text)
-          .pipe(map(filters => this.mapToComboBoxOptions(filters)));
+  private setOptions(): ComboBoxOption<IncompleteFilter>[] {
+    return !this.attributes
+      ? []
+      : this.mapToComboBoxOptions(this.filterService.lookupAvailableMatchingFilters(this.attributes, this.text));
   }
 
   private mapToComboBoxOptions(filters: IncompleteFilter[]): ComboBoxOption<IncompleteFilter>[] {

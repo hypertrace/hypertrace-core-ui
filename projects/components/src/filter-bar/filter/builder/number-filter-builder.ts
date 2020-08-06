@@ -1,4 +1,3 @@
-import { AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
 import { UserFilterOperator } from '../filter-api';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 
@@ -13,8 +12,8 @@ export class NumberFilterBuilder extends AbstractFilterBuilder<number | undefine
     return converted === undefined ? '' : String(converted);
   }
 
-  public supportedValue(): AttributeMetadataType {
-    return AttributeMetadataType.Number;
+  public supportedValue(): string {
+    return 'LONG';
   }
 
   public supportedOperators(): UserFilterOperator[] {
