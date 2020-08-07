@@ -12,7 +12,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
+import { isEqualIgnoreFunctions, NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
@@ -118,7 +118,7 @@ import {
         *cdkRowDef="let row; columns: this.visibleColumns()"
         (mouseenter)="this.onDataRowMouseEnter(row)"
         (mouseleave)="this.onDataRowMouseLeave()"
-        [ngClass]="{ 'selected-row': this.isSelectedRow(row), 'hovered-row': this.isHoveredRow(row) }"
+        [ngClass]="{ 'selected-row': this.shouldHighlightRowAsSelection(row), 'hovered-row': this.isHoveredRow(row) }"
         class="data-row"
       ></cdk-row>
 
@@ -174,9 +174,7 @@ export class TableComponent
     width: '32px',
     visible: true,
     renderer: StandardTableCellRendererType.Checkbox,
-    onClick: (row: StatefulTableRow) => {
-      this.toggleRowSelection(row);
-    }
+    onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
@@ -249,6 +247,7 @@ export class TableComponent
   private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
     TableColumnConfig | undefined
   >(undefined);
+  private rowSelections: StatefulTableRow[] = [];
 
   public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
@@ -276,6 +275,17 @@ export class TableComponent
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfigs || changes.detailContent) {
       this.columnConfigsSubject.next(this.buildColumnConfigs());
+    }
+
+    if (changes.selections) {
+      // Unselect all the rows and only check the latest selected ones
+      this.dataSource?.unselectAllRows();
+      this.selections?.forEach(row => {
+        row.$$state.selected = true;
+        this.rowStateSubject.next(row);
+      });
+      this.rowSelections = [...(this.selections ?? [])];
+      this.changeDetector.markForCheck();
     }
 
     if (this.dataSource && changes.data) {
@@ -319,12 +329,6 @@ export class TableComponent
       return;
     }
 
-    if (this.isCheckboxColumn(columnConfig)) {
-      this.toggleRowSelection(row);
-
-      return;
-    }
-
     columnConfig.onClick && columnConfig.onClick(row, columnConfig);
 
     // Propagate the cell click to the row
@@ -338,7 +342,7 @@ export class TableComponent
 
   public onDataRowClick(row: StatefulTableRow): void {
     if (this.hasSelectableRows()) {
-      this.toggleRowSelection(row);
+      this.toggleRowSelected(row);
     }
   }
 
@@ -377,7 +381,7 @@ export class TableComponent
       return [this.expandableToggleColumnConfig, ...this.columnConfigs];
     }
 
-    if (this.hasMultiSelectableRows()) {
+    if (this.hasMultiSelect()) {
       return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
     }
 
@@ -407,15 +411,10 @@ export class TableComponent
     this.columnStateSubject.next(sort.column);
   }
 
-  public toggleRowSelection(row: StatefulTableRow): void {
-    row.$$state.selected = !row.$$state.selected;
-
-    const rowSelections = this.selections ?? [];
-    this.selections = rowSelections.includes(row)
-      ? rowSelections.filter(selection => selection !== row)
-      : rowSelections.concat(row);
-    this.selectionsChange.emit(this.selections);
-
+  public toggleRowSelected(row: StatefulTableRow): void {
+    const rowIndexInSelections = this.rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
+    rowIndexInSelections >= 0 ? this.rowSelections.splice(rowIndexInSelections, 1) : this.rowSelections.push(row);
+    this.selectionsChange.emit([...this.rowSelections]);
     this.changeDetector.markForCheck();
   }
 
@@ -446,14 +445,11 @@ export class TableComponent
     return columnConfig === this.expandableToggleColumnConfig;
   }
 
-  public isCheckboxColumn(columnConfig: TableColumnConfig): boolean {
-    return columnConfig === this.multiSelectRowColumnConfig;
-  }
-
-  public isSelectedRow(row: StatefulTableRow): boolean {
+  public shouldHighlightRowAsSelection(row: StatefulTableRow): boolean {
     return (
+      this.selectionMode !== TableSelectionMode.Multiple &&
       this.selections !== undefined &&
-      this.selections.some(selection => TableCdkRowUtil.isEqualExceptState(row, selection))
+      this.selections.includes(row)
     );
   }
 
@@ -463,10 +459,6 @@ export class TableComponent
 
   public isChildRow(row: StatefulTableRow): boolean {
     return !!row.$$state.parent;
-  }
-
-  public isFlatType(): boolean {
-    return this.mode === TableMode.Flat;
   }
 
   public isDetailType(): boolean {
@@ -481,16 +473,8 @@ export class TableComponent
     return this.display !== TableStyle.List;
   }
 
-  public isMultiSelect(): boolean {
-    return this.selectionMode === TableSelectionMode.Multiple;
-  }
-
   public hasExpandableRows(): boolean {
     return this.isDetailType() || this.isTreeType();
-  }
-
-  public hasMultiSelectableRows(): boolean {
-    return this.isFlatType() && this.isMultiSelect();
   }
 
   public isDetailExpanded(row: StatefulTableRow): boolean {
@@ -499,6 +483,10 @@ export class TableComponent
 
   public hasSelectableRows(): boolean {
     return this.selectionMode === TableSelectionMode.Single;
+  }
+
+  public hasMultiSelect(): boolean {
+    return this.selectionMode === TableSelectionMode.Multiple;
   }
 
   public isRowExpanded(row: StatefulTableRow): boolean {

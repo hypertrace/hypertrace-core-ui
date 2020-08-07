@@ -6,11 +6,12 @@ import {
   FeatureStateResolver,
   LayoutChangeService,
   NavigationService,
+  PreferenceService,
   SubscriptionLifecycle
 } from '@hypertrace/common';
 import { ButtonModule, NavItemType } from '@hypertrace/components';
 import { byLabel, createRoutingFactory, mockProvider, SpectatorRouting } from '@ngneat/spectator/jest';
-import { EMPTY, of } from 'rxjs';
+import { BehaviorSubject, EMPTY, of } from 'rxjs';
 import { NavigationComponent } from './navigation.component';
 import { NavigationModule } from './navigation.module';
 
@@ -37,24 +38,36 @@ describe('NavigationComponent', () => {
       mockProvider(LayoutChangeService),
       mockProvider(FeatureStateResolver, {
         getCombinedFeatureState: () => of(FeatureState.Enabled)
-      })
+      }),
+      mockProvider(PreferenceService, { get: jest.fn().mockReturnValue(of(false)) })
     ]
   });
 
-  beforeEach(() => {
-    spectator = createRoutingComponent();
-
-    spy = spectator.inject(NavigationService).navigateWithinApp;
-  });
-
   test('should show a nav-item element for each NavItemConfig', () => {
+    spectator = createRoutingComponent();
     const linkNavItemCount = spectator.component.navItems.filter(value => value.type === NavItemType.Link).length;
     expect(spectator.queryAll('htc-nav-item').length).toBe(linkNavItemCount);
   });
 
   test('should navigate to NavItemConfig path when nav-item element clicked', () => {
+    spectator = createRoutingComponent();
+    spy = spectator.inject(NavigationService).navigateWithinApp;
     const element = spectator.query(byLabel('Spans'));
     spectator.click(element!);
     expect(spy).toHaveBeenCalled();
+  });
+
+  test('should update preference when collapse nav-item element is clicked', () => {
+    const collapsedSubject = new BehaviorSubject(false);
+
+    spectator = createRoutingComponent({
+      providers: [
+        mockProvider(PreferenceService, {
+          get: jest.fn().mockReturnValue(collapsedSubject)
+        })
+      ]
+    });
+    spectator.component.onViewToggle(true);
+    expect(spectator.inject(PreferenceService).set).toHaveBeenCalledWith('app-navigation.collapsed', true);
   });
 });

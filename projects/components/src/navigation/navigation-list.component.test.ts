@@ -2,7 +2,7 @@ import { IconType } from '@hypertrace/assets-library';
 import { NavigationService, PreferenceService } from '@hypertrace/common';
 import { createHostFactory, mockProvider, SpectatorHost } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
-import { BehaviorSubject, EMPTY, of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { IconComponent } from '../icon/icon.component';
 import { LetAsyncModule } from '../let-async/let-async.module';
 import { FooterItemConfig, NavigationListComponent, NavItemConfig, NavItemType } from './navigation-list.component';
@@ -65,24 +65,13 @@ describe('Navigation List Component', () => {
     expect(spectator.queryAll('.footer-item').length).toBe(footerItemsCount);
   });
 
-  test('should update preference when collapse nav-item element is clicked', () => {
-    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`);
-    spectator.click('.resize-tab-button');
-    expect(spectator.inject(PreferenceService).set).toHaveBeenCalledWith('navigation-list.collapsed', true);
-  });
-
   test('should update layout when collapsed preference is updated', () => {
-    const collapsedSubject = new BehaviorSubject(false);
-    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`, {
-      providers: [
-        mockProvider(PreferenceService, {
-          get: jest.fn().mockReturnValue(collapsedSubject)
-        })
-      ]
-    });
+    spectator = createHost(`<htc-navigation-list></htc-navigation-list>`);
     expect(spectator.query('.navigation-list')).toHaveClass('expanded');
     expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleLeft);
-    collapsedSubject.next(true);
+    spectator.setInput({
+      collapsed: true
+    });
     spectator.detectChanges();
     expect(spectator.query('.navigation-list')).not.toHaveClass('expanded');
     expect(spectator.query(IconComponent)?.icon).toEqual(IconType.TriangleRight);
