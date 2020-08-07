@@ -6,12 +6,11 @@ import {
   EventEmitter,
   Input,
   OnChanges,
-  OnInit,
   Output,
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { IconSize } from '@hypertrace/components';
+import { IconSize } from '../icon/icon-size';
 import { FilterAttribute } from './filter-attribute';
 import { FilterBarService } from './filter-bar.service';
 import { Filter } from './filter/filter-api';
@@ -65,7 +64,7 @@ import { Filter } from './filter/filter-api';
     <div [innerHTML]="this.instructions" class="instructions"></div>
   `
 })
-export class FilterBarComponent implements OnChanges, OnInit {
+export class FilterBarComponent implements OnChanges {
   @Input()
   public attributes?: FilterAttribute[]; // Required
 
@@ -96,12 +95,6 @@ export class FilterBarComponent implements OnChanges, OnInit {
   public ngOnChanges(): void {
     if (!!this.attributes) {
       this.syncWithUrl ? this.readFromUrlFilters() : this.onFiltersChanged(this.filters || [], false);
-    }
-  }
-
-  public ngOnInit(): void {
-    if (this.syncWithUrl && !!this.attributes) {
-      this.readFromUrlFilters();
     }
   }
 

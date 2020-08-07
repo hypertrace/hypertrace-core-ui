@@ -1,11 +1,4 @@
-import {
-  Filter,
-  FilterAttribute,
-  FilterBarComponent,
-  FilterType,
-  LoadAsyncModule,
-  UserFilterOperator
-} from '@hypertrace/components';
+import { Filter, FilterBarComponent, FilterType, LoadAsyncModule, UserFilterOperator } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { MetadataService } from '@hypertrace/distributed-tracing';
 import { Dashboard } from '@hypertrace/hyperdash';
@@ -19,34 +12,13 @@ import { ApplicationAwareDashboardComponent } from './application-aware-dashboar
 import { NavigableDashboardComponent } from './navigable-dashboard.component';
 
 describe('Navigable dashboard component', () => {
-  const attributes: FilterAttribute[] = [
-    {
-      name: 'calls',
-      displayName: 'Calls',
-      units: '',
-      type: FilterType.Number
-    },
-    {
-      name: 'duration',
-      displayName: 'Latency',
-      units: 'ms',
-      type: FilterType.Number
-    },
-    {
-      name: 'durationSelf',
-      displayName: 'Self Latency',
-      units: 'ms',
-      type: FilterType.String
-    }
-  ];
-
   const hostFactory = createHostFactory({
     component: NavigableDashboardComponent,
     imports: [LoadAsyncModule],
     declarations: [MockComponent(ApplicationAwareDashboardComponent), MockComponent(FilterBarComponent)],
     providers: [
       mockProvider(MetadataService, {
-        getFilterAttributes: () => of(attributes)
+        getFilterAttributes: () => of([])
       })
     ],
     template: `
