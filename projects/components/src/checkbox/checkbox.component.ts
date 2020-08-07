@@ -12,8 +12,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
       (change)="onCheckboxChange($event)"
       [disabled]="this.disabled"
       class="htc-checkbox"
-      (click)="$event.stopPropagation()"
-      ><htc-label class="label" *ngIf="this.label" [label]="this.label"></htc-label>
+    >
+      <htc-label class="label" *ngIf="this.label" [label]="this.label"></htc-label>
     </mat-checkbox>
   `
 })

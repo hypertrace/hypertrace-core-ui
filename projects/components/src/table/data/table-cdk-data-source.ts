@@ -88,6 +88,12 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.rowsChange$.next(rows);
   }
 
+  public unselectAllRows(): void {
+    const rows = TableCdkRowUtil.unselectAllRows(this.cachedRows);
+    this.lastRowChange = undefined;
+    this.rowsChange$.next(rows);
+  }
+
   /****************************
    * Change Detection
    ****************************/
