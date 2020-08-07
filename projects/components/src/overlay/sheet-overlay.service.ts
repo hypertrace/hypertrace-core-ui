@@ -15,7 +15,7 @@ export class SheetOverlayService {
       parentInjector: this.injector,
       position: {
         type: PopoverPositionType.Fixed,
-        location: PopoverFixedPositionLocation.RightUnderHeader
+        location: config.positionLocation ? config.positionLocation : PopoverFixedPositionLocation.RightUnderHeader
       },
       data: config
     });
@@ -35,4 +35,5 @@ export interface SheetOverlayConfig {
   size: SheetSize;
   closeOnNavigate?: boolean;
   content: TemplateRef<unknown> | Type<unknown>;
+  positionLocation?: PopoverFixedPositionLocation;
 }
