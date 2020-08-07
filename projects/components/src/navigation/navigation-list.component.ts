@@ -78,7 +78,7 @@ export class NavigationListComponent {
   }
 
   public navigate(item: NavItemLinkConfig): void {
-    this.navigationService.navigateWithinApp(item.matchPaths);
+    this.navigationService.navigateWithinApp(item.matchPaths[0]);
   }
 
   public toggleView(): void {
@@ -96,7 +96,9 @@ export class NavigationListComponent {
     return navItems
       .filter((item): item is NavItemLinkConfig => item.type === NavItemType.Link)
       .find(linkItem =>
-        this.navigationService.isRelativePathActive(linkItem.matchPaths, this.navigationService.rootRoute())
+        linkItem.matchPaths.some(matchPath =>
+          this.navigationService.isRelativePathActive(matchPath, this.navigationService.rootRoute())
+        )
       );
   }
 }
