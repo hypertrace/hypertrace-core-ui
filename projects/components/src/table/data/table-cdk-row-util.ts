@@ -151,6 +151,13 @@ export namespace TableCdkRowUtil {
     return [row, ...children];
   };
 
+  export const unselectAllRows = (rows: StatefulTableRow[]): StatefulTableRow[] =>
+    rows.map(row => {
+      row.$$state.selected = false;
+
+      return row;
+    });
+
   /****************************
    * Transforms
    ****************************/
