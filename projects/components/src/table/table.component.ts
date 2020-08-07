@@ -118,7 +118,7 @@ import {
         *cdkRowDef="let row; columns: this.visibleColumns()"
         (mouseenter)="this.onDataRowMouseEnter(row)"
         (mouseleave)="this.onDataRowMouseLeave()"
-        [ngClass]="{ 'selected-row': this.isASelectedRow(row), 'hovered-row': this.isHoveredRow(row) }"
+        [ngClass]="{ 'selected-row': this.shouldHighlightRowAsSelection(row), 'hovered-row': this.isHoveredRow(row) }"
         class="data-row"
       ></cdk-row>
 
@@ -247,6 +247,7 @@ export class TableComponent
   private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
     TableColumnConfig | undefined
   >(undefined);
+  private rowSelections: StatefulTableRow[] = [];
 
   public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
@@ -283,6 +284,7 @@ export class TableComponent
         row.$$state.selected = true;
         this.rowStateSubject.next(row);
       });
+      this.rowSelections = [...(this.selections ?? [])];
       this.changeDetector.markForCheck();
     }
 
@@ -410,10 +412,9 @@ export class TableComponent
   }
 
   public toggleRowSelected(row: StatefulTableRow): void {
-    const rowSelections = [...(this.selections ?? [])];
-    const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
-    rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
-    this.selectionsChange.emit(rowSelections);
+    const rowIndexInSelections = this.rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
+    rowIndexInSelections >= 0 ? this.rowSelections.splice(rowIndexInSelections, 1) : this.rowSelections.push(row);
+    this.selectionsChange.emit([...this.rowSelections]);
     this.changeDetector.markForCheck();
   }
 
@@ -444,7 +445,7 @@ export class TableComponent
     return columnConfig === this.expandableToggleColumnConfig;
   }
 
-  public isASelectedRow(row: StatefulTableRow): boolean {
+  public shouldHighlightRowAsSelection(row: StatefulTableRow): boolean {
     return (
       this.selectionMode !== TableSelectionMode.Multiple &&
       this.selections !== undefined &&
