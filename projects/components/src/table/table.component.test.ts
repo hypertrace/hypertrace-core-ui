@@ -13,6 +13,7 @@ import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { EMPTY, of } from 'rxjs';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { TableCdkRowUtil } from './data/table-cdk-row-util';
 import { TableComponent } from './table.component';
 
 describe('Table component', () => {
@@ -285,12 +286,12 @@ describe('Table component', () => {
     };
 
     const multiSelectRowColumnConfig = spectator.component.columnConfigsSubject.value[0];
-    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelection');
+    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelected');
     spectator.component.onDataCellClick(multiSelectRowColumnConfig, row);
     expect(spyToggleRowSelection).toHaveBeenCalledWith(row);
   });
 
-  test('should toggle selection state and emit selections', () => {
+  test('should emit selections on toggle select', () => {
     const mockSelectionsChange = jest.fn();
     const columns = buildColumns();
     const spectator = createHost(
@@ -319,24 +320,87 @@ describe('Table component', () => {
     };
 
     {
-      spectator.component.toggleRowSelection(row);
-
-      const selections = spectator.component.selections;
-      expect(row.$$state.selected).toBeTruthy();
-      expect(selections).toBeDefined();
-      expect(selections!.length).toEqual(1);
-      expect(selections![0]).toEqual(row);
+      spectator.component.toggleRowSelected(row);
       expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
     }
 
     {
-      spectator.component.toggleRowSelection(row);
-
-      const selections = spectator.component.selections;
-      expect(row.$$state.selected).toBeFalsy();
-      expect(selections).toBeDefined();
-      expect(selections!.length).toEqual(0);
+      spectator.component.toggleRowSelected(row);
       expect(mockSelectionsChange).toHaveBeenCalledWith([]);
     }
+  });
+
+  test('should select only selected rows', () => {
+    const columns = buildColumns();
+    const rows = buildData();
+    const statefulRows = TableCdkRowUtil.buildInitialRowStates(rows);
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode"
+         [mode]="mode" [selections]="selections"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: rows,
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Flat,
+          selections: statefulRows
+        }
+      }
+    );
+
+    expect(spectator.component.selections).toBeDefined();
+    statefulRows.forEach(row => expect(row.$$state.selected).toBeTruthy());
+
+    // Change selections to just first stateful row
+    const firstStatefulRow = statefulRows[0];
+    const spyUnselectRows = spyOn(spectator.component.dataSource!, 'unselectAllRows');
+    spectator.setHostInput('selections', [firstStatefulRow]);
+    spectator.detectChanges();
+    expect(spyUnselectRows).toHaveBeenCalled();
+    expect(firstStatefulRow.$$state.selected).toBeTruthy();
+  });
+
+  test('row should be highlighted only in non multi selection mode', () => {
+    const columns = buildColumns();
+    const rows = buildData();
+    const statefulRows = TableCdkRowUtil.buildInitialRowStates(rows);
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode"
+         [mode]="mode" [selections]="selections"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: rows,
+          selectionMode: TableSelectionMode.Single,
+          mode: TableMode.Flat,
+          selections: [statefulRows[0]]
+        }
+      }
+    );
+
+    expect(spectator.component.shouldHighlightRowAsSelection(statefulRows[0])).toBeTruthy();
+    expect(spectator.component.shouldHighlightRowAsSelection(statefulRows[1])).toBeFalsy();
+  });
+
+  test('row should not be highlighted only in multi selection mode', () => {
+    const columns = buildColumns();
+    const rows = buildData();
+    const statefulRows = TableCdkRowUtil.buildInitialRowStates(rows);
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode"
+         [mode]="mode" [selections]="selections"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: columns,
+          data: rows,
+          selectionMode: TableSelectionMode.Multiple,
+          mode: TableMode.Flat,
+          selections: [statefulRows[0]]
+        }
+      }
+    );
+
+    expect(spectator.component.shouldHighlightRowAsSelection(statefulRows[0])).toBeFalsy();
+    expect(spectator.component.shouldHighlightRowAsSelection(statefulRows[1])).toBeFalsy();
   });
 });
