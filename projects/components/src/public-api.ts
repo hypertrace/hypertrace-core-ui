@@ -56,6 +56,14 @@ export * from './expander/expander-toggle.module';
 // Feature Check
 export * from './feature-check/feature-config-check.module';
 
+// Filter Bar
+export * from './filter-bar/filter-bar.module';
+export * from './filter-bar/filter-bar.service';
+export * from './filter-bar/filter-bar.component';
+export * from './filter-bar/filter/filter-api';
+export * from './filter-bar/filter-type';
+export * from './filter-bar/filter-attribute';
+
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';

@@ -1,7 +1,7 @@
-import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
+import { FilterAttribute } from '../filter-attribute';
 
 export interface Filter<T = unknown> {
-  metadata: AttributeMetadata;
+  metadata: FilterAttribute;
   field: string;
   operator: UserFilterOperator;
   value: T;

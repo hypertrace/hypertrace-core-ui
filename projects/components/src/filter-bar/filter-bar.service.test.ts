@@ -1,11 +1,6 @@
-import { fakeAsync, flush } from '@angular/core/testing';
 import { NavigationService } from '@hypertrace/common';
-import { runFakeRxjs } from '@hypertrace/test-utils';
+import { FilterAttribute, FilterType } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
-import { of } from 'rxjs';
-import { AttributeMetadata, AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
-import { SPAN_SCOPE } from '../../graphql/model/schema/span';
-import { MetadataService } from '../../services/metadata/metadata.service';
 import { FilterBarService } from './filter-bar.service';
 import { NumberFilterBuilder } from './filter/builder/number-filter-builder';
 import { StringFilterBuilder } from './filter/builder/string-filter-builder';
@@ -16,26 +11,18 @@ describe('Filter Bar service', () => {
   let spectator: SpectatorService<FilterBarService>;
   let navigationService: NavigationService;
 
-  const attributes: AttributeMetadata[] = [
+  const attributes: FilterAttribute[] = [
     {
       name: 'duration',
       displayName: 'Latency',
       units: 'ms',
-      type: AttributeMetadataType.Number,
-      scope: SPAN_SCOPE,
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.Number
     },
     {
       name: 'apiName',
       displayName: 'API Name',
       units: '',
-      type: AttributeMetadataType.String,
-      scope: SPAN_SCOPE,
-      requiresAggregation: false,
-      allowedAggregations: [],
-      groupable: false
+      type: FilterType.String
     }
   ];
 
@@ -50,9 +37,6 @@ describe('Filter Bar service', () => {
       mockProvider(NavigationService, {
         addQueryParametersToUrl: jest.fn(),
         getAllValuesForQueryParameter: () => ['duration_gte_50']
-      }),
-      mockProvider(MetadataService, {
-        getFilterAttributes: () => of(attributes)
       }),
       mockProvider(FilterParserService, {
         parseUrlFilterString: () => filters[0]
@@ -73,14 +57,9 @@ describe('Filter Bar service', () => {
     });
   });
 
-  test('correctly decodes filters string from url and build filter objects', fakeAsync(() => {
-    runFakeRxjs(({ expectObservable }) => {
-      expectObservable(spectator.service.getUrlFilters(SPAN_SCOPE)).toBe('(x|)', {
-        x: [filters[0]]
-      });
-    });
-    flush();
-  }));
+  test('correctly decodes filters string from url and build filter objects', () => {
+    expect(spectator.service.getUrlFilters(attributes)).toEqual([filters[0]]);
+  });
 
   test('clears filters in url if provided an empty array', () => {
     spectator.service.setUrlFilters([]);

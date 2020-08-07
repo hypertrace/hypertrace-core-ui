@@ -33,12 +33,6 @@ export * from './shared/dashboard/tracing-dashboard.module';
 // Filter
 export * from './shared/services/filter-builder/graphql-filter-builder.service';
 
-// Filter Bar
-export * from './shared/components/filter-bar/filter-bar.module';
-export * from './shared/components/filter-bar/filter-bar.service';
-export * from './shared/components/filter-bar/filter-bar.component';
-export * from './shared/components/filter-bar/filter/filter-api';
-
 // Handlers
 export * from './shared/graphql/request/handlers/traces/trace-graphql-query-handler.service';
 export * from './shared/graphql/request/handlers/traces/traces-graphql-query-handler.service';

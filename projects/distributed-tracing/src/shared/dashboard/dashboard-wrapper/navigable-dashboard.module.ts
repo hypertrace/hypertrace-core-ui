@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Inject, InjectionToken, ModuleWithProviders, NgModule } from '@angular/core';
-import { LoadAsyncModule } from '@hypertrace/components';
+import { FilterBarModule, LoadAsyncModule } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
 import { ModelJson } from '@hypertrace/hyperdash';
 import { DashboardCoreModule, DashboardEditorModule } from '@hypertrace/hyperdash-angular';
-import { FilterBarModule } from '../../components/filter-bar/filter-bar.module';
 import { ApplicationAwareDashboardComponent } from './application-aware-dashboard.component';
 import { NavigableDashboardComponent } from './navigable-dashboard.component';
 

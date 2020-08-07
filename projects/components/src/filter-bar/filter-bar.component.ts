@@ -10,9 +10,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { TypedSimpleChanges } from '@hypertrace/common';
-import { IconSize } from '@hypertrace/components';
-import { Subscription } from 'rxjs';
+import { IconSize } from '../icon/icon-size';
+import { FilterAttribute } from './filter-attribute';
 import { FilterBarService } from './filter-bar.service';
 import { Filter } from './filter/filter-api';
 
@@ -37,7 +36,7 @@ import { Filter } from './filter/filter-api';
             *ngFor="let filter of this.internalFilters; let index = index"
             class="filter"
             [filter]="filter"
-            [scope]="this.scope"
+            [attributes]="this.attributes"
             (apply)="this.onApply($event)"
             (clear)="this.onClear(filter)"
           ></htc-filter>
@@ -45,7 +44,7 @@ import { Filter } from './filter/filter-api';
             #filterInput
             class="filter filter-input"
             [clearOnEnter]="true"
-            [scope]="this.scope"
+            [attributes]="this.attributes"
             (apply)="this.onInputApply($event)"
           ></htc-filter>
         </div>
@@ -67,7 +66,7 @@ import { Filter } from './filter/filter-api';
 })
 export class FilterBarComponent implements OnChanges {
   @Input()
-  public scope!: string; // Required
+  public attributes?: FilterAttribute[]; // Required
 
   @Input()
   public filters?: Filter[] = [];
@@ -83,7 +82,6 @@ export class FilterBarComponent implements OnChanges {
 
   public isFocused: boolean = false;
 
-  private subscription?: Subscription;
   public internalFilters: Filter[] = [];
   public readonly instructions: string =
     'Select <b>one or more</b> parameters to filter by. The value is ' +
@@ -94,47 +92,28 @@ export class FilterBarComponent implements OnChanges {
     private readonly filterBarService: FilterBarService
   ) {}
 
-  public ngOnChanges(changes: TypedSimpleChanges<this>): void {
-    if (changes.scope) {
-      this.onFiltersChanged(this.filters || []);
-      this.subscribeToUrlFilters();
-    }
-
-    if (changes.syncWithUrl) {
-      this.subscribeToUrlFilters();
-    }
-
-    if (changes.filters) {
-      this.onFiltersChanged(this.filters || []);
+  public ngOnChanges(): void {
+    if (!!this.attributes) {
+      this.syncWithUrl ? this.readFromUrlFilters() : this.onFiltersChanged(this.filters || [], false);
     }
   }
 
-  private subscribeToUrlFilters(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-
-    if (this.syncWithUrl) {
-      this.subscription = this.filterBarService
-        .getUrlFilters(this.scope)
-        .subscribe(filters => this.onFiltersChanged(filters));
-    } else {
-      this.onFiltersChanged(this.filters || []);
-    }
-  }
-
-  private onFiltersChanged(filters: Filter[]): void {
+  private onFiltersChanged(filters: Filter[], emit: boolean = true): void {
     this.internalFilters = [...filters];
     this.changeDetector.markForCheck();
 
-    this.filtersChange.emit(this.internalFilters);
-
-    if (this.syncWithUrl) {
-      this.publishToUrlFilter();
+    if (this.syncWithUrl && !!this.attributes) {
+      this.writeToUrlFilter();
     }
+
+    emit && this.filtersChange.emit(this.internalFilters);
   }
 
-  private publishToUrlFilter(): void {
+  private readFromUrlFilters(): void {
+    this.internalFilters = this.filterBarService.getUrlFilters(this.attributes || []);
+  }
+
+  private writeToUrlFilter(): void {
     this.filterBarService.setUrlFilters(this.internalFilters);
   }
 
