@@ -1,4 +1,4 @@
-import { LoadAsyncModule, SheetOverlayService } from '@hypertrace/components';
+import { LoadAsyncModule, OverlayService } from '@hypertrace/components';
 import { RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
@@ -24,7 +24,7 @@ describe('Waterfall widget renderer component', () => {
           timeRangeChanged$: EMPTY
         }
       },
-      mockProvider(SheetOverlayService)
+      mockProvider(OverlayService)
     ],
     declarations: [MockComponent(WaterfallChartComponent)]
   });

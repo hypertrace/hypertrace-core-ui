@@ -163,10 +163,11 @@ export { SequenceSegment } from './sequence/sequence';
 export * from './sequence/sequence-chart.component';
 export * from './sequence/sequence-chart.module';
 
-// Sheet
-export { SheetOverlayService } from './sheet/overlay/sheet-overlay.service';
-export * from './sheet/sheet.component';
-export * from './sheet/sheet.module';
+// Overlay
+export { OverlayService } from './overlay/overlay.service';
+export * from './overlay/overlay';
+export * from './overlay/overlay.module';
+export * from './overlay/sheet/sheet';
 
 // Snippet
 export { SnippetViewerComponent } from './viewer/snippet-viewer/snippet-viewer.component';

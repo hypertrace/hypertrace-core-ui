@@ -4,17 +4,17 @@ import { NavigationService } from '@hypertrace/common';
 import { recordObservable, runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { Subject } from 'rxjs';
-import { PopoverModule } from '../../popover/popover.module';
-import { SheetSize } from '../sheet.component';
-import { SheetOverlayService } from './sheet-overlay.service';
+import { PopoverModule } from '../popover/popover.module';
+import { OverlayService } from './overlay.service';
+import { SheetSize } from './sheet/sheet';
 
-describe('Sheet overlay service', () => {
+describe('Overlay service', () => {
   const navigation$: Subject<void> = new Subject<void>();
 
-  let spectator: SpectatorService<SheetOverlayService>;
+  let spectator: SpectatorService<OverlayService>;
 
   const createService = createServiceFactory({
-    service: SheetOverlayService,
+    service: OverlayService,
     imports: [PopoverModule],
     providers: [
       mockProvider(NavigationService, {

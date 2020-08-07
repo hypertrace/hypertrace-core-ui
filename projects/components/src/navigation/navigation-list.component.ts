@@ -97,7 +97,7 @@ export class NavigationListComponent {
       .filter((item): item is NavItemLinkConfig => item.type === NavItemType.Link)
       .find(linkItem =>
         linkItem.matchPaths.some(matchPath =>
-          this.navigationService.isRelativePathActive(matchPath, this.navigationService.rootRoute())
+          this.navigationService.isRelativePathActive([matchPath], this.navigationService.rootRoute())
         )
       );
   }
