@@ -247,7 +247,6 @@ export class TableComponent
   private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
     TableColumnConfig | undefined
   >(undefined);
-  private rowSelections: StatefulTableRow[] = [];
 
   public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
@@ -277,15 +276,8 @@ export class TableComponent
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
 
-    if (changes.selections) {
-      // Unselect all the rows and only check the latest selected ones
-      this.dataSource?.unselectAllRows();
-      this.selections?.forEach(row => {
-        row.$$state.selected = true;
-        this.rowStateSubject.next(row);
-      });
-      this.rowSelections = [...(this.selections ?? [])];
-      this.changeDetector.markForCheck();
+    if (this.dataSource && changes.selections) {
+      this.toggleRowSelections(this.selections);
     }
 
     if (this.dataSource && changes.data) {
@@ -297,6 +289,7 @@ export class TableComponent
 
   public ngAfterViewInit(): void {
     this.dataSource = this.buildDataSource();
+    this.toggleRowSelections(this.selections);
     this.changeDetector.detectChanges();
   }
 
@@ -411,10 +404,18 @@ export class TableComponent
     this.columnStateSubject.next(sort.column);
   }
 
+  private toggleRowSelections(selections: StatefulTableRow[] = []): void {
+    // Unselect all the rows and only select the latest user provided ones
+    this.dataSource?.unselectAllRows();
+    this.dataSource?.selectAllRows(selections);
+    this.changeDetector.markForCheck();
+  }
+
   public toggleRowSelected(row: StatefulTableRow): void {
-    const rowIndexInSelections = this.rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
-    rowIndexInSelections >= 0 ? this.rowSelections.splice(rowIndexInSelections, 1) : this.rowSelections.push(row);
-    this.selectionsChange.emit([...this.rowSelections]);
+    const rowSelections = [...(this.selections ?? [])];
+    const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
+    rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
+    this.selectionsChange.emit(rowSelections);
     this.changeDetector.markForCheck();
   }
 
@@ -449,7 +450,7 @@ export class TableComponent
     return (
       this.selectionMode !== TableSelectionMode.Multiple &&
       this.selections !== undefined &&
-      this.selections.includes(row)
+      this.selections.find(selection => TableCdkRowUtil.isEqualExceptState(selection, row)) !== undefined
     );
   }
 

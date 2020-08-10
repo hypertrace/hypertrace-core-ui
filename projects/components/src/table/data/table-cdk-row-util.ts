@@ -158,6 +158,27 @@ export namespace TableCdkRowUtil {
       return row;
     });
 
+  export const selectAllRows = (rows: StatefulTableRow[]): StatefulTableRow[] =>
+    rows.map(row => {
+      row.$$state.selected = true;
+
+      return row;
+    });
+
+  export const mergeRowStates = (to: StatefulTableRow[], from: StatefulTableRow[]): StatefulTableRow[] =>
+    to.map(toRow => {
+      const found = from.find(fromRow => isEqualExceptState(toRow, fromRow));
+
+      if (found) {
+        toRow.$$state = {
+          ...toRow.$$state,
+          ...found.$$state
+        };
+      }
+
+      return toRow;
+    });
+
   /****************************
    * Transforms
    ****************************/

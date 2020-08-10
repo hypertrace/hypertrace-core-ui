@@ -319,15 +319,11 @@ describe('Table component', () => {
       }
     };
 
-    {
-      spectator.component.toggleRowSelected(row);
-      expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
-    }
+    spectator.component.toggleRowSelected(row);
+    expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
 
-    {
-      spectator.component.toggleRowSelected(row);
-      expect(mockSelectionsChange).toHaveBeenCalledWith([]);
-    }
+    spectator.component.toggleRowSelected(row);
+    expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
   });
 
   test('should select only selected rows', () => {
