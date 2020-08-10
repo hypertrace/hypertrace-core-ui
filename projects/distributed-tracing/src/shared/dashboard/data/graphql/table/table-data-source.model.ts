@@ -19,7 +19,7 @@ export abstract class TableDataSourceModel extends GraphQlDataSourceModel<TableD
   public getData(): Observable<TableDataSource<TableRow, SpecificationBackedTableColumnDef>> {
     return observableOf({
       getData: request =>
-        this.queryWithNextBatch(filters => this.buildGraphQlRequest(filters, request)).pipe(
+        this.queryIsolated(filters => this.buildGraphQlRequest(filters, request)).pipe(
           map(response => this.buildTableResponse(response, request))
         )
     });

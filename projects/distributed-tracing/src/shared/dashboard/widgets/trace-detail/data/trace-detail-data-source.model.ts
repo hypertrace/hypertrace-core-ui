@@ -30,7 +30,7 @@ export class TraceDetailDataSourceModel extends GraphQlDataSourceModel<TraceDeta
   private readonly attributeSpecBuilder: SpecificationBuilder = new SpecificationBuilder();
 
   public getData(): Observable<TraceDetailData> {
-    return this.queryWithNextBatch<TraceGraphQlQueryHandlerService>({
+    return this.queryIsolated<TraceGraphQlQueryHandlerService>({
       requestType: TRACE_GQL_REQUEST,
       traceType: this.trace[traceTypeKey],
       traceId: this.trace[traceIdKey],

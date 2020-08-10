@@ -28,7 +28,7 @@ export class SpanDetailDataSourceModel extends GraphQlDataSourceModel<SpanDetail
   }
 
   public getData(): Observable<SpanDetailData> {
-    return this.queryWithNextBatch<SpanGraphQlQueryHandlerService>({
+    return this.queryIsolated<SpanGraphQlQueryHandlerService>({
       requestType: SPAN_GQL_REQUEST,
       id: this.span[spanIdKey],
       timeRange: this.getTimeRangeOrThrow(),

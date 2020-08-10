@@ -28,7 +28,7 @@ export class TracesDataSourceModel extends GraphQlDataSourceModel<TracesResponse
   public attributeSpecifications: AttributeSpecificationModel[] = [];
 
   public getData(): Observable<TracesResponse> {
-    return this.queryWithNextBatch<TracesGraphQlQueryHandlerService>({
+    return this.queryIsolated<TracesGraphQlQueryHandlerService>({
       requestType: TRACES_GQL_REQUEST,
       traceType: this.traceType,
       timeRange: this.getTimeRangeOrThrow(),
