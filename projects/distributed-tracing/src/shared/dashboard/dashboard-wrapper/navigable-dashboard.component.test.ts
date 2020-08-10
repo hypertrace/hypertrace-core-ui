@@ -1,11 +1,10 @@
-import { LoadAsyncModule } from '@hypertrace/components';
+import { Filter, FilterBarComponent, FilterType, LoadAsyncModule, UserFilterOperator } from '@hypertrace/components';
 import { DashboardPersistenceService } from '@hypertrace/dashboards';
+import { MetadataService } from '@hypertrace/distributed-tracing';
 import { Dashboard } from '@hypertrace/hyperdash';
-import { createHostFactory } from '@ngneat/spectator/jest';
+import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
-import { FilterBarComponent } from '../../components/filter-bar/filter-bar.component';
-import { Filter, UserFilterOperator } from '../../components/filter-bar/filter/filter-api';
-import { AttributeMetadataType } from '../../graphql/model/metadata/attribute-metadata';
+import { of } from 'rxjs';
 import { GraphQlFieldFilter } from '../../graphql/model/schema/filter/field/graphql-field-filter';
 import { GraphQlOperatorType } from '../../graphql/model/schema/filter/graphql-filter';
 import { GraphQlFilterDataSourceModel } from '../data/graphql/filter/graphql-filter-data-source.model';
@@ -17,12 +16,18 @@ describe('Navigable dashboard component', () => {
     component: NavigableDashboardComponent,
     imports: [LoadAsyncModule],
     declarations: [MockComponent(ApplicationAwareDashboardComponent), MockComponent(FilterBarComponent)],
+    providers: [
+      mockProvider(MetadataService, {
+        getFilterAttributes: () => of([])
+      })
+    ],
     template: `
-    <htc-navigable-dashboard 
-      [defaultJson]="defaultJson" 
-      [navLocation]="navLocation" 
-      [filterConfig]="filterConfig">
-    </htc-navigable-dashboard>`
+      <htc-navigable-dashboard
+        [defaultJson]="defaultJson"
+        [navLocation]="navLocation"
+        [filterConfig]="filterConfig">
+      </htc-navigable-dashboard>
+    `
   });
 
   test('uses default JSON if no dashboard registered', () => {
@@ -119,15 +124,19 @@ describe('Navigable dashboard component', () => {
       refresh: jest.fn()
     };
     spectator.component.onDashboardReady(mockDashboard as Dashboard);
-    const explicitFilter = {
+    const explicitFilter: Filter = {
       metadata: {
-        type: AttributeMetadataType.String
+        name: 'test',
+        displayName: 'Test',
+        type: FilterType.String
       },
       field: 'foo',
       operator: UserFilterOperator.Equals,
-      value: 'bar'
+      value: 'bar',
+      userString: '',
+      urlString: ''
     };
-    spectator.query(FilterBarComponent)?.filtersChange.next([explicitFilter as Filter]);
+    spectator.query(FilterBarComponent)?.filtersChange.next([explicitFilter]);
     expect(mockDataSource.addFilters).toHaveBeenCalledWith(
       expect.objectContaining({ key: 'foo', operator: GraphQlOperatorType.Equals, value: 'bar' })
     );

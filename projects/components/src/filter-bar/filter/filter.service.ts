@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
-import { MetadataService } from '../../../services/metadata/metadata.service';
+import { FilterAttribute } from '../filter-attribute';
 import { FilterBuilderService } from './builder/filter-builder.service';
 import { UserFilterOperator, USER_FILTER_OPERATORS } from './filter-api';
 import { FilterParserService } from './parser/filter-parser.service';
 
 export interface IncompleteFilter {
-  metadata: AttributeMetadata;
+  metadata: FilterAttribute;
   field: string;
   operator?: UserFilterOperator;
   value?: unknown;
@@ -20,23 +17,15 @@ export interface IncompleteFilter {
 })
 export class FilterService {
   public constructor(
-    private readonly metadataService: MetadataService,
     private readonly filterBuilderService: FilterBuilderService,
     private readonly filterParserService: FilterParserService
   ) {}
 
-  public lookupAvailableMatchingFilters(scope: string, text: string = ''): Observable<IncompleteFilter[]> {
-    return this.getFilterableAttributes(scope).pipe(
-      map(attributes => this.mapToFilters(text, attributes)),
-      map(filters => this.filterByText(text, filters))
-    );
+  public lookupAvailableMatchingFilters(attributes: FilterAttribute[], text: string = ''): IncompleteFilter[] {
+    return this.filterByText(text, this.mapToFilters(text, this.filterByType(attributes)));
   }
 
-  private getFilterableAttributes(scope: string): Observable<AttributeMetadata[]> {
-    return this.metadataService.getFilterAttributes(scope).pipe(map(attributes => this.filterByType(attributes)));
-  }
-
-  private filterByType(attributes: AttributeMetadata[]): AttributeMetadata[] {
+  private filterByType(attributes: FilterAttribute[]): FilterAttribute[] {
     return attributes.filter(attribute => this.filterBuilderService.isSupportedType(attribute));
   }
 
@@ -48,7 +37,7 @@ export class FilterService {
     );
   }
 
-  private mapToFilters(text: string, attributes: AttributeMetadata[]): IncompleteFilter[] {
+  private mapToFilters(text: string, attributes: FilterAttribute[]): IncompleteFilter[] {
     return attributes.flatMap(attribute => {
       const filterBuilder = this.filterBuilderService.lookup(attribute);
 
@@ -72,7 +61,7 @@ export class FilterService {
     });
   }
 
-  private parseUserInput(text: string, attribute: AttributeMetadata): IncompleteFilter | undefined {
+  private parseUserInput(text: string, attribute: FilterAttribute): IncompleteFilter | undefined {
     // First check to see if we have a complete filter string
     const filter = this.filterParserService.parseUserFilterString(text, attribute);
 
@@ -109,15 +98,11 @@ export class FilterService {
     return undefined;
   }
 
-  private textIsOnlyField(text: string, attribute: AttributeMetadata): boolean {
+  private textIsOnlyField(text: string, attribute: FilterAttribute): boolean {
     return text.trim().toLowerCase() === attribute.displayName.toLowerCase();
   }
 
-  private textIsOnlyFieldAndOperator(
-    text: string,
-    attribute: AttributeMetadata,
-    operator: UserFilterOperator
-  ): boolean {
+  private textIsOnlyFieldAndOperator(text: string, attribute: FilterAttribute, operator: UserFilterOperator): boolean {
     const filterBuilder = this.filterBuilderService.lookup(attribute);
 
     return text.trim().toLowerCase() === filterBuilder.buildFilter(attribute, operator).userString.toLowerCase();

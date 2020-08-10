@@ -1,4 +1,4 @@
-import { AttributeMetadataType } from '../../../../graphql/model/metadata/attribute-metadata';
+import { FilterType } from '../../filter-type';
 import { UserFilterOperator } from '../filter-api';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 
@@ -13,8 +13,8 @@ export class StringFilterBuilder extends AbstractFilterBuilder<string | undefine
     return converted === undefined ? '' : converted;
   }
 
-  public supportedValue(): AttributeMetadataType {
-    return AttributeMetadataType.String;
+  public supportedValue(): FilterType {
+    return FilterType.String;
   }
 
   public supportedOperators(): UserFilterOperator[] {
