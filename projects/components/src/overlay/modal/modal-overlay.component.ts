@@ -25,7 +25,7 @@ import { ModalOverlayConfig, ModalSize } from './modal';
       </div>
       <div class="content-wrapper">
         <div class="content">
-          <ng-container *ngIf="this.isComponentmodal; else templateRenderer">
+          <ng-container *ngIf="this.isComponentModal; else templateRenderer">
             <ng-container *ngComponentOutlet="this.renderer"></ng-container>
           </ng-container>
           <ng-template #templateRenderer>
@@ -40,7 +40,7 @@ export class ModalOverlayComponent {
   public readonly modalTitle: string;
   public readonly showHeader: boolean = true;
   public readonly size: ModalSize;
-  public readonly isComponentmodal: boolean;
+  public readonly isComponentModal: boolean;
   public readonly renderer: TemplateRef<unknown> | Type<unknown>;
 
   public visible: boolean = true;
@@ -49,7 +49,7 @@ export class ModalOverlayComponent {
     this.showHeader = config.showHeader === true;
     this.modalTitle = config.title === undefined ? '' : config.title;
     this.size = config.size;
-    this.isComponentmodal = !(config.content instanceof TemplateRef);
+    this.isComponentModal = !(config.content instanceof TemplateRef);
     this.renderer = config.content;
   }
 
