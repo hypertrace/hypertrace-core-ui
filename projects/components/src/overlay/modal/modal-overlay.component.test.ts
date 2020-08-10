@@ -8,6 +8,7 @@ import { PopoverRef } from '../../popover/popover-ref';
 import { ModalSize } from './modal';
 import { ModalOverlayComponent } from './modal-overlay.component';
 
+// tslint:disable-next-line:component-selector
 @Component({
   selector: 'test-modal-content',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -8,6 +8,7 @@ import { PopoverRef } from '../../popover/popover-ref';
 import { SheetSize } from './sheet';
 import { SheetOverlayComponent } from './sheet-overlay.component';
 
+// tslint:disable-next-line:component-selector
 @Component({
   selector: 'test-sheet-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
