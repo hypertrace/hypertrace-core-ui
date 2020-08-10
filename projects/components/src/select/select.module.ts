@@ -8,20 +8,9 @@ import { PopoverModule } from '../popover/popover.module';
 import { SelectGroupComponent } from './select-group.component';
 import { SelectOptionComponent } from './select-option.component';
 import { SelectComponent } from './select.component';
-import { InputModule } from '../input/input.module';
-import { DividerModule } from '../divider/divider.module';
 
 @NgModule({
-  imports: [
-    FormsModule,
-    CommonModule,
-    IconModule,
-    LabelModule,
-    LetAsyncModule,
-    PopoverModule,
-    InputModule,
-    DividerModule
-  ],
+  imports: [FormsModule, CommonModule, IconModule, LabelModule, LetAsyncModule, PopoverModule],
   declarations: [SelectComponent, SelectOptionComponent, SelectGroupComponent],
   exports: [SelectComponent, SelectOptionComponent, SelectGroupComponent]
 })
