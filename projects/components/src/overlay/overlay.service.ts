@@ -23,11 +23,6 @@ export class OverlayService {
       data: config
     });
 
-    if (config.closeOnNavigate !== false) {
-      // Default to close on navigate if undefined
-      popover.closeOnNavigation();
-    }
-
     return popover;
   }
 
@@ -41,11 +36,6 @@ export class OverlayService {
       },
       data: config
     });
-
-    if (config.closeOnNavigate !== false) {
-      // Default to close on navigate if undefined
-      popover.closeOnNavigation();
-    }
 
     return popover;
   }
