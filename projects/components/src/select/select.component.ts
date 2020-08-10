@@ -32,28 +32,38 @@ import { SelectSize } from './select-size';
       [ngClass]="[
         this.size,
         this.groupPosition,
-        selected ? selected.style.toString() : '',
         this.showBorder ? 'border' : '',
-        this.disabled ? 'disabled' : ''
+        this.disabled ? 'disabled' : '',
+        !this.multiSelectMode && selected ? selected.style.toString() : ''
       ]"
       *htcLetAsync="this.selected$ as selected"
     >
-      <htc-popover [disabled]="this.disabled" [closeOnClick]="true" class="select-container">
+      <htc-popover [disabled]="this.disabled" [closeOnClick]="!this.multiSelectMode" class="select-container">
         <htc-popover-trigger>
           <div class="trigger-content" [ngClass]="this.justifyClass">
             <htc-icon *ngIf="this.icon" class="trigger-prefix-icon" [icon]="this.icon" size="${IconSize.Small}">
             </htc-icon>
-            <htc-label class="trigger-label" [label]="selected?.label || this.placeholder"> </htc-label>
+            <htc-label
+              *ngIf="!this.multiSelectMode"
+              class="trigger-label"
+              [label]="selected?.label || this.placeholder"
+            ></htc-label>
+            <htc-label
+              *ngIf="this.multiSelectMode"
+              class="trigger-label"
+              [label]="this.createTriggerLabel()"
+            ></htc-label>
             <htc-icon class="trigger-icon" icon="${IconType.ChevronDown}" size="${IconSize.Small}"> </htc-icon>
           </div>
         </htc-popover-trigger>
         <htc-popover-content>
           <div class="select-content">
             <div *ngFor="let item of items" (click)="this.onSelectionChange(item)" class="select-option">
+              <input *ngIf="this.multiSelectMode" type="checkbox" [checked]="this.isSelectedItem(item)" />
               <span class="label">{{ item.label }}</span>
               <htc-icon
                 class="status-icon"
-                *ngIf="this.highlightSelected && this.isSelectedItem(item)"
+                *ngIf="!this.multiSelectMode && this.highlightSelected && this.isSelectedItem(item)"
                 icon="${IconType.Checkmark}"
                 size="${IconSize.Small}"
               >
@@ -90,13 +100,16 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   @Input()
   public highlightSelected: boolean = true;
 
+  @Input()
+  public multiSelectMode: boolean = false;
+
   @Output()
   public readonly selectedChange: EventEmitter<V> = new EventEmitter<V>();
 
   @ContentChildren(SelectOptionComponent)
   public items?: QueryList<SelectOptionComponent<V>>;
 
-  public selected$?: Observable<SelectOption<V> | undefined>;
+  public selected$?: Observable<SelectOption<V> | SelectOption<V>[] | undefined>;
 
   public groupPosition: SelectGroupPosition = SelectGroupPosition.Ungrouped;
 
@@ -113,6 +126,21 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
     private readonly changeDetector: ChangeDetectorRef
   ) {}
 
+  public createTriggerLabel(): string | undefined {
+    if (this.multiSelectMode) {
+      const selectedItemsLength = ((this.selected ?? []) as SelectOption<V>[]).length;
+      if (selectedItemsLength === 0) {
+        return this.placeholder;
+      } else if (selectedItemsLength === 1) {
+        return ((this.selected ?? []) as SelectOption<V>[])[0].label;
+      } else {
+        return `${((this.selected ?? []) as SelectOption<V>[])[0].label} and ${selectedItemsLength - 1} more`;
+      }
+    } else {
+      return ((this.selected ?? {}) as SelectOption<V>).label ?? this.placeholder;
+    }
+  }
+
   public ngAfterContentInit(): void {
     this.selected$ = this.buildObservableOfSelected();
   }
@@ -124,7 +152,11 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   }
 
   public isSelectedItem(item: SelectOptionComponent<V>): boolean {
-    return this.selected === item.value;
+    if (this.multiSelectMode) {
+      return ((this.selected ?? []) as SelectOption<V>[]).filter(option => option.value === item.value).length > 0;
+    } else {
+      return this.selected === item.value;
+    }
   }
 
   public updateGroupPosition(position: SelectGroupPosition): void {
@@ -132,7 +164,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
     this.changeDetector.markForCheck();
   }
 
-  private buildObservableOfSelected(): Observable<SelectOption<V> | undefined> {
+  private buildObservableOfSelected(): Observable<SelectOption<V> | SelectOption<V>[] | undefined> {
     if (!this.items) {
       return EMPTY;
     }
@@ -144,18 +176,39 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   }
 
   public onSelectionChange(item: SelectOptionComponent<V>): void {
-    this.selected = item.value;
+    if (this.multiSelectMode) {
+      const selectionArray = (this.selected ?? []) as SelectOption<V>[];
+      if (selectionArray.map(option => option.value).includes(item.value)) {
+        ((this.selected ?? []) as SelectOption<V>[]).forEach((option, index) => {
+          if (option.value === item.value) {
+            ((this.selected ?? []) as SelectOption<V>[]).splice(index, 1);
+
+            return;
+          }
+        });
+      } else {
+        ((this.selected ?? []) as SelectOption<V>[]).push(item);
+      }
+    } else {
+      this.selected = item.value;
+    }
     this.selected$ = this.buildObservableOfSelected();
     this.selectedChange.emit(this.selected);
   }
 
-  private findItem(value: V | undefined): SelectOption<V> | undefined {
+  private findItem(value: V | undefined): SelectOption<V> | SelectOption<V>[] | undefined {
     if (this.items === undefined) {
       this.loggerService.warn(`Invalid items for select option '${String(value)}'`);
 
       return undefined;
     }
 
-    return this.items.find(item => item.value === value);
+    if (this.multiSelectMode) {
+      const selectedValues = ((this.selected ?? []) as SelectOption<V>[]).map(item => item.value);
+
+      return this.items.filter(item => selectedValues.includes(item.value));
+    } else {
+      return this.items.find(item => item.value === value);
+    }
   }
 }
