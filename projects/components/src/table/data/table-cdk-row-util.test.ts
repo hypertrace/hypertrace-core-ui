@@ -5,6 +5,7 @@ import {
   StatefulTableRow,
   StatefulTreeTableRow,
   TableRow,
+  TableRowState,
   TreeTableRow
 } from '../table-api';
 import { TableCdkRowUtil } from './table-cdk-row-util';
@@ -346,6 +347,114 @@ describe('Table row util', () => {
     });
   });
 
+  test('should unselect all the rows', () => {
+    const row1: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1'
+    };
+
+    const row2: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const rows = TableCdkRowUtil.unselectAllRows([row1, row2]);
+    rows.forEach(row => expect(row.$$state.selected).toBeFalsy());
+  });
+
+  test('should select all the rows', () => {
+    const row1: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: false,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1'
+    };
+
+    const row2: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: false,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const rows = TableCdkRowUtil.selectAllRows([row1, row2]);
+    rows.forEach(row => expect(row.$$state.selected).toBeTruthy());
+  });
+
+  test('should merge row states', () => {
+    const row1: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 0
+      },
+      one: '1'
+    };
+
+    const row2: StatefulTableRow = {
+      $$state: {
+        parent: undefined,
+        expanded: true,
+        selected: true,
+        root: true,
+        leaf: false,
+        depth: 1
+      },
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const row3: StatefulTableRow = {
+      // tslint:disable-next-line:no-object-literal-type-assertion
+      $$state: {
+        parent: undefined,
+        expanded: false,
+        depth: 2
+      } as TableRowState,
+      one: '1',
+      two: '2',
+      three: '3'
+    };
+
+    const rows = TableCdkRowUtil.mergeRowStates([row1, row2], [row3]);
+    expect(rows[0].$$state.depth).toEqual(0);
+    expect(rows[1].$$state.depth).toEqual(2);
+    expect(rows[1].$$state.expanded).toEqual(false);
+    expect(rows[1].$$state.root).toEqual(true);
+  });
+
   /****************************
    * Transforms
    ****************************/
@@ -473,36 +582,5 @@ describe('Table row util', () => {
 
     cloned.one = 'three';
     expect(TableCdkRowUtil.isEqualExceptState(cloned, childStatefulTableRow)).toEqual(false);
-  });
-
-  test('should unselect all the rows', () => {
-    const row1: StatefulTableRow = {
-      $$state: {
-        parent: undefined,
-        expanded: true,
-        selected: true,
-        root: true,
-        leaf: false,
-        depth: 0
-      },
-      one: '1'
-    };
-
-    const row2: StatefulTableRow = {
-      $$state: {
-        parent: undefined,
-        expanded: true,
-        selected: true,
-        root: true,
-        leaf: false,
-        depth: 0
-      },
-      one: '1',
-      two: '2',
-      three: '3'
-    };
-
-    const rows = TableCdkRowUtil.unselectAllRows([row1, row2]);
-    rows.forEach(row => expect(row.$$state.selected).toBeFalsy());
   });
 });

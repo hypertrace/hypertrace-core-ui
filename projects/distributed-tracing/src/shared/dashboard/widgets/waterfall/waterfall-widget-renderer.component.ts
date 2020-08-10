@@ -119,7 +119,7 @@ export class WaterfallWidgetRendererComponent extends WidgetRenderer<WaterfallWi
   }
 
   public closeSheet(): void {
-    this.popoverRef!.close();
+    this.popoverRef?.close();
     this.selectedData = undefined;
     this.changeDetector.markForCheck(); // Need this for child table to remove selected-row class
   }
