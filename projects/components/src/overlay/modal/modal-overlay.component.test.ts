@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { GLOBAL_HEADER_HEIGHT, NavigationService } from '@hypertrace/common';
+import { NavigationService } from '@hypertrace/common';
 import { createHostFactory, mockProvider, Spectator } from '@ngneat/spectator/jest';
 import { ButtonModule } from '../../button/button.module';
 import { POPOVER_DATA } from '../../popover/popover';
@@ -29,10 +29,6 @@ describe('Modal Overlay component', () => {
           height: jest.fn(),
           close: jest.fn()
         }
-      },
-      {
-        provide: GLOBAL_HEADER_HEIGHT,
-        useValue: 20
       }
     ]
   });

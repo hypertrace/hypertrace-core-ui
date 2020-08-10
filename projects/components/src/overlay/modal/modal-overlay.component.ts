@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, TemplateRef, Type } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { GLOBAL_HEADER_HEIGHT } from '@hypertrace/common';
 import { ButtonSize, ButtonStyle } from '../../button/button';
 import { POPOVER_DATA } from '../../popover/popover';
 import { PopoverRef } from '../../popover/popover-ref';
@@ -46,17 +45,12 @@ export class ModalOverlayComponent {
 
   public visible: boolean = true;
 
-  public constructor(
-    private readonly popoverRef: PopoverRef,
-    @Inject(POPOVER_DATA) config: ModalOverlayConfig,
-    @Inject(GLOBAL_HEADER_HEIGHT) globalHeaderHeight: string
-  ) {
+  public constructor(private readonly popoverRef: PopoverRef, @Inject(POPOVER_DATA) config: ModalOverlayConfig) {
     this.showHeader = config.showHeader === true;
     this.modalTitle = config.title === undefined ? '' : config.title;
     this.size = config.size;
     this.isComponentmodal = !(config.content instanceof TemplateRef);
     this.renderer = config.content;
-    this.popoverRef.height(`calc(100vh - ${globalHeaderHeight})`);
   }
 
   public close(): void {
