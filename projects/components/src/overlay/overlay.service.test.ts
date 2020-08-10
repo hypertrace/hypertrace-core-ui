@@ -4,17 +4,18 @@ import { NavigationService } from '@hypertrace/common';
 import { recordObservable, runFakeRxjs } from '@hypertrace/test-utils';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { Subject } from 'rxjs';
-import { PopoverModule } from '../../popover/popover.module';
-import { SheetSize } from '../sheet.component';
-import { SheetOverlayService } from './sheet-overlay.service';
+import { PopoverModule } from '../popover/popover.module';
+import { ModalSize } from './modal/modal';
+import { OverlayService } from './overlay.service';
+import { SheetSize } from './sheet/sheet';
 
-describe('Sheet overlay service', () => {
+describe('Overlay service', () => {
   const navigation$: Subject<void> = new Subject<void>();
 
-  let spectator: SpectatorService<SheetOverlayService>;
+  let spectator: SpectatorService<OverlayService>;
 
   const createService = createServiceFactory({
-    service: SheetOverlayService,
+    service: OverlayService,
     imports: [PopoverModule],
     providers: [
       mockProvider(NavigationService, {
@@ -27,10 +28,36 @@ describe('Sheet overlay service', () => {
     spectator = createService();
   });
 
-  test('can close a popover on navigation', fakeAsync(() => {
+  test('can close a sheet popover on navigation', fakeAsync(() => {
     const popover = spectator.service.createSheet({
       showHeader: false,
       size: SheetSize.Medium,
+      content: Component({
+        selector: 'test-component',
+        template: `<div>TEST</div>`
+      })(class {})
+    });
+    popover.show();
+    popover.closeOnNavigation();
+    tick(); // CDK overlay is async
+
+    expect(popover.closed).toBe(false);
+
+    runFakeRxjs(({ expectObservable }) => {
+      expectObservable(popover.closed$).toBe('(x|)', { x: undefined });
+      expectObservable(recordObservable(popover.hidden$)).toBe('|'); // Record hidden/shown for test, since they're hot
+      expectObservable(recordObservable(popover.shown$)).toBe('|');
+      navigation$.next();
+    });
+
+    expect(popover.closed).toBe(true);
+    flush(); // CDK cleans up overlay async
+  }));
+
+  test('can close a modal popover on navigation', fakeAsync(() => {
+    const popover = spectator.service.createModal({
+      showHeader: false,
+      size: ModalSize.Small,
       content: Component({
         selector: 'test-component',
         template: `<div>TEST</div>`

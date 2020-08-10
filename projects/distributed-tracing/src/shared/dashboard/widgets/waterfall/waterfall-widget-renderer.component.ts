@@ -8,7 +8,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { ButtonStyle, PopoverRef, SheetOverlayService, SheetSize } from '@hypertrace/components';
+import { ButtonStyle, OverlayService, PopoverRef, SheetSize } from '@hypertrace/components';
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
@@ -83,7 +83,7 @@ export class WaterfallWidgetRendererComponent extends WidgetRenderer<WaterfallWi
   public constructor(
     @Inject(RENDERER_API) api: RendererApi<WaterfallWidgetModel>,
     changeDetector: ChangeDetectorRef,
-    private readonly sheetOverlayService: SheetOverlayService
+    private readonly overlayService: OverlayService
   ) {
     super(api, changeDetector);
   }
@@ -111,7 +111,7 @@ export class WaterfallWidgetRendererComponent extends WidgetRenderer<WaterfallWi
 
     this.selectedData = selected;
 
-    this.popoverRef = this.sheetOverlayService.createSheet({
+    this.popoverRef = this.overlayService.createSheet({
       showHeader: false,
       size: SheetSize.Large,
       content: this.sidebarDetails

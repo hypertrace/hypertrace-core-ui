@@ -94,6 +94,8 @@ export class PopoverPositionBuilder {
   private buildFixedPositionStrategy(popoverPosition: PopoverFixedPosition): GlobalPositionStrategy {
     const globalPosition = this.overlay.position().global();
     switch (popoverPosition.location) {
+      case PopoverFixedPositionLocation.Centered:
+        return globalPosition.centerHorizontally().centerVertically();
       case PopoverFixedPositionLocation.RightUnderHeader:
       default:
         return globalPosition.right('0').top(this.headerHeight ?? '0');
