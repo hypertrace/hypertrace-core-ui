@@ -88,10 +88,16 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.rowsChange$.next(rows);
   }
 
-  public unselectAllRows(): void {
-    const rows = TableCdkRowUtil.unselectAllRows(this.cachedRows);
+  public unselectAllRows(rows: StatefulTableRow[] = this.cachedRows): void {
+    const selectedRows = TableCdkRowUtil.unselectAllRows(rows);
     this.lastRowChange = undefined;
-    this.rowsChange$.next(rows);
+    this.rowsChange$.next(TableCdkRowUtil.mergeRowStates(this.cachedRows, selectedRows));
+  }
+
+  public selectAllRows(rows: StatefulTableRow[] = this.cachedRows): void {
+    const unselectedRows = TableCdkRowUtil.selectAllRows(rows);
+    this.lastRowChange = undefined;
+    this.rowsChange$.next(TableCdkRowUtil.mergeRowStates(this.cachedRows, unselectedRows));
   }
 
   /****************************
