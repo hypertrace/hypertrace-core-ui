@@ -53,14 +53,35 @@ describe('Table component', () => {
     </htc-table>`
   });
 
-  test('does not alter the URL on paging if syncWithUrl false', () => {
-    const spectator = createHost(undefined, {
-      hostProps: {
-        columnConfigs: buildColumns(),
-        data: buildData(),
-        syncWithUrl: false
+  test('pass custom page size options to paginator', () => {
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [pageSizeOptions]="pageSizeOptions"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: buildData(),
+          pageSizeOptions: [10, 25]
+        }
       }
-    });
+    );
+
+    expect(spectator.query(PaginatorComponent)?.pageSizeOptions).toEqual([10, 25]);
+  });
+
+  test('does not alter the URL on paging if syncWithUrl false', () => {
+    const mockPageChange = jest.fn();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [syncWithUrl]="syncWithUrl"
+         (pageChange)="pageChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: buildData(),
+          syncWithUrl: false,
+          pageChange: mockPageChange
+        }
+      }
+    );
 
     spectator.triggerEventHandler(PaginatorComponent, 'pageChange', {
       pageIndex: 1,
@@ -68,16 +89,26 @@ describe('Table component', () => {
     });
 
     expect(spectator.inject(NavigationService).addQueryParametersToUrl).not.toHaveBeenCalled();
+    expect(mockPageChange).toHaveBeenCalledWith({
+      pageIndex: 1,
+      pageSize: 50
+    });
   });
 
   test('updates the URL on paging if syncWithUrl true', () => {
-    const spectator = createHost(undefined, {
-      hostProps: {
-        columnConfigs: buildColumns(),
-        data: buildData(),
-        syncWithUrl: true
+    const mockPageChange = jest.fn();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" [syncWithUrl]="syncWithUrl"
+         (pageChange)="pageChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: buildData(),
+          syncWithUrl: true,
+          pageChange: mockPageChange
+        }
       }
-    });
+    );
 
     spectator.triggerEventHandler(PaginatorComponent, 'pageChange', {
       pageIndex: 1,
@@ -87,6 +118,10 @@ describe('Table component', () => {
     expect(spectator.inject(NavigationService).addQueryParametersToUrl).toHaveBeenCalledWith({
       page: 1,
       'page-size': 50
+    });
+    expect(mockPageChange).toHaveBeenCalledWith({
+      pageIndex: 1,
+      pageSize: 50
     });
   });
 
