@@ -43,6 +43,7 @@ export class GraphQlFilterBuilderService {
 
   private toGraphQlArgumentValue(type: FilterType, value: unknown): GraphQlArgumentValue {
     switch (type) {
+      case FilterType.Boolean:
       case FilterType.Number:
       case FilterType.String:
       case FilterType.StringMap:

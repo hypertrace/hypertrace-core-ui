@@ -1,10 +1,19 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { TableColumnConfig, TableDataSource, TableRow, TableStyle } from '@hypertrace/components';
+import {
+  FilterAttribute,
+  TableColumnConfig,
+  TableDataSource,
+  TableRow,
+  TableStyle,
+  toFilterType
+} from '@hypertrace/components';
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
+import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
+import { MetadataService } from '../../../services/metadata/metadata.service';
 import { TableWidgetModel } from './table-widget.model';
 
 @Renderer({ modelClass: TableWidgetModel })
@@ -22,7 +31,8 @@ import { TableWidgetModel } from './table-widget.model';
       <htc-table
         class="table"
         [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
-        [columnConfigs]="this.columnDefs"
+        [columnConfigs]="this.columnDefs$ | async"
+        [metadata]="this.metadata$ | async"
         [mode]="this.model.mode"
         [selectionMode]="this.model.selectionMode"
         [display]="this.model.style"
@@ -35,19 +45,25 @@ import { TableWidgetModel } from './table-widget.model';
       </htc-table>
     </htc-titled-content>
     <ng-template #childDetail let-row="row">
-      <ng-container [hdaDashboardModel]="this.getChildModel | htcMemoize: row"> </ng-container>
+      <ng-container [hdaDashboardModel]="this.getChildModel | htcMemoize: row"></ng-container>
     </ng-template>
   `
 })
 export class TableWidgetRendererComponent
   extends WidgetRenderer<TableWidgetModel, TableDataSource<TableRow> | undefined>
   implements OnInit {
-  public columnDefs: TableColumnConfig[];
+  public columnDefs$: Observable<TableColumnConfig[]>;
+  public metadata$: Observable<FilterAttribute[]>;
 
-  public constructor(@Inject(RENDERER_API) api: RendererApi<TableWidgetModel>, changeDetector: ChangeDetectorRef) {
+  public constructor(
+    @Inject(RENDERER_API) api: RendererApi<TableWidgetModel>,
+    changeDetector: ChangeDetectorRef,
+    private readonly metadataService: MetadataService
+  ) {
     super(api, changeDetector);
 
-    this.columnDefs = this.model.getColumns();
+    this.metadata$ = this.getScopeAttributes();
+    this.columnDefs$ = this.enrichColumnDef(this.model.getColumns());
   }
 
   public getChildModel = (row: TableRow): object | undefined => this.model.getChildModel(row);
@@ -58,5 +74,38 @@ export class TableWidgetRendererComponent
 
   public get syncWithUrl(): boolean {
     return this.model.style === TableStyle.FullPage;
+  }
+
+  private getScope(): Observable<string | undefined> {
+    return this.api.model.getData().pipe(map(data => data.getScope()));
+  }
+
+  private getScopeAttributes(): Observable<FilterAttribute[]> {
+    return this.getScope().pipe(
+      switchMap(scope => {
+        if (scope === undefined) {
+          return [];
+        }
+
+        return this.metadataService.getFilterAttributes(scope);
+      }),
+      map((attributes: AttributeMetadata[]) =>
+        attributes.map(attribute => ({
+          ...attribute,
+          type: toFilterType(attribute.type)
+        }))
+      )
+    );
+  }
+
+  private enrichColumnDef(columnDefs: TableColumnConfig[]): Observable<TableColumnConfig[]> {
+    return this.metadata$.pipe(
+      map((attributes: FilterAttribute[]) =>
+        columnDefs.map(columnDef => ({
+          ...columnDef,
+          attribute: attributes.find(attribute => attribute.name === columnDef.field)
+        }))
+      )
+    );
   }
 }

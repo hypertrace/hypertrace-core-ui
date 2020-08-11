@@ -1,9 +1,9 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { IconLibraryTestingModule, IconType } from '@hypertrace/assets-library';
-import { Dictionary, NavigationService } from '@hypertrace/common';
+import { NavigationService } from '@hypertrace/common';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { IconModule } from '../../../../icon/icon.module';
-import { TableColumnConfig } from '../../../table-api';
+import { TableColumnConfig, TableRow } from '../../../table-api';
 import {
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
@@ -28,7 +28,7 @@ describe('Icon table cell renderer component', () => {
     useValue: cellData
   });
 
-  const tableRowDataRendererRowDataProvider = (rowData: Dictionary<unknown>) => ({
+  const tableRowDataRendererRowDataProvider = (rowData: TableRow) => ({
     provide: TABLE_CELL_RENDERER_ROW_DATA,
     useValue: rowData
   });

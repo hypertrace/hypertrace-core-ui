@@ -6,7 +6,12 @@ import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent }
   styleUrls: ['./span-name-table-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="span-title" [htcTooltip]="this.value.tooltip" [ngClass]="{ clickable: this.clickable }">
+    <div
+      class="span-title"
+      [htcTooltip]="this.tooltip"
+      [ngClass]="{ clickable: this.clickable }"
+      (click)="this.onClick()"
+    >
       <div class="color-bar" [style.backgroundColor]="this.value.color" *ngIf="this.value.color"></div>
       <div class="service-name">
         <span class="text">{{ this.value.serviceName }}</span>
@@ -24,14 +29,15 @@ import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent }
   type: SpanNameTableCellRendererComponent.SPAN_NAME,
   alignment: TableCellAlignmentType.Left
 })
-export class SpanNameTableCellRendererComponent extends TableCellRendererComponent<SpanNameCellRendererData, Parsed> {
+export class SpanNameTableCellRendererComponent extends TableCellRendererComponent<SpanNameCellRendererData> {
   public static readonly SPAN_NAME: string = 'span-name';
 
-  protected parseValue(raw: SpanNameCellRendererData): Parsed {
-    return {
-      ...raw,
-      tooltip: `${raw.serviceName} ${raw.protocolName} ${raw.name}`
-    };
+  protected parseValue(cellData: SpanNameCellRendererData): SpanNameCellRendererData {
+    return cellData;
+  }
+
+  protected parseTooltip(cellData: SpanNameCellRendererData): string {
+    return `${cellData.serviceName} ${cellData.protocolName} ${cellData.name}`;
   }
 }
 
@@ -40,8 +46,4 @@ export interface SpanNameCellRendererData {
   protocolName: string;
   name: string;
   color?: string;
-}
-
-interface Parsed extends SpanNameCellRendererData {
-  tooltip: string;
 }

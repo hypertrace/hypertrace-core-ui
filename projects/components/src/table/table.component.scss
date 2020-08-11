@@ -1,5 +1,4 @@
-@import 'color-palette';
-@import 'font';
+@import 'mixins';
 
 :host {
   display: flex;
@@ -39,7 +38,6 @@
   display: flex;
   flex-direction: row;
   height: 44px;
-  padding-top: 6px;
   cursor: pointer;
 
   &.selected-row {
@@ -71,12 +69,16 @@
 
 .data-cell {
   flex: 1 1 0;
-  padding: 4px 12px;
   overflow: hidden;
   border-bottom: 1px solid $gray-1;
 
   &.detail-expanded {
     border-bottom: unset;
+  }
+
+  .data-cell-renderer {
+    display: block;
+    height: 100%;
   }
 }
 

@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
 import { NavigationService } from '@hypertrace/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FilterAttribute } from './filter-attribute';
 import { Filter } from './filter/filter-api';
 import { FilterParserService } from './filter/parser/filter-parser.service';
+
+export type GetFiltersFunction = (attributes: FilterAttribute[]) => Filter[];
 
 @Injectable({ providedIn: 'root' })
 export class FilterBarService {
   private static readonly FILTER_QUERY_PARAM: string = 'filter';
 
+  public readonly urlFilterChanges$: Observable<GetFiltersFunction>;
+
   public constructor(
     private readonly navigationService: NavigationService,
     private readonly filterParserService: FilterParserService
-  ) {}
+  ) {
+    this.urlFilterChanges$ = this.navigationService.navigation$.pipe(
+      map(() => (attributes: FilterAttribute[]) => this.getUrlFilters(attributes))
+    );
+  }
 
   public setUrlFilters(filters: Filter[]): void {
     this.navigationService.addQueryParametersToUrl({

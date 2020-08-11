@@ -52,6 +52,8 @@ const iconsRootPath = 'assets/icons';
         { key: IconType.Kubernetes, url: `${iconsRootPath}/kubernetes.svg` },
         { key: IconType.LinkUrl, url: `${iconsRootPath}/link-url.svg` },
         { key: IconType.Loading, url: `${iconsRootPath}/loading.svg` },
+        { key: IconType.MoreHorizontal, url: `${iconsRootPath}/more-horizontal.svg` },
+        { key: IconType.MoreVertical, url: `${iconsRootPath}/more-vertical.svg` },
         { key: IconType.NoData, url: `${iconsRootPath}/no-data.svg` },
         { key: IconType.Node, url: `${iconsRootPath}/node.svg` },
         { key: IconType.Search, url: `${iconsRootPath}/search.svg` },

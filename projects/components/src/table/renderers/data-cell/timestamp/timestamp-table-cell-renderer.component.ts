@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject, Optional } from '@angular/core';
-import { DateFormatMode, DateFormatOptions, Dictionary } from '@hypertrace/common';
-import { TableColumnConfig } from '../../../table-api';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { DateFormatMode, DateFormatOptions } from '@hypertrace/common';
+import { TableColumnConfig, TableRow } from '../../../table-api';
 import { StandardTableCellRendererType } from '../../standard-table-cell-renderer-type';
 import { TableCellAlignmentType } from '../../table-cell-alignment-type';
 import {
@@ -26,7 +26,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   type: StandardTableCellRendererType.Timestamp,
   alignment: TableCellAlignmentType.Right
 })
-export class TimestampTableCellRendererComponent extends TableCellRendererComponent<Value> {
+export class TimestampTableCellRendererComponent extends TableCellRendererComponent<CellData> {
   public readonly dateFormat: DateFormatOptions = {
     mode: DateFormatMode.DateAndTimeWithSeconds
   };
@@ -35,15 +35,15 @@ export class TimestampTableCellRendererComponent extends TableCellRendererCompon
   public constructor(
     @Inject(TABLE_CELL_RENDERER_COLUMN_CONFIG) columnConfig: TableColumnConfig,
     @Inject(TABLE_CELL_RENDERER_COLUMN_INDEX) index: number,
-    @Optional() @Inject(TABLE_CELL_RENDERER_CELL_DATA) cellData: Value | null,
-    @Optional() @Inject(TABLE_CELL_RENDERER_ROW_DATA) rowData: Dictionary<unknown> | null
+    @Inject(TABLE_CELL_RENDERER_ROW_DATA) rowData: TableRow,
+    @Inject(TABLE_CELL_RENDERER_CELL_DATA) cellData: CellData
   ) {
-    super(columnConfig, index, cellData, rowData);
+    super(columnConfig, index, rowData, cellData);
   }
 
-  protected parseValue(raw: Value): Value {
-    return raw;
+  protected parseValue(cellData: CellData): CellData {
+    return cellData;
   }
 }
 
-type Value = Date | number;
+type CellData = Date | number;

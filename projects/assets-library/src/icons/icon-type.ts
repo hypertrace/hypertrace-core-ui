@@ -65,6 +65,8 @@ export const enum IconType {
   List = 'format_list_bulleted',
   Loading = 'svg:loading',
   Lock = 'lock',
+  MoreHorizontal = 'svg:more-horizontal',
+  MoreVertical = 'svg:more-vertical',
   Menu = 'menu',
   Next = 'navigate_next',
   NoData = 'svg:noData',

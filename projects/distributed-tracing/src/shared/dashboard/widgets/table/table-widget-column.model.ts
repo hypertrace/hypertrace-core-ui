@@ -53,6 +53,13 @@ export class TableWidgetColumnModel {
   public visible: boolean = true;
 
   @ModelProperty({
+    key: 'filterable',
+    displayName: 'Filterable',
+    type: BOOLEAN_PROPERTY.type
+  })
+  public filterable?: boolean = false;
+
+  @ModelProperty({
     key: 'display',
     displayName: 'Display',
     // tslint:disable-next-line: no-object-literal-type-assertion
@@ -81,6 +88,7 @@ export class TableWidgetColumnModel {
   public asTableColumnDef(): SpecificationBackedTableColumnDef {
     return {
       field: this.value.resultAlias(),
+      filterable: this.filterable,
       title: this.title,
       titleTooltip: this.titleTooltip,
       renderer: this.display,

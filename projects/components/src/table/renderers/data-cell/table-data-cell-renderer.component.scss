@@ -1,12 +1,30 @@
-@import 'font';
-@import 'color-palette';
+@import 'mixins';
 
-.vertical-alignment-container {
+.table-data-cell-renderer {
   display: flex;
   align-items: center;
-  height: 24px;
+  height: calc(100% - 8px); // subtract margin
+  margin: 4px 4px;
+  padding: 2px 4px;
 
-  .horizontal-alignment-container {
+  &.selected {
+    background: $blue-1;
+    border: 1px solid $blue-4;
+    border-radius: 6px;
+  }
+
+  &:hover {
+    .filter-button {
+      display: inherit;
+    }
+  }
+
+  .filter-button {
+    display: none;
+  }
+
+  .cell-renderer-content {
+    min-width: 0;
     width: 100%;
 
     &.left {

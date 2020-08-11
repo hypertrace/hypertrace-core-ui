@@ -26,6 +26,10 @@ export class TracesTableDataSourceModel extends TableDataSourceModel {
   })
   public searchFilterAttribute: string = 'name';
 
+  public getScope(): string {
+    return this.traceType;
+  }
+
   protected buildGraphQlRequest(
     filters: GraphQlFilter[],
     request: TableDataRequest<SpecificationBackedTableColumnDef>
