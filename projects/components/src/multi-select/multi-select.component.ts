@@ -35,7 +35,7 @@ import { SelectSize } from '../select/select-size';
             <htc-icon *ngIf="this.icon" class="trigger-prefix-icon" [icon]="this.icon" size="${IconSize.Small}">
             </htc-icon>
             <htc-label class="trigger-label" [label]="this.triggerLabel"></htc-label>
-            <htc-icon class="trigger-icon" icon="${IconType.ChevronDown}" size="${IconSize.Small}"> </htc-icon>
+            <htc-icon class="trigger-icon" icon="${IconType.ChevronDown}" size="${IconSize.Small}"></htc-icon>
           </div>
         </htc-popover-trigger>
         <htc-popover-content>
@@ -130,13 +130,9 @@ export class MultiSelectComponent<V> implements AfterContentInit, OnChanges {
   }
 
   public onSelectionChange(item: SelectOptionComponent<V>): void {
-    if (this.isSelectedItem(item)) {
-      // Remove if already selected
-      this.selected = this.selected?.filter(value => value !== item.value);
-    } else {
-      // Add if not present already
-      this.selected = (this.selected ?? []).concat(item.value);
-    }
+    this.selected = this.isSelectedItem(item)
+      ? (this.selected = this.selected?.filter(value => value !== item.value))
+      : (this.selected ?? []).concat(item.value);
 
     this.setTriggerLabel();
     this.selected$ = this.buildObservableOfSelected();
