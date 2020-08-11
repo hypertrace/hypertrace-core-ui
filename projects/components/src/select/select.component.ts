@@ -43,16 +43,7 @@ import { SelectSize } from './select-size';
           <div class="trigger-content" [ngClass]="this.justifyClass">
             <htc-icon *ngIf="this.icon" class="trigger-prefix-icon" [icon]="this.icon" size="${IconSize.Small}">
             </htc-icon>
-            <htc-label
-              *ngIf="!this.multiSelectMode"
-              class="trigger-label"
-              [label]="selected?.label || this.placeholder"
-            ></htc-label>
-            <htc-label
-              *ngIf="this.multiSelectMode"
-              class="trigger-label"
-              [label]="this.createTriggerLabel()"
-            ></htc-label>
+            <htc-label class="trigger-label" [label]="this.triggerLabel"></htc-label>
             <htc-icon class="trigger-icon" icon="${IconType.ChevronDown}" size="${IconSize.Small}"> </htc-icon>
           </div>
         </htc-popover-trigger>
@@ -80,7 +71,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   public size: SelectSize = SelectSize.Medium;
 
   @Input()
-  public selected?: V;
+  public selected?: V | V[];
 
   @Input()
   public icon?: string;
@@ -104,14 +95,15 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   public multiSelectMode: boolean = false;
 
   @Output()
-  public readonly selectedChange: EventEmitter<V> = new EventEmitter<V>();
+  public readonly selectedChange: EventEmitter<V | V[]> = new EventEmitter<V | V[]>();
 
   @ContentChildren(SelectOptionComponent)
   public items?: QueryList<SelectOptionComponent<V>>;
 
-  public selected$?: Observable<SelectOption<V> | SelectOption<V>[] | undefined>;
+  public selected$?: Observable<SelectOption<V>[] | SelectOption<V> | undefined>;
 
   public groupPosition: SelectGroupPosition = SelectGroupPosition.Ungrouped;
+  public triggerLabel?: string;
 
   public get justifyClass(): string {
     if (this.justify !== undefined) {
@@ -124,38 +116,44 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   public constructor(
     private readonly loggerService: LoggerService,
     private readonly changeDetector: ChangeDetectorRef
-  ) {}
-
-  public createTriggerLabel(): string | undefined {
-    if (this.multiSelectMode) {
-      const selectedItemsLength = ((this.selected ?? []) as SelectOption<V>[]).length;
-      if (selectedItemsLength === 0) {
-        return this.placeholder;
-      } else if (selectedItemsLength === 1) {
-        return ((this.selected ?? []) as SelectOption<V>[])[0].label;
-      } else {
-        return `${((this.selected ?? []) as SelectOption<V>[])[0].label} and ${selectedItemsLength - 1} more`;
-      }
-    } else {
-      return ((this.selected ?? {}) as SelectOption<V>).label ?? this.placeholder;
-    }
+  ) {
+    this.setTriggerLabel();
   }
 
   public ngAfterContentInit(): void {
     this.selected$ = this.buildObservableOfSelected();
+    this.setTriggerLabel();
   }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (this.items !== undefined && changes.selected !== undefined) {
       this.selected$ = this.buildObservableOfSelected();
     }
+    this.setTriggerLabel();
+  }
+
+  private setTriggerLabel(): void {
+    if (this.multiSelectMode) {
+      const selectedItems: SelectOptionComponent<V>[] | undefined = this.items?.filter(item =>
+        (this.selected as V[]).includes(item.value)
+      );
+      if (selectedItems === undefined || selectedItems.length === 0) {
+        this.triggerLabel = this.placeholder;
+      } else if (selectedItems.length === 1) {
+        this.triggerLabel = selectedItems[0].label;
+      } else {
+        this.triggerLabel = `${selectedItems[0].label} and ${selectedItems.length - 1} more`;
+      }
+    } else {
+      this.triggerLabel = this.items?.find(item => item.value === (this.selected as V))?.label || this.placeholder;
+    }
   }
 
   public isSelectedItem(item: SelectOptionComponent<V>): boolean {
     if (this.multiSelectMode) {
-      return ((this.selected ?? []) as SelectOption<V>[]).filter(option => option.value === item.value).length > 0;
+      return this.selected !== undefined && (this.selected as V[]).filter(value => value === item.value).length > 0;
     } else {
-      return this.selected === item.value;
+      return this.selected !== undefined && this.selected === item.value;
     }
   }
 
@@ -164,49 +162,48 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
     this.changeDetector.markForCheck();
   }
 
-  private buildObservableOfSelected(): Observable<SelectOption<V> | SelectOption<V>[] | undefined> {
+  private buildObservableOfSelected(): Observable<SelectOption<V>[] | SelectOption<V> | undefined> {
     if (!this.items) {
       return EMPTY;
     }
 
     return queryListAndChanges$(this.items).pipe(
-      switchMap(items => merge(of(undefined), ...items.map(option => option.optionChange$))),
+      switchMap(items => merge(of([]), ...items.map(option => option.optionChange$))),
       map(() => this.findItem(this.selected))
     );
   }
 
   public onSelectionChange(item: SelectOptionComponent<V>): void {
     if (this.multiSelectMode) {
-      const selectionArray = (this.selected ?? []) as SelectOption<V>[];
-      if (selectionArray.map(option => option.value).includes(item.value)) {
-        ((this.selected ?? []) as SelectOption<V>[]).forEach((option, index) => {
-          if (option.value === item.value) {
-            ((this.selected ?? []) as SelectOption<V>[]).splice(index, 1);
-
-            return;
-          }
-        });
+      // If selected in undefined
+      if (this.selected === undefined) {
+        this.selected = [item.value];
       } else {
-        ((this.selected ?? []) as SelectOption<V>[]).push(item);
+        const selectedItems: V[] = [...(this.selected as V[])];
+        if (selectedItems.includes(item.value)) {
+          // Remove if already selected
+          this.selected = selectedItems.filter(value => value !== item.value);
+        } else {
+          // Add if not present now
+          (this.selected as V[]).push(item.value);
+        }
       }
     } else {
       this.selected = item.value;
     }
+    this.setTriggerLabel();
     this.selected$ = this.buildObservableOfSelected();
     this.selectedChange.emit(this.selected);
   }
 
-  private findItem(value: V | undefined): SelectOption<V> | SelectOption<V>[] | undefined {
+  private findItem(value: V | V[] | undefined): SelectOption<V> | SelectOption<V>[] | undefined {
     if (this.items === undefined) {
       this.loggerService.warn(`Invalid items for select option '${String(value)}'`);
 
       return undefined;
     }
-
     if (this.multiSelectMode) {
-      const selectedValues = ((this.selected ?? []) as SelectOption<V>[]).map(item => item.value);
-
-      return this.items.filter(item => selectedValues.includes(item.value));
+      return this.items.filter(item => (this.selected as V[]).includes(item.value));
     } else {
       return this.items.find(item => item.value === value);
     }
