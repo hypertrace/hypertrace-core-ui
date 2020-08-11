@@ -168,7 +168,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
     }
 
     return queryListAndChanges$(this.items).pipe(
-      switchMap(items => merge(of([]), ...items.map(option => option.optionChange$))),
+      switchMap(items => merge(of(undefined), ...items.map(option => option.optionChange$))),
       map(() => this.findItem(this.selected))
     );
   }
