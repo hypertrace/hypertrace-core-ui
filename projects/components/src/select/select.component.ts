@@ -116,9 +116,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
   public constructor(
     private readonly loggerService: LoggerService,
     private readonly changeDetector: ChangeDetectorRef
-  ) {
-    this.setTriggerLabel();
-  }
+  ) {}
 
   public ngAfterContentInit(): void {
     this.selected$ = this.buildObservableOfSelected();
