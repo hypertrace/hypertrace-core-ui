@@ -1,16 +1,5 @@
 @import 'mixins';
 
-:host {
-  width: 100%;
-  max-width: 240px;
-
-  .multi-select {
-    .trigger-label {
-      min-width: 0;
-    }
-  }
-}
-
 .multi-select {
   display: flex;
   align-items: center;

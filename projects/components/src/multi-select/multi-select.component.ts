@@ -10,7 +10,7 @@ import {
   QueryList
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { LoggerService, queryListAndChanges$, SubscriptionLifecycle, TypedSimpleChanges } from '@hypertrace/common';
+import { LoggerService, queryListAndChanges$, TypedSimpleChanges } from '@hypertrace/common';
 import { EMPTY, merge, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { IconSize } from '../icon/icon-size';
@@ -23,7 +23,6 @@ import { SelectSize } from '../select/select-size';
   selector: 'htc-multi-select',
   styleUrls: ['./multi-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [SubscriptionLifecycle],
   template: `
     <div
       class="multi-select"
@@ -105,9 +104,7 @@ export class MultiSelectComponent<V> implements AfterContentInit, OnChanges {
   }
 
   private setTriggerLabel(): void {
-    const selectedItems: SelectOptionComponent<V>[] | undefined = this.items?.filter(
-      item => this.selected !== undefined && this.selected?.includes(item.value)
-    );
+    const selectedItems: SelectOptionComponent<V>[] | undefined = this.items?.filter(item => this.isSelectedItem(item));
     if (selectedItems === undefined || selectedItems.length === 0) {
       this.triggerLabel = this.placeholder;
     } else if (selectedItems.length === 1) {
@@ -128,37 +125,32 @@ export class MultiSelectComponent<V> implements AfterContentInit, OnChanges {
 
     return queryListAndChanges$(this.items).pipe(
       switchMap(items => merge(of(undefined), ...items.map(option => option.optionChange$))),
-      map(() => this.findItem(this.selected))
+      map(() => this.findItems(this.selected))
     );
   }
 
   public onSelectionChange(item: SelectOptionComponent<V>): void {
-    // If selected in undefined
-    if (this.selected === undefined) {
-      this.selected = [item.value];
+    if (this.isSelectedItem(item)) {
+      // Remove if already selected
+      this.selected = this.selected?.filter(value => value !== item.value);
     } else {
-      const selectedItems: V[] = [...this.selected];
-      if (selectedItems.includes(item.value)) {
-        // Remove if already selected
-        this.selected = selectedItems.filter(value => value !== item.value);
-      } else {
-        // Add if not present already
-        this.selected.push(item.value);
-      }
+      // Add if not present already
+      this.selected = (this.selected ?? []).concat(item.value);
     }
+
     this.setTriggerLabel();
     this.selected$ = this.buildObservableOfSelected();
     this.selectedChange.emit(this.selected);
   }
 
   // Find the select option object for a value
-  private findItem(value: V[] | undefined): SelectOption<V>[] | undefined {
+  private findItems(value: V[] | undefined): SelectOption<V>[] | undefined {
     if (this.items === undefined) {
       this.loggerService.warn(`Invalid items for select option '${String(value)}'`);
 
       return undefined;
     }
 
-    return this.items.filter(item => this.selected !== undefined && this.selected?.includes(item.value));
+    return this.items.filter(item => this.isSelectedItem(item));
   }
 }
