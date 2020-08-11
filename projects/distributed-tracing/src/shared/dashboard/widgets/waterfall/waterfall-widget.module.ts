@@ -5,7 +5,7 @@ import {
   IconModule,
   LabelModule,
   LoadAsyncModule,
-  SheetModule,
+  OverlayModule,
   SummaryValueModule,
   TitledContentModule,
   TooltipModule
@@ -26,7 +26,7 @@ import { WaterfallChartModule } from './waterfall/waterfall-chart.module';
     CommonModule,
     LabelModule,
     SpanDetailModule,
-    SheetModule,
+    OverlayModule,
     TooltipModule,
     TitledContentModule,
     LoadAsyncModule,
