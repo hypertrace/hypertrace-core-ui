@@ -27,26 +27,6 @@
     opacity: 0.4;
   }
 
-  &.border {
-    &.group-right {
-      border-radius: 0 2px 2px 0;
-      margin-left: -1px;
-    }
-
-    &.group-left {
-      border-radius: 2px 0 0 2px;
-    }
-
-    &.group-center {
-      border-radius: 0;
-      margin-left: -1px;
-    }
-
-    &.ungrouped {
-      border-radius: 2px;
-    }
-  }
-
   .trigger-content {
     display: flex;
     align-items: center;
