@@ -184,7 +184,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
           // Remove if already selected
           this.selected = selectedItems.filter(value => value !== item.value);
         } else {
-          // Add if not present now
+          // Add if not present already
           (this.selected as V[]).push(item.value);
         }
       }
@@ -196,6 +196,7 @@ export class SelectComponent<V> implements AfterContentInit, OnChanges {
     this.selectedChange.emit(this.selected);
   }
 
+  // Find the select option object for a value
   private findItem(value: V | V[] | undefined): SelectOption<V> | SelectOption<V>[] | undefined {
     if (this.items === undefined) {
       this.loggerService.warn(`Invalid items for select option '${String(value)}'`);
