@@ -9,4 +9,4 @@ export class DetailSheetInteractionContainerComponent {
   public constructor(@Inject(DETAIL_SHEET_INTERACTION_MODEL) public readonly detailModel: object) {}
 }
 
-export const DETAIL_SHEET_INTERACTION_MODEL = new InjectionToken<unknown>('DETAIL_SHEET_INTERACTION_MODEL');
+export const DETAIL_SHEET_INTERACTION_MODEL = new InjectionToken<object>('DETAIL_SHEET_INTERACTION_MODEL');

@@ -1,4 +1,3 @@
-import { PortalInjector } from '@angular/cdk/portal';
 import { Injectable, Injector } from '@angular/core';
 import { OverlayService, PopoverRef, SheetSize } from '@hypertrace/components';
 import {
@@ -6,9 +5,7 @@ import {
   DETAIL_SHEET_INTERACTION_MODEL
 } from './container/detail-sheet-interaction-container.component';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DetailSheetInteractionHandlerService {
   public constructor(private readonly injector: Injector, private readonly overlayService: OverlayService) {}
 
@@ -23,9 +20,14 @@ export class DetailSheetInteractionHandlerService {
   }
 
   private buildDetailOverlayInjector(detailModel: object): Injector {
-    return new PortalInjector(
-      this.injector,
-      new WeakMap<object, unknown>([[DETAIL_SHEET_INTERACTION_MODEL, detailModel]])
-    );
+    return Injector.create({
+      providers: [
+        {
+          provide: DETAIL_SHEET_INTERACTION_MODEL,
+          useValue: detailModel
+        }
+      ],
+      parent: this.injector
+    });
   }
 }

@@ -1,6 +1,6 @@
 import { SheetSize } from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE, ModelTemplatePropertyType } from '@hypertrace/dashboards';
-import { Model, ModelApi, ModelJson, ModelProperty } from '@hypertrace/hyperdash';
+import { Model, ModelApi, ModelJson, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable, of } from 'rxjs';
 import { InteractionHandler } from '../interaction-handler';
@@ -18,14 +18,20 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
 
   @ModelProperty({
     key: 'sheet-size',
-    required: true,
+    required: false,
     // tslint:disable-next-line: no-object-literal-type-assertion
     type: {
       key: ENUM_TYPE.type,
       values: [SheetSize.Small, SheetSize.Medium, SheetSize.Large]
     } as EnumPropertyTypeInstance
   })
-  public sheetSize!: SheetSize;
+  public sheetSize: SheetSize = SheetSize.Large;
+
+  @ModelProperty({
+    key: 'inject-source-as',
+    type: STRING_PROPERTY.type
+  })
+  public injectSourceAs: string = 'source';
 
   @ModelInject(MODEL_API)
   private readonly api!: ModelApi;
@@ -39,9 +45,9 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
     return of();
   }
 
-  private getDetailModel(record: unknown): object {
+  private getDetailModel(source: unknown): object {
     const detailModel = this.api.createChild<object>(this.detailTemplate, this);
-    this.api.setVariable('record', record, detailModel);
+    this.api.setVariable(this.injectSourceAs, source, detailModel);
 
     return detailModel;
   }
