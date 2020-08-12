@@ -144,6 +144,7 @@ import {
       <htc-paginator
         *htcLetAsync="this.urlPageData$ as pageData"
         (pageChange)="this.onPageChange($event)"
+        [pageSizeOptions]="this.pageSizeOptions"
         [pageSize]="pageData?.pageSize"
         [pageIndex]="pageData?.pageIndex"
       ></htc-paginator>
@@ -226,6 +227,12 @@ export class TableComponent
   @Input()
   public syncWithUrl?: boolean = false;
 
+  @Input()
+  public pageSizeOptions: number[] = [25, 50, 100];
+
+  @Input()
+  public pageSize?: number;
+
   @Output()
   public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
 
@@ -239,6 +246,9 @@ export class TableComponent
 
   @Output()
   public readonly toggleAllChange: EventEmitter<boolean> = new EventEmitter<boolean>(); // True: expand, False: collapse
+
+  @Output()
+  public readonly pageChange: EventEmitter<PageEvent> = new EventEmitter<PageEvent>();
 
   @ViewChild(PaginatorComponent)
   public paginator?: PaginatorComponent;
@@ -259,7 +269,7 @@ export class TableComponent
   public readonly rowState$: Observable<StatefulTableRow | undefined> = this.rowStateSubject.asObservable();
   public readonly columnState$: Observable<TableColumnConfig | undefined> = this.columnStateSubject.asObservable();
   public readonly urlPageData$: Observable<Partial<PageEvent> | undefined> = this.activatedRoute.queryParamMap.pipe(
-    map(params => this.pageDataFromUrl(params))
+    map(params => this.getPageData(params))
   );
 
   public dataSource?: TableCdkDataSource;
@@ -500,6 +510,7 @@ export class TableComponent
         [TableComponent.PAGE_SIZE_URL_PARAM]: pageEvent.pageSize
       });
     }
+    this.pageChange.emit(pageEvent);
   }
 
   private getNextSortDirection(sortDirection?: TableSortDirection): TableSortDirection | undefined {
@@ -514,10 +525,12 @@ export class TableComponent
     }
   }
 
-  private pageDataFromUrl(params: ParamMap): Partial<PageEvent> | undefined {
+  private getPageData(params: ParamMap): Partial<PageEvent> | undefined {
     return this.syncWithUrl
       ? {
-          pageSize: new NumberCoercer().coerce(params.get(TableComponent.PAGE_SIZE_URL_PARAM)),
+          pageSize: new NumberCoercer({ defaultValue: this.pageSize }).coerce(
+            params.get(TableComponent.PAGE_SIZE_URL_PARAM)
+          ),
           pageIndex: new NumberCoercer().coerce(params.get(TableComponent.PAGE_INDEX_URL_PARAM))
         }
       : undefined;
