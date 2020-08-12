@@ -39,8 +39,8 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   @ModelInject(DetailSheetInteractionHandlerService)
   private readonly handlerService!: DetailSheetInteractionHandlerService;
 
-  public execute(record: unknown): Observable<void> {
-    this.handlerService.showSheet(this.getDetailModel(record), this.sheetSize);
+  public execute(source: unknown): Observable<void> {
+    this.handlerService.showSheet(this.getDetailModel(source), this.sheetSize);
 
     return of();
   }
