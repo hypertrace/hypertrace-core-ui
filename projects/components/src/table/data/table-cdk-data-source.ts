@@ -214,7 +214,6 @@ export class TableCdkDataSource implements DataSource<TableRow> {
       map(response => response.data),
       map(rows => this.paginateRows(rows, pageEvent)),
       map(TableCdkRowUtil.buildInitialRowStates),
-      map(TableCdkRowUtil.unselectAllRows),
       map(rows =>
         this.rowStateChangeProvider.initialExpandAll && TableCdkRowUtil.isFullyExpandable(rows)
           ? TableCdkRowUtil.expandAllRows(rows)
