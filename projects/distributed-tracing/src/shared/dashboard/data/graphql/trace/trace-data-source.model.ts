@@ -42,7 +42,7 @@ export class TraceDataSourceModel extends GraphQlDataSourceModel<Trace> {
   public spansSpecifications: AttributeSpecificationModel[] = [];
 
   public getData(): Observable<Trace> {
-    return this.queryWithNextBatch<TraceGraphQlQueryHandlerService>({
+    return this.query<TraceGraphQlQueryHandlerService>({
       requestType: TRACE_GQL_REQUEST,
       traceType: this.traceType,
       traceId: this.traceId,
