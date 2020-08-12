@@ -56,6 +56,14 @@ export * from './expander/expander-toggle.module';
 // Feature Check
 export * from './feature-check/feature-config-check.module';
 
+// Filter Bar
+export * from './filter-bar/filter-bar.module';
+export * from './filter-bar/filter-bar.service';
+export * from './filter-bar/filter-bar.component';
+export * from './filter-bar/filter/filter-api';
+export * from './filter-bar/filter-type';
+export * from './filter-bar/filter-attribute';
+
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';
@@ -163,10 +171,11 @@ export { SequenceSegment } from './sequence/sequence';
 export * from './sequence/sequence-chart.component';
 export * from './sequence/sequence-chart.module';
 
-// Sheet
-export { SheetOverlayService } from './sheet/overlay/sheet-overlay.service';
-export * from './sheet/sheet.component';
-export * from './sheet/sheet.module';
+// Overlay
+export { OverlayService } from './overlay/overlay.service';
+export * from './overlay/overlay';
+export * from './overlay/overlay.module';
+export * from './overlay/sheet/sheet';
 
 // Snippet
 export { SnippetViewerComponent } from './viewer/snippet-viewer/snippet-viewer.component';

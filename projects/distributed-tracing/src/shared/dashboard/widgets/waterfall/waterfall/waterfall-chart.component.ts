@@ -32,7 +32,7 @@ import { WaterfallChartService } from './waterfall-chart.service';
           [searchable]="false"
           [pageable]="false"
           [initialExpandAll]="true"
-          [selections]="[this.selectedNode]"
+          [selections]="this.selectedNode ? [this.selectedNode] : []"
           [hovered]="this.hoveredNode"
           (hoveredChange)="this.onHover($event)"
           (selectionsChange)="this.onSelection($event)"
@@ -47,7 +47,7 @@ import { WaterfallChartService } from './waterfall-chart.service';
           [data]="this.segments"
           class="chart"
           [selection]="this.selectedNode"
-          (selectionChange)="this.onSelection($event)"
+          (selectionChange)="this.onSelection($event ? [$event] : [])"
           [hovered]="this.hoveredNode"
           (hoveredChange)="this.onHover($event)"
         >
@@ -125,7 +125,7 @@ export class WaterfallChartComponent implements OnChanges {
   public onSelection(datum: { id: string }[]): void {
     // Waterfall does not support multi selections
     const selected = datum.length > 0 ? datum[datum.length - 1] : undefined;
-    this.selectedNode = selected?.id !== undefined ? this.dataNodeMap.get(selected.id) : undefined;
+    this.selectedNode = selected?.id !== undefined ? this.dataNodeMap.get(selected?.id) : undefined;
     this.selectionChange.emit(this.selectedNode);
   }
 
