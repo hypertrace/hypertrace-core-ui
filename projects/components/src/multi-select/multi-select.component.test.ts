@@ -1,21 +1,21 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { fakeAsync, flush } from '@angular/core/testing';
-import { NavigationService } from '@hypertrace/common';
-import { MultiSelectComponent, MultiSelectModule, SelectJustify, SelectModule } from '@hypertrace/components';
-import { createHostFactory, mockProvider, SpectatorHost } from '@ngneat/spectator/jest';
-import { EMPTY } from 'rxjs';
+import {
+  LabelComponent,
+  LetAsyncModule,
+  MultiSelectComponent,
+  SelectJustify,
+  SelectOptionComponent
+} from '@hypertrace/components';
+import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest';
+import { MockComponent } from 'ng-mocks';
 
 describe('Multi Select Component', () => {
   const hostFactory = createHostFactory<MultiSelectComponent<string>>({
     component: MultiSelectComponent,
-    imports: [MultiSelectModule, HttpClientTestingModule, SelectModule],
-    declareComponent: false,
-    providers: [
-      mockProvider(NavigationService, {
-        navigation$: EMPTY,
-        navigateWithinApp: jest.fn()
-      })
-    ]
+    imports: [LetAsyncModule],
+    entryComponents: [SelectOptionComponent],
+    declarations: [MockComponent(LabelComponent)],
+    shallow: true
   });
 
   let spectator: SpectatorHost<MultiSelectComponent<string>>;
@@ -107,7 +107,7 @@ describe('Multi Select Component', () => {
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith([selectionOptions[1].value, selectionOptions[2].value]);
-    expect(spectator.element).toHaveText('second and 1 more');
+    expect(spectator.query(LabelComponent)?.label).toEqual('second and 1 more');
     flush();
   }));
 
