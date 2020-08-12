@@ -26,9 +26,7 @@ describe('Overlay service', () => {
         content: DetailSheetInteractionContainerComponent,
         size: SheetSize.Medium
       },
-      expect.objectContaining({
-        /* Injector */
-      })
+      expect.any(Injector)
     );
   });
 });

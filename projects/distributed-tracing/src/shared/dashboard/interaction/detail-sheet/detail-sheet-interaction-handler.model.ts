@@ -46,7 +46,7 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   }
 
   private getDetailModel(source: unknown): object {
-    const detailModel = this.api.createChild<object>(this.detailTemplate, this);
+    const detailModel = this.api.createChild<object>(this.detailTemplate);
     this.api.setVariable(this.injectSourceAs, source, detailModel);
 
     return detailModel;
