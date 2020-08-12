@@ -44,7 +44,7 @@ describe('Detail Sheet Interaction Handler Model', () => {
     const data = 'Test';
     spectator.model.execute(data);
 
-    expect(modelApi.createChild).toHaveBeenCalledWith(modelJson, spectator.model);
+    expect(modelApi.createChild).toHaveBeenCalledWith(modelJson);
     expect(modelApi.setVariable).toHaveBeenCalledWith('source', data, mockModelObject);
     expect(spectator.get(DetailSheetInteractionHandlerService).showSheet).toHaveBeenCalledWith(
       mockModelObject,
