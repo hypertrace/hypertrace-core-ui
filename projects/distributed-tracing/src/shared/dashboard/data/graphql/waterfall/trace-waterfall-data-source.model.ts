@@ -58,7 +58,7 @@ export class TraceWaterfallDataSourceModel extends GraphQlDataSourceModel<Waterf
   }
 
   private getTraceData(): Observable<Trace | undefined> {
-    return this.queryIsolated<TraceGraphQlQueryHandlerService>({
+    return this.query<TraceGraphQlQueryHandlerService>({
       requestType: TRACE_GQL_REQUEST,
       traceId: this.traceId,
       spanLimit: 1000,
