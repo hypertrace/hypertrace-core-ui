@@ -35,20 +35,6 @@ export abstract class GraphQlDataSourceModel<TData> implements DataSource<TData>
     return [...inherited, ...this.filters];
   }
 
-  protected queryWithNextBatch<
-    THandler extends GraphQlQueryHandler<unknown, unknown>,
-    TResponse extends ResponseTypeForHandler<THandler> = ResponseTypeForHandler<THandler>
-  >(requestOrBuilder: RequestOrBuilder<RequestTypeForHandler<THandler>>): Observable<TResponse> {
-    return this.query(requestOrBuilder, false);
-  }
-
-  protected queryIsolated<
-    THandler extends GraphQlQueryHandler<unknown, unknown>,
-    TResponse extends ResponseTypeForHandler<THandler> = ResponseTypeForHandler<THandler>
-  >(requestOrBuilder: RequestOrBuilder<RequestTypeForHandler<THandler>>): Observable<TResponse> {
-    return this.query(requestOrBuilder, true);
-  }
-
   protected getTimeRangeOrThrow(): GraphQlTimeRange {
     const dashboardTimeRange = this.api.getTimeRange();
 
@@ -59,18 +45,15 @@ export abstract class GraphQlDataSourceModel<TData> implements DataSource<TData>
     throw Error('Attempted to use time range for dashboard, but time range unset');
   }
 
-  private query<
+  public query<
     THandler extends GraphQlQueryHandler<unknown, unknown>,
     TResponse extends ResponseTypeForHandler<THandler> = ResponseTypeForHandler<THandler>
-  >(
-    requestOrBuilder: RequestOrBuilder<RequestTypeForHandler<THandler>>,
-    isolated: boolean = false
-  ): Observable<TResponse> {
+  >(requestOrBuilder: RequestOrBuilder<RequestTypeForHandler<THandler>>): Observable<TResponse> {
     const resultSubject = new ReplaySubject<TResponse>();
 
     this.querySubject.next({
       buildRequest: this.convertToBuilder(requestOrBuilder),
-      isolated: isolated,
+      isolated: true,
       responseObserver: resultSubject as Observer<unknown>
     });
 

@@ -32,7 +32,7 @@ describe('TraceDetailService', () => {
         getTimeRangeAndChanges: jest.fn().mockReturnValue(of(new RelativeTimeRange(new TimeDuration(1, TimeUnit.Hour))))
       }),
       mockProvider(GraphQlRequestService, {
-        queryDebounced: jest.fn().mockReturnValue(
+        queryImmediately: jest.fn().mockReturnValue(
           of({
             [traceTypeKey]: TRACE_SCOPE,
             [traceIdKey]: 'test-id',
