@@ -8,7 +8,7 @@ import { EMPTY } from 'rxjs';
 describe('Multi Select Component', () => {
   const hostFactory = createHostFactory<MultiSelectComponent<string>>({
     component: MultiSelectComponent,
-    imports: [MultiSelectModule, SelectModule, HttpClientTestingModule],
+    imports: [MultiSelectModule, HttpClientTestingModule, SelectModule],
     declareComponent: false,
     providers: [
       mockProvider(NavigationService, {
