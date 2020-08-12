@@ -1,6 +1,9 @@
 import { OverlayService, SheetSize } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
-import { DetailSheetInteractionContainerComponent } from './container/detail-sheet-interaction-container.component';
+import {
+  DetailSheetInteractionContainerComponent,
+  DETAIL_SHEET_INTERACTION_MODEL
+} from './container/detail-sheet-interaction-container.component';
 import { DetailSheetInteractionHandlerService } from './detail-sheet-interaction-handler.service';
 
 describe('Overlay service', () => {
@@ -20,13 +23,21 @@ describe('Overlay service', () => {
   });
 
   test('should call overlay service', () => {
-    spectator.service.showSheet({}, SheetSize.Medium);
+    const detailModel = {};
+    spectator.service.showSheet(detailModel, SheetSize.Medium);
+    const tokenMap = new Map();
+    tokenMap.set(DETAIL_SHEET_INTERACTION_MODEL, detailModel);
+
     expect(spectator.inject(OverlayService).createSheet).toHaveBeenCalledWith(
       {
         content: DetailSheetInteractionContainerComponent,
         size: SheetSize.Medium
       },
-      expect.any(Injector)
+      expect.objectContaining({
+        parent: expect.objectContaining({
+          records: tokenMap
+        })
+      })
     );
   });
 });
