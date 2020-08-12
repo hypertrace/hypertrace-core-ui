@@ -48,7 +48,7 @@ export abstract class TableCellRendererComponent<TCellData, TValue = TCellData> 
   }
 
   protected parseTooltip(_cellData: TCellData, _rowData?: TableRow): string {
-    return `${this._value as string} ${this._units}`.trim();
+    return `${String(this._value)} ${this._units}`.trim();
   }
 
   public onClick(): void {

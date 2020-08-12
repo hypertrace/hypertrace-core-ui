@@ -93,7 +93,7 @@ import {
               [index]="this.columnIndex(columnDef, index)"
               [rowData]="row"
               [cellData]="row[columnDef.field]"
-              (click)="this.onDataCellClick(columnDef, row)"
+              (click)="this.onDataCellClick(row)"
             ></htc-table-data-cell-renderer>
           </cdk-cell>
         </ng-container>
@@ -330,7 +330,7 @@ export class TableComponent
     }
   }
 
-  public onDataCellClick(columnConfig: TableColumnConfig, row: StatefulTableRow): void {
+  public onDataCellClick(row: StatefulTableRow): void {
     // NOTE: Cell Renderers generally handle their own clicks. We should only perform table actions here.
 
     /*
@@ -492,6 +492,10 @@ export class TableComponent
   }
 
   public hasSelectableRows(): boolean {
+    return this.hasSingleSelect() || this.hasMultiSelect();
+  }
+
+  public hasSingleSelect(): boolean {
     return this.selectionMode === TableSelectionMode.Single;
   }
 

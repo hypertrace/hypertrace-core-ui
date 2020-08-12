@@ -1,6 +1,7 @@
 import { NavigationService } from '@hypertrace/common';
 import { FilterAttribute, FilterType } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
+import { EMPTY } from 'rxjs';
 import { FilterBarService } from './filter-bar.service';
 import { NumberFilterBuilder } from './filter/builder/number-filter-builder';
 import { StringFilterBuilder } from './filter/builder/string-filter-builder';
@@ -35,6 +36,7 @@ describe('Filter Bar service', () => {
     service: FilterBarService,
     providers: [
       mockProvider(NavigationService, {
+        navigation$: EMPTY,
         addQueryParametersToUrl: jest.fn(),
         getAllValuesForQueryParameter: () => ['duration_gte_50']
       }),

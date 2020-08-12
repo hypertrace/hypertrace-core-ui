@@ -54,14 +54,15 @@ describe('Span name table cell renderer component', () => {
 
     const tooltip = `${spanNameData.serviceName} ${spanNameData.protocolName} ${spanNameData.name}`;
 
-    expect(spectator.component.value).toEqual({ ...spanNameData, tooltip: tooltip });
+    expect(spectator.component.value).toEqual(spanNameData);
+    expect(spectator.component.tooltip).toEqual(tooltip);
     expect(spectator.query('.service-name')).toHaveText('test-entity');
     expect(spectator.query('.protocol-name')).toHaveText('test-protocol');
     expect(spectator.query('.span-name')).toHaveText('test-span-name');
     expect(spectator.query('.color-bar')).not.toExist();
   });
 
-  test('should render span name with colorand build tooltip ', () => {
+  test('should render span name with color and build tooltip ', () => {
     const spanNameDataWithColor = {
       ...spanNameData,
       color: 'blue'
@@ -72,7 +73,8 @@ describe('Span name table cell renderer component', () => {
 
     const tooltip = `${spanNameData.serviceName} ${spanNameData.protocolName} ${spanNameData.name}`;
 
-    expect(spectator.component.value).toEqual({ ...spanNameData, tooltip: tooltip, color: 'blue' });
+    expect(spectator.component.value).toEqual(spanNameDataWithColor);
+    expect(spectator.component.tooltip).toEqual(tooltip);
     expect(spectator.query('.service-name')).toHaveText('test-entity');
     expect(spectator.query('.protocol-name')).toHaveText('test-protocol');
     expect(spectator.query('.span-name')).toHaveText('test-span-name');
