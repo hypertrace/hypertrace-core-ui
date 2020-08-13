@@ -34,7 +34,7 @@
     padding-bottom: 20px;
 
     .header-title {
-      @include font-heading;
+      @include header-4($gray-7);
       margin: 0;
     }
   }

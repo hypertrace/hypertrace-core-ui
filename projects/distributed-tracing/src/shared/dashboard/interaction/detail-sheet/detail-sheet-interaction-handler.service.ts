@@ -9,11 +9,13 @@ import {
 export class DetailSheetInteractionHandlerService {
   public constructor(private readonly injector: Injector, private readonly overlayService: OverlayService) {}
 
-  public showSheet(detailModel: object, sheetSize: SheetSize = SheetSize.Medium): PopoverRef {
+  public showSheet(detailModel: object, sheetSize: SheetSize = SheetSize.Medium, title?: string): PopoverRef {
     return this.overlayService.createSheet(
       {
         content: DetailSheetInteractionContainerComponent,
-        size: sheetSize
+        size: sheetSize,
+        showHeader: true,
+        title: title
       },
       this.buildDetailOverlayInjector(detailModel)
     );
