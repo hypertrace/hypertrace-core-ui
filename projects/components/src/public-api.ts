@@ -166,6 +166,10 @@ export * from './select/select-option.component';
 export * from './select/select.component';
 export * from './select/select.module';
 
+// Multi-select
+export * from './multi-select/multi-select.component';
+export * from './multi-select/multi-select.module';
+
 // Sequence
 export { SequenceSegment } from './sequence/sequence';
 export * from './sequence/sequence-chart.component';
