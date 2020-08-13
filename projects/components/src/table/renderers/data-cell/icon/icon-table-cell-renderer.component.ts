@@ -10,7 +10,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   styleUrls: ['./icon-table-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="icon-cell" [ngClass]="{ clickable: this.clickable }" (click)="this.onClick()">
+    <div class="icon-cell" [ngClass]="{ clickable: this.clickable }">
       <htc-icon [icon]="this.value" size="${IconSize.Small}" [showTooltip]="true"></htc-icon>
     </div>
   `
@@ -20,7 +20,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   alignment: TableCellAlignmentType.Center
 })
 export class IconTableCellRendererComponent extends TableCellRendererComponent<string> {
-  protected parseValue(cellData: string): string {
+  public parseValue(cellData: string): string {
     return cellData;
   }
 }

@@ -9,12 +9,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   styleUrls: ['./numeric-table-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      [ngClass]="{ clickable: this.clickable }"
-      class="numeric-cell"
-      [htcTooltip]="this.value"
-      (click)="this.onClick()"
-    >
+    <div [ngClass]="{ clickable: this.clickable }" class="numeric-cell" [htcTooltip]="this.value">
       {{ this.value | htcDisplayNumber }}
     </div>
   `
@@ -24,7 +19,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   alignment: TableCellAlignmentType.Right
 })
 export class NumericTableCellRendererComponent extends TableCellRendererComponent<CellData, Value> {
-  protected parseValue(cellData: CellData): Value {
+  public parseValue(cellData: CellData): Value {
     switch (typeof cellData) {
       case 'number':
         return cellData;

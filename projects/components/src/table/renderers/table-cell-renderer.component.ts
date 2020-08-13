@@ -32,16 +32,12 @@ export abstract class TableCellRendererComponent<TCellData, TValue = TCellData> 
   }
 
   public ngOnInit(): void {
-    this.initialize();
-  }
-
-  public initialize(): void {
     this._value = this.parseValue(this.cellData, this.rowData);
     this._units = this.parseUnits(this.cellData, this.rowData);
     this._tooltip = this.parseTooltip(this.cellData, this.rowData);
   }
 
-  protected abstract parseValue(cellData: TCellData, rowData?: TableRow): TValue;
+  public abstract parseValue(cellData: TCellData, rowData?: TableRow): TValue;
 
   protected parseUnits(_cellData: TCellData, _rowData?: TableRow): string {
     return '';
@@ -49,10 +45,6 @@ export abstract class TableCellRendererComponent<TCellData, TValue = TCellData> 
 
   protected parseTooltip(_cellData: TCellData, _rowData?: TableRow): string {
     return `${String(this._value)} ${this._units}`.trim();
-  }
-
-  public onClick(): void {
-    this.columnConfig.onClick && this.columnConfig.onClick(this.rowData, this.columnConfig);
   }
 
   public get value(): TValue {

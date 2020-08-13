@@ -20,7 +20,7 @@ import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
   alignment: TableCellAlignmentType.Left
 })
 export class TraceStatusTableCellRendererComponent extends TableCellRendererComponent<TraceStatus> {
-  protected parseValue(cellData: TraceStatus): TraceStatus {
+  public parseValue(cellData: TraceStatus): TraceStatus {
     return cellData;
   }
 }

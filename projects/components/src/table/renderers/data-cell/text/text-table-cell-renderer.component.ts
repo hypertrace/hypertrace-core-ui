@@ -13,7 +13,6 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
       [ngClass]="{ clickable: this.clickable, 'first-column': this.isFirstColumn }"
       class="text-cell"
       [htcTooltip]="this.value"
-      (click)="this.onClick()"
     >
       {{ this.value }}
     </div>
@@ -24,7 +23,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   alignment: TableCellAlignmentType.Left
 })
 export class TextTableCellRendererComponent extends TableCellRendererComponent<string> {
-  protected parseValue(cellData: string): string {
+  public parseValue(cellData: string): string {
     return cellData;
   }
 }

@@ -47,9 +47,6 @@ export class FilterButtonComponent<T = unknown> implements OnChanges {
   public value?: T;
 
   @Output()
-  public readonly apply: EventEmitter<Filter> = new EventEmitter();
-
-  @Output()
   public readonly popoverOpen: EventEmitter<boolean> = new EventEmitter();
 
   public availableFilters: Filter[] = [];
@@ -57,9 +54,8 @@ export class FilterButtonComponent<T = unknown> implements OnChanges {
   public constructor(private readonly filterButtonService: FilterButtonService) {}
 
   public ngOnChanges(): void {
-    if (this.attribute !== undefined) {
-      this.availableFilters = this.filterButtonService.buildAvailableFilters(this.attribute, this.value);
-    }
+    this.availableFilters =
+      this.attribute !== undefined ? this.filterButtonService.buildAvailableFilters(this.attribute, this.value) : [];
   }
 
   public onFilterClick(filter: Filter): void {

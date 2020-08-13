@@ -5,14 +5,13 @@ import { TableCellAlignmentType } from './renderers/table-cell-alignment-type';
 
 export interface TableColumnConfig {
   field: string;
-  attribute?: FilterAttribute;
+  filterAttribute?: FilterAttribute;
   title?: string;
   titleTooltip?: string;
   renderer?: string;
   sort?: TableSortDirection;
   visible?: boolean;
   sortable?: boolean;
-  filterable?: boolean;
   alignment?: TableCellAlignmentType;
   width?: number | string;
   onClick?(row: TableRow, column: TableColumnConfig): void;

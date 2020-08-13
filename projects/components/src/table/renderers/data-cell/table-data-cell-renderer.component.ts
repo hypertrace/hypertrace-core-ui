@@ -22,21 +22,21 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
     <div class="table-data-cell-renderer" [class.selected]="this.popoverOpen">
       <htc-filter-button
         class="filter-button"
-        *ngIf="this.columnConfig?.filterable && this.leftAlignFilterButton"
+        *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton"
         [metadata]="this.metadata"
-        [attribute]="this.columnConfig?.attribute"
-        [value]="this.componentRef?.instance.value"
+        [attribute]="this.columnConfig?.filterAttribute"
+        [value]="this.parseValue()"
         (popoverOpen)="this.popoverOpen = $event"
       ></htc-filter-button>
-      <div class="cell-renderer-content" [ngClass]="this.alignment">
+      <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick()">
         <ng-container *ngComponentOutlet="this.rendererConstructor; injector: this.rendererInjector"></ng-container>
       </div>
       <htc-filter-button
         class="filter-button"
-        *ngIf="this.columnConfig?.filterable && !this.leftAlignFilterButton"
+        *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
         [metadata]="this.metadata"
-        [attribute]="this.columnConfig?.attribute"
-        [value]="this.componentRef?.instance.value"
+        [attribute]="this.columnConfig?.filterAttribute"
+        [value]="this.parseValue()"
         (popoverOpen)="this.popoverOpen = $event"
       ></htc-filter-button>
     </div>
@@ -77,10 +77,6 @@ export class TableDataCellRendererComponent implements OnInit {
       throw new Error('Table column config undefined');
     }
 
-    if (this.columnConfig.filterable && !this.columnConfig.attribute) {
-      throw new Error(`Table attribute required to enable filtering for field '${this.columnConfig.field}'`);
-    }
-
     if (this.index === undefined) {
       throw new Error(`Table column index undefined for field '${this.columnConfig.field}'`);
     }
@@ -103,10 +99,17 @@ export class TableDataCellRendererComponent implements OnInit {
     this.componentRef = this.componentFactoryResolver
       .resolveComponentFactory(this.rendererConstructor)
       .create(this.rendererInjector);
-    this.componentRef.instance.initialize();
 
     // Allow columnConfig to override default alignment for cell renderer
     this.alignment = this.columnConfig.alignment ?? this.rendererConstructor.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
+  }
+
+  public onClick(): void {
+    this.columnConfig && this.columnConfig.onClick && this.columnConfig.onClick(this.rowData!, this.columnConfig);
+  }
+
+  public parseValue(): unknown {
+    return this.componentRef?.instance.parseValue(this.cellData, this.rowData);
   }
 }

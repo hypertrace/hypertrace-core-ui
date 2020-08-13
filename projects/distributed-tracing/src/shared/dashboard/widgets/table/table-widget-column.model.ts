@@ -1,4 +1,10 @@
-import { TableCellAlignmentType, TableColumnConfig, TableRow, TableSortDirection } from '@hypertrace/components';
+import {
+  FilterAttribute,
+  TableCellAlignmentType,
+  TableColumnConfig,
+  TableRow,
+  TableSortDirection
+} from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE } from '@hypertrace/dashboards';
 import { BOOLEAN_PROPERTY, Model, ModelProperty, ModelPropertyType, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { Specification } from '../../../graphql/model/schema/specifier/specification';
@@ -85,10 +91,10 @@ export class TableWidgetColumnModel {
   })
   public sort?: TableSortDirection;
 
-  public asTableColumnDef(): SpecificationBackedTableColumnDef {
+  public asTableColumnDef(filterAttribute?: FilterAttribute): SpecificationBackedTableColumnDef {
     return {
       field: this.value.resultAlias(),
-      filterable: this.filterable,
+      filterAttribute: this.filterable ? filterAttribute : undefined,
       title: this.title,
       titleTooltip: this.titleTooltip,
       renderer: this.display,

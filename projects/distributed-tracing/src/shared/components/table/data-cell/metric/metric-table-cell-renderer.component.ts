@@ -19,7 +19,7 @@ import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
   styleUrls: ['./metric-table-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="metric-cell" [htcTooltip]="this.tooltip" (click)="this.onClick()">
+    <div class="metric-cell" [htcTooltip]="this.tooltip">
       <!-- This displays as "<value> <unit>", e.g. 120 ms -->
       <span
         >{{ this.value | htcDisplayNumber: this.formatter }} <span *ngIf="this.units">{{ this.units }}</span></span
@@ -44,7 +44,7 @@ export class MetricTableCellRendererComponent extends TableCellRendererComponent
     super(columnConfig, index, rowData, cellData);
   }
 
-  protected parseValue(cellData: CellData): number {
+  public parseValue(cellData: CellData): number {
     return Math.round(this.extractValue(cellData)!);
   }
 

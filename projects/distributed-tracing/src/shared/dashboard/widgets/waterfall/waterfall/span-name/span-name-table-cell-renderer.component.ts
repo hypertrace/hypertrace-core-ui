@@ -6,12 +6,7 @@ import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent }
   styleUrls: ['./span-name-table-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="span-title"
-      [htcTooltip]="this.tooltip"
-      [ngClass]="{ clickable: this.clickable }"
-      (click)="this.onClick()"
-    >
+    <div class="span-title" [htcTooltip]="this.tooltip" [ngClass]="{ clickable: this.clickable }">
       <div class="color-bar" [style.backgroundColor]="this.value.color" *ngIf="this.value.color"></div>
       <div class="service-name">
         <span class="text">{{ this.value.serviceName }}</span>
@@ -32,7 +27,7 @@ import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent }
 export class SpanNameTableCellRendererComponent extends TableCellRendererComponent<SpanNameCellRendererData> {
   public static readonly SPAN_NAME: string = 'span-name';
 
-  protected parseValue(cellData: SpanNameCellRendererData): SpanNameCellRendererData {
+  public parseValue(cellData: SpanNameCellRendererData): SpanNameCellRendererData {
     return cellData;
   }
 

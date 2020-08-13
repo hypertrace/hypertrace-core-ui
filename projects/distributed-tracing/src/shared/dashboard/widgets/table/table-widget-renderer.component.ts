@@ -11,7 +11,7 @@ import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { map, mergeMap, startWith, switchMap } from 'rxjs/operators';
 import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
 import { MetadataService } from '../../../services/metadata/metadata.service';
 import { TableWidgetModel } from './table-widget.model';
@@ -31,7 +31,7 @@ import { TableWidgetModel } from './table-widget.model';
       <htc-table
         class="table"
         [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
-        [columnConfigs]="this.columnDefs$ | async"
+        [columnConfigs]="this.columnConfigs$ | async"
         [metadata]="this.metadata$ | async"
         [mode]="this.model.mode"
         [selectionMode]="this.model.selectionMode"
@@ -52,8 +52,8 @@ import { TableWidgetModel } from './table-widget.model';
 export class TableWidgetRendererComponent
   extends WidgetRenderer<TableWidgetModel, TableDataSource<TableRow> | undefined>
   implements OnInit {
-  public columnDefs$: Observable<TableColumnConfig[]>;
   public metadata$: Observable<FilterAttribute[]>;
+  public columnConfigs$: Observable<TableColumnConfig[]>;
 
   public constructor(
     @Inject(RENDERER_API) api: RendererApi<TableWidgetModel>,
@@ -63,7 +63,7 @@ export class TableWidgetRendererComponent
     super(api, changeDetector);
 
     this.metadata$ = this.getScopeAttributes();
-    this.columnDefs$ = this.enrichColumnDef(this.model.getColumns());
+    this.columnConfigs$ = this.getColumnConfigs();
   }
 
   public getChildModel = (row: TableRow): object | undefined => this.model.getChildModel(row);
@@ -98,14 +98,7 @@ export class TableWidgetRendererComponent
     );
   }
 
-  private enrichColumnDef(columnDefs: TableColumnConfig[]): Observable<TableColumnConfig[]> {
-    return this.metadata$.pipe(
-      map((attributes: FilterAttribute[]) =>
-        columnDefs.map(columnDef => ({
-          ...columnDef,
-          attribute: attributes.find(attribute => attribute.name === columnDef.field)
-        }))
-      )
-    );
+  private getColumnConfigs(): Observable<TableColumnConfig[]> {
+    return this.getScopeAttributes().pipe(mergeMap(filterAttributes => this.model.getColumns(filterAttributes)));
   }
 }

@@ -6,12 +6,13 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { IconSize } from '../icon/icon-size';
 import { FilterAttribute } from './filter-attribute';
@@ -36,7 +37,7 @@ import { Filter } from './filter/filter-api';
         <!-- Filters -->
         <div class="filters">
           <htc-filter
-            *ngFor="let filter of this.internalFilters$.value; let index = index"
+            *ngFor="let filter of this.internalFilters$ | async; let index = index"
             class="filter"
             [filter]="filter"
             [attributes]="this.attributes"
@@ -54,7 +55,7 @@ import { Filter } from './filter/filter-api';
 
         <!-- Clear Button -->
         <htc-icon
-          *ngIf="this.internalFilters$.value.length"
+          *ngIf="this.internalFilters$ | async"
           class="clear-icon"
           icon="${IconType.CloseCircleFilled}"
           size="${IconSize.Small}"
@@ -67,7 +68,7 @@ import { Filter } from './filter/filter-api';
     <div [innerHTML]="this.instructions" class="instructions"></div>
   `
 })
-export class FilterBarComponent implements OnChanges, OnInit {
+export class FilterBarComponent implements OnChanges, OnInit, OnDestroy {
   @Input()
   public attributes?: FilterAttribute[]; // Required
 
@@ -85,7 +86,10 @@ export class FilterBarComponent implements OnChanges, OnInit {
 
   public isFocused: boolean = false;
 
-  public readonly internalFilters$: BehaviorSubject<Filter[]> = new BehaviorSubject<Filter[]>([]);
+  public readonly internalFiltersSubject$: BehaviorSubject<Filter[]> = new BehaviorSubject<Filter[]>([]);
+  public readonly internalFilters$: Observable<Filter[]> = this.internalFiltersSubject$.asObservable();
+
+  private subscription?: Subscription;
 
   public readonly instructions: string =
     'Select <b>one or more</b> parameters to filter by. The value is ' +
@@ -104,33 +108,39 @@ export class FilterBarComponent implements OnChanges, OnInit {
 
   public ngOnInit(): void {
     if (this.syncWithUrl) {
-      this.filterBarService.urlFilterChanges$
-        .pipe(map((getFilters: GetFiltersFunction) => getFilters(this.attributes || [])))
-        .subscribe(filters => {
-          this.internalFilters$.next([...filters]);
-          this.changeDetector.markForCheck();
-          this.filtersChange.emit(this.internalFilters$.value);
-        });
+      this.subscribeToUrlFilterChanges();
     }
   }
 
-  private onFiltersChanged(filters: Filter[], emit: boolean = true): void {
-    this.internalFilters$.next([...filters]);
+  public ngOnDestroy(): void {
+    this.subscription && this.subscription.unsubscribe();
+  }
+
+  private subscribeToUrlFilterChanges(): void {
+    this.subscription = this.filterBarService.urlFilterChanges$
+      .pipe(map((getFilters: GetFiltersFunction) => getFilters(this.attributes || [])))
+      .subscribe(filters => {
+        this.onFiltersChanged(filters, true, false);
+      });
+  }
+
+  private onFiltersChanged(filters: Filter[], emit: boolean = true, writeIfSyncEnabled: boolean = true): void {
+    this.internalFiltersSubject$.next([...filters]);
     this.changeDetector.markForCheck();
 
-    if (this.syncWithUrl && !!this.attributes) {
+    if (writeIfSyncEnabled && this.syncWithUrl && !!this.attributes) {
       this.writeToUrlFilter();
     }
 
-    emit && this.filtersChange.emit(this.internalFilters$.value);
+    emit && this.filtersChange.emit(this.internalFiltersSubject$.value);
   }
 
   private readFromUrlFilters(): void {
-    this.internalFilters$.next(this.filterBarService.getUrlFilters(this.attributes || []));
+    this.internalFiltersSubject$.next(this.filterBarService.getUrlFilters(this.attributes || []));
   }
 
   private writeToUrlFilter(): void {
-    this.filterBarService.setUrlFilters(this.internalFilters$.value);
+    this.filterBarService.setUrlFilters(this.internalFiltersSubject$.value);
   }
 
   public onInputApply(filter: Filter): void {
@@ -138,7 +148,7 @@ export class FilterBarComponent implements OnChanges, OnInit {
     if (foundIndex !== undefined) {
       this.updateFilter(filter);
     } else {
-      this.insertFilter(filter, this.internalFilters$.value.length + 1);
+      this.insertFilter(filter, this.internalFiltersSubject$.value.length + 1);
     }
     this.resetFocus();
   }
@@ -163,7 +173,7 @@ export class FilterBarComponent implements OnChanges, OnInit {
   }
 
   private findFilterIndex(filter: Filter): number | undefined {
-    if (this.internalFilters$.value.length <= 0) {
+    if (this.internalFiltersSubject$.value.length <= 0) {
       return undefined;
     }
 
@@ -173,15 +183,16 @@ export class FilterBarComponent implements OnChanges, OnInit {
   }
 
   private insertFilter(filter: Filter, index: number = 0): void {
-    const i = Math.min(this.internalFilters$.value.length, index);
+    const clonedFilters = [...this.internalFiltersSubject$.value];
+    const i = Math.min(clonedFilters.length, index);
 
-    // TODO: Find a better way to do without mutations?
-    this.internalFilters$.value.splice(i, 0, filter);
-    this.onFiltersChanged(this.internalFilters$.value);
+    clonedFilters.splice(i, 0, filter);
+    this.onFiltersChanged(clonedFilters);
   }
 
   private updateFilter(filter: Filter): void {
-    if (this.internalFilters$.value.length === 0) {
+    const clonedFilters = [...this.internalFiltersSubject$.value];
+    if (clonedFilters.length === 0) {
       throw new Error(`Unable to update filter. Filters are empty.`);
     }
 
@@ -191,12 +202,13 @@ export class FilterBarComponent implements OnChanges, OnInit {
       throw new Error(`Unable to update filter. Filter for '${filter.field}' not found.`);
     }
 
-    this.internalFilters$.value.splice(index, 1, filter);
-    this.onFiltersChanged(this.internalFilters$.value);
+    clonedFilters.splice(index, 1, filter);
+    this.onFiltersChanged(clonedFilters);
   }
 
   private deleteFilter(filter: Filter): void {
-    if (this.internalFilters$.value.length === 0) {
+    const clonedFilters = [...this.internalFiltersSubject$.value];
+    if (clonedFilters.length === 0) {
       throw new Error(`Unable to delete filter. Filters are empty.`);
     }
 
@@ -206,11 +218,11 @@ export class FilterBarComponent implements OnChanges, OnInit {
       throw new Error(`Unable to delete filter. Filter for '${filter.field}' not found.`);
     }
 
-    this.internalFilters$.value.splice(index, 1);
-    this.onFiltersChanged(this.internalFilters$.value);
+    clonedFilters.splice(index, 1);
+    this.onFiltersChanged(clonedFilters);
   }
 
   private findFilter(filter: Filter): number {
-    return this.internalFilters$.value.findIndex(f => f.field === filter.field);
+    return this.internalFiltersSubject$.value.findIndex(f => f.field === filter.field);
   }
 }

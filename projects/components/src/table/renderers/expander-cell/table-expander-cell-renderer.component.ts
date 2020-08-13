@@ -10,7 +10,7 @@ import { TableCellRendererComponent } from '../table-cell-renderer.component';
   styleUrls: ['./table-expander-cell-renderer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="row-expander-cell" (click)="this.onClick()">
+    <div class="row-expander-cell">
       <htc-expander-toggle
         *ngIf="!this.value.leaf"
         [expanded]="this.value.expanded"
@@ -24,7 +24,7 @@ import { TableCellRendererComponent } from '../table-cell-renderer.component';
   alignment: TableCellAlignmentType.Center
 })
 export class TableExpanderCellRendererComponent extends TableCellRendererComponent<TableRowState> {
-  protected parseValue(cellData: TableRowState): TableRowState {
+  public parseValue(cellData: TableRowState): TableRowState {
     return cellData;
   }
 }

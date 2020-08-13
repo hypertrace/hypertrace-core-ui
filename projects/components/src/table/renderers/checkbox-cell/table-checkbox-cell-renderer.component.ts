@@ -9,7 +9,7 @@ import { TableCellRendererComponent } from '../table-cell-renderer.component';
   selector: 'htc-table-checkbox-cell-renderer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="row-checkbox-cell" (click)="this.onClick()">
+    <div class="row-checkbox-cell">
       <htc-checkbox [checked]="this.value.selected"></htc-checkbox>
     </div>
   `
@@ -19,7 +19,7 @@ import { TableCellRendererComponent } from '../table-cell-renderer.component';
   alignment: TableCellAlignmentType.Center
 })
 export class TableCheckboxCellRendererComponent extends TableCellRendererComponent<TableRowState> {
-  protected parseValue(cellData: TableRowState): TableRowState {
+  public parseValue(cellData: TableRowState): TableRowState {
     return cellData;
   }
 }

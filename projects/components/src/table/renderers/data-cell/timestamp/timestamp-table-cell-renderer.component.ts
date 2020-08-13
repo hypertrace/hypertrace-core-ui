@@ -41,7 +41,7 @@ export class TimestampTableCellRendererComponent extends TableCellRendererCompon
     super(columnConfig, index, rowData, cellData);
   }
 
-  protected parseValue(cellData: CellData): CellData {
+  public parseValue(cellData: CellData): CellData {
     return cellData;
   }
 }
