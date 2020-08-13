@@ -2,10 +2,10 @@ import { SheetSize } from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE, ModelTemplatePropertyType } from '@hypertrace/dashboards';
 import { Model, ModelApi, ModelJson, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
+import { get } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 import { InteractionHandler } from '../interaction-handler';
 import { DetailSheetInteractionHandlerService } from './detail-sheet-interaction-handler.service';
-import { get } from 'lodash-es';
 @Model({
   type: 'detail-sheet-interaction-handler'
 })
@@ -47,7 +47,7 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   private readonly handlerService!: DetailSheetInteractionHandlerService;
 
   public execute(source: unknown): Observable<void> {
-    const title = this.titlePropertyPath ? get(source, this.titlePropertyPath) : undefined;
+    const title = get(source, this.titlePropertyPath ?? '');
     const model = this.getDetailModel(source);
 
     this.handlerService.showSheet(model, this.sheetSize, title);

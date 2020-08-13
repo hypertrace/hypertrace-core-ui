@@ -48,7 +48,8 @@ describe('Detail Sheet Interaction Handler Model', () => {
     expect(modelApi.setVariable).toHaveBeenCalledWith('source', data, mockModelObject);
     expect(spectator.get(DetailSheetInteractionHandlerService).showSheet).toHaveBeenCalledWith(
       mockModelObject,
-      SheetSize.Large
+      SheetSize.Large,
+      undefined
     );
   });
 
@@ -56,7 +57,7 @@ describe('Detail Sheet Interaction Handler Model', () => {
     const modelJson = {
       type: 'text-widget',
       // tslint:disable-next-line: no-invalid-template-strings
-      text: '${source}'
+      text: '${source.value}'
     };
 
     const mockModelObject = {};
@@ -70,18 +71,23 @@ describe('Detail Sheet Interaction Handler Model', () => {
       properties: {
         detailTemplate: modelJson,
         injectSourceAs: 'record',
-        sheetSize: SheetSize.Medium
+        sheetSize: SheetSize.Medium,
+        titlePropertyPath: 'type'
       }
     });
 
-    const data = 'Test';
+    const data = {
+      value: 'Test',
+      type: 'Test Type'
+    };
     spectator.model.execute(data);
 
     expect(modelApi.createChild).toHaveBeenCalledWith(modelJson);
     expect(modelApi.setVariable).toHaveBeenCalledWith('record', data, mockModelObject);
     expect(spectator.get(DetailSheetInteractionHandlerService).showSheet).toHaveBeenCalledWith(
       mockModelObject,
-      SheetSize.Medium
+      SheetSize.Medium,
+      'Test Type'
     );
   });
 });

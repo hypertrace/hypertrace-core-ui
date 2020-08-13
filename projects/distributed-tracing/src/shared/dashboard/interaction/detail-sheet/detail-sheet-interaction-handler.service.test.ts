@@ -24,14 +24,16 @@ describe('Overlay service', () => {
 
   test('should call overlay service', () => {
     const detailModel = {};
-    spectator.service.showSheet(detailModel, SheetSize.Medium);
+    spectator.service.showSheet(detailModel, SheetSize.Medium, 'Test Title');
     const tokenMap = new Map();
     tokenMap.set(DETAIL_SHEET_INTERACTION_MODEL, detailModel);
 
     expect(spectator.inject(OverlayService).createSheet).toHaveBeenCalledWith(
       {
         content: DetailSheetInteractionContainerComponent,
-        size: SheetSize.Medium
+        showHeader: true,
+        size: SheetSize.Medium,
+        title: 'Test Title'
       },
       expect.objectContaining({
         parent: expect.objectContaining({
