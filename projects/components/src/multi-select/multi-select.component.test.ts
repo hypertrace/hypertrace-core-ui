@@ -1,13 +1,11 @@
 import { fakeAsync, flush } from '@angular/core/testing';
-import {
-  LabelComponent,
-  LetAsyncModule,
-  MultiSelectComponent,
-  SelectJustify,
-  SelectOptionComponent
-} from '@hypertrace/components';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
+import { LabelComponent } from '../label/label.component';
+import { LetAsyncModule } from '../let-async/let-async.module';
+import { SelectJustify } from '../select/select-justify';
+import { SelectOptionComponent } from '../select/select-option.component';
+import { MultiSelectComponent } from './multi-select.component';
 
 describe('Multi Select Component', () => {
   const hostFactory = createHostFactory<MultiSelectComponent<string>>({
