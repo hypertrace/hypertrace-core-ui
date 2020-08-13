@@ -65,8 +65,16 @@
     align-items: center;
     justify-content: space-between;
 
+    .checkbox {
+      margin-right: 8px;
+    }
+
+    .icon {
+      margin-right: 8px;
+    }
+
     .label {
-      padding-right: 8px;
+      margin-right: 8px;
     }
 
     .status-icon {

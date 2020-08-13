@@ -11,6 +11,7 @@ import { IconSize } from './icon-size';
     <mat-icon
       class="htc-icon"
       [ngClass]="this.size"
+      [ngStyle]="{ color: this.color ? this.color : '' }"
       [attr.aria-label]="this.labelToUse"
       [htcTooltip]="this.showTooltip ? this.labelToUse : undefined"
       [fontSet]="this.fontSet"
@@ -31,6 +32,9 @@ export class IconComponent implements OnChanges {
 
   @Input()
   public showTooltip: boolean = false;
+
+  @Input()
+  public color?: string;
 
   public labelToUse: string = '';
   public fontSet: string = '';
