@@ -65,12 +65,16 @@
     align-items: center;
     justify-content: space-between;
 
-    .label {
-      padding-right: 8px;
+    .checkbox {
+      margin-right: 8px;
     }
 
-    .status-icon {
-      color: $green-5;
+    .icon {
+      margin-right: 8px;
+    }
+
+    .label {
+      margin-right: 8px;
     }
 
     &:hover {

@@ -41,7 +41,14 @@ import { SelectSize } from '../select/select-size';
         <htc-popover-content>
           <div class="multi-select-content">
             <div *ngFor="let item of items" (click)="this.onSelectionChange(item)" class="multi-select-option">
-              <input type="checkbox" [checked]="this.isSelectedItem(item)" />
+              <input class="checkbox" type="checkbox" [checked]="this.isSelectedItem(item)" />
+              <htc-icon
+                class="icon"
+                *ngIf="item.icon"
+                [icon]="item.icon"
+                size="${IconSize.ExtraSmall}"
+                [color]="item.iconColor"
+              ></htc-icon>
               <span class="label">{{ item.label }}</span>
             </div>
           </div>

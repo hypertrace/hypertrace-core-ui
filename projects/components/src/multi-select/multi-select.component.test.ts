@@ -1,4 +1,5 @@
 import { fakeAsync, flush } from '@angular/core/testing';
+import { IconType } from '@hypertrace/assets-library';
 import { createHostFactory, SpectatorHost } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { LabelComponent } from '../label/label.component';
@@ -52,11 +53,16 @@ describe('Multi Select Component', () => {
     expect(selectedElements.length).toBe(2);
   }));
 
-  test('should display provided options when clicked', fakeAsync(() => {
+  test('should display provided options with icons when clicked', fakeAsync(() => {
     spectator = hostFactory(
       `
     <htc-multi-select [selected]="selected">
-      <htc-select-option *ngFor="let option of options" [label]="option.label" [value]="option.value">
+      <htc-select-option
+        *ngFor="let option of options"
+        [label]="option.label"
+        [value]="option.value"
+        icon="${IconType.Label}"
+        iconColor="#FEA395">
       </htc-select-option>
     </htc-multi-select>`,
       {
@@ -76,7 +82,10 @@ describe('Multi Select Component', () => {
     const selectedElements = spectator.queryAll('input:checked', { root: true });
     expect(selectedElements.length).toBe(2);
 
-    optionElements.forEach((element, index) => expect(element).toHaveText(selectionOptions[index].label));
+    optionElements.forEach((element, index) => {
+      expect(element).toHaveText(selectionOptions[index].label);
+      expect(element.querySelector('htc-icon')).toExist();
+    });
   }));
 
   test('should notify and update selection when selection is changed', fakeAsync(() => {

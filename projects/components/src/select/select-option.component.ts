@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { IconType } from '@hypertrace/assets-library';
 import { Observable, Subject } from 'rxjs';
 import { SelectOption } from './select-option';
 
@@ -16,6 +17,12 @@ export class SelectOptionComponent<V> implements OnChanges, SelectOption<V> {
 
   @Input()
   public style: SelectOptionStyle = SelectOptionStyle.Default;
+
+  @Input()
+  public icon?: IconType;
+
+  @Input()
+  public iconColor?: string;
 
   private readonly optionChangeSubject$: Subject<V> = new Subject<V>();
   public readonly optionChange$: Observable<V> = this.optionChangeSubject$.asObservable();
