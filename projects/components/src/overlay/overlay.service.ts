@@ -10,12 +10,12 @@ import { SheetOverlayComponent } from './sheet/sheet-overlay.component';
 
 @Injectable()
 export class OverlayService {
-  public constructor(private readonly popoverService: PopoverService, private readonly injector: Injector) {}
+  public constructor(private readonly popoverService: PopoverService, private readonly defaultInjector: Injector) {}
 
-  public createSheet(config: SheetOverlayConfig): PopoverRef {
+  public createSheet(config: SheetOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
     const popover = this.popoverService.drawPopover({
       componentOrTemplate: SheetOverlayComponent,
-      parentInjector: this.injector,
+      parentInjector: injector,
       position: {
         type: PopoverPositionType.Fixed,
         location: PopoverFixedPositionLocation.RightUnderHeader
@@ -26,10 +26,10 @@ export class OverlayService {
     return popover;
   }
 
-  public createModal(config: ModalOverlayConfig): PopoverRef {
+  public createModal(config: ModalOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
     const popover = this.popoverService.drawPopover({
       componentOrTemplate: ModalOverlayComponent,
-      parentInjector: this.injector,
+      parentInjector: injector,
       position: {
         type: PopoverPositionType.Fixed,
         location: PopoverFixedPositionLocation.Centered
