@@ -77,7 +77,7 @@ export class TraceDetailService implements OnDestroy {
   }
 
   private fetchTrace(timeRange: TimeRange, traceId: string, spanId?: string): Observable<Trace> {
-    return this.graphQlQueryService.queryDebounced<TraceGraphQlQueryHandlerService, Trace>({
+    return this.graphQlQueryService.queryImmediately<TraceGraphQlQueryHandlerService, Trace>({
       requestType: TRACE_GQL_REQUEST,
       traceId: traceId,
       timeRange: new GraphQlTimeRange(timeRange.startTime, timeRange.endTime),

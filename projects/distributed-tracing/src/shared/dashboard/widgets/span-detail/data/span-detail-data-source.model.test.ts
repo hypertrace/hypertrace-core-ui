@@ -20,7 +20,7 @@ describe('Span Detail data source model', () => {
   const buildModel = createModelFactory({
     providers: [
       mockProvider(GraphQlRequestService, {
-        queryDebounced: jest.fn().mockReturnValue(
+        queryImmediately: jest.fn().mockReturnValue(
           of({
             [spanIdKey]: 'test-id',
             statusCode: '200',

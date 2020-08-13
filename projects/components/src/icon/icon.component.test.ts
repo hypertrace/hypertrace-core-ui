@@ -26,6 +26,15 @@ describe('Icon component', () => {
     expect(spectator.query('.htc-icon')).toHaveAttribute('aria-label', 'hypertrace');
   });
 
+  test('should apply custom color if provided', () => {
+    const spectator = buildHost(
+      `<htc-icon icon="${IconType.Hypertrace}" color="#FEA395">
+       </htc-icon>`
+    );
+
+    expect(spectator.query('.htc-icon')).toHaveAttribute('style', 'color: rgb(254, 163, 149);');
+  });
+
   test('uses ligatures for icons backed by ligature', () => {
     const spectator = buildHost(
       `<htc-icon icon="${IconType.Add}" label="other label">
