@@ -31,6 +31,7 @@ import { TableWidgetModel } from './table-widget.model';
         [pageable]="this.api.model.pageable"
         [detailContent]="childDetail"
         [syncWithUrl]="this.syncWithUrl"
+        (selectionsChange)="this.onRowSelection($event)"
       >
       </htc-table>
     </htc-titled-content>
@@ -58,5 +59,9 @@ export class TableWidgetRendererComponent
 
   public get syncWithUrl(): boolean {
     return this.model.style === TableStyle.FullPage;
+  }
+
+  public onRowSelection(selections: TableRow[]): void {
+    this.api.model.selectionHandler?.execute(selections[0]);
   }
 }

@@ -19,6 +19,7 @@ import {
 } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
+import { InteractionHandler } from '../../interaction/interaction-handler';
 import { SpecificationBackedTableColumnDef, TableWidgetColumnModel } from './table-widget-column.model';
 
 @Model({
@@ -79,6 +80,13 @@ export class TableWidgetModel {
     } as EnumPropertyTypeInstance
   })
   public selectionMode: TableSelectionMode = TableSelectionMode.Single;
+
+  @ModelProperty({
+    key: 'selection-handler',
+    displayName: 'Row selection Handler',
+    type: ModelPropertyType.TYPE
+  })
+  public selectionHandler?: InteractionHandler;
 
   @ModelProperty({
     key: 'style',

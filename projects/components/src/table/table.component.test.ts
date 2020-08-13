@@ -321,7 +321,7 @@ describe('Table component', () => {
     };
 
     const multiSelectRowColumnConfig = spectator.component.columnConfigsSubject.value[0];
-    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelected');
+    const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelectedForMulti');
     spectator.component.onDataCellClick(multiSelectRowColumnConfig, row);
     expect(spyToggleRowSelection).toHaveBeenCalledWith(row);
   });
@@ -354,10 +354,10 @@ describe('Table component', () => {
       }
     };
 
-    spectator.component.toggleRowSelected(row);
+    spectator.component.toggleRowSelectedForMulti(row);
     expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
 
-    spectator.component.toggleRowSelected(row);
+    spectator.component.toggleRowSelectedForMulti(row);
     expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
   });
 

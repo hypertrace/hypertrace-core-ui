@@ -175,7 +175,7 @@ export class TableComponent
     width: '32px',
     visible: true,
     renderer: StandardTableCellRendererType.Checkbox,
-    onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
+    onClick: (row: StatefulTableRow) => this.toggleRowSelectedForMulti(row)
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
@@ -229,6 +229,9 @@ export class TableComponent
 
   @Output()
   public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
+
+  @Output()
+  public readonly rowClicked: EventEmitter<StatefulTableRow> = new EventEmitter<StatefulTableRow>();
 
   @Output()
   public readonly hoveredChange: EventEmitter<StatefulTableRow | undefined> = new EventEmitter<
@@ -345,7 +348,7 @@ export class TableComponent
 
   public onDataRowClick(row: StatefulTableRow): void {
     if (this.hasSelectableRows()) {
-      this.toggleRowSelected(row);
+      this.toggleExistingOrSelectNewRow(row);
     }
   }
 
@@ -421,10 +424,18 @@ export class TableComponent
     this.changeDetector.markForCheck();
   }
 
-  public toggleRowSelected(row: StatefulTableRow): void {
+  public toggleExistingOrSelectNewRow(row: StatefulTableRow): void {
+    const rowIndexInSelections = (this.selections ?? []).findIndex(selection => isEqualIgnoreFunctions(selection, row));
+    rowIndexInSelections >= 0 ? (this.selections = []) : (this.selections = [row]);
+    this.selectionsChange.emit(this.selections);
+    this.changeDetector.markForCheck();
+  }
+
+  public toggleRowSelectedForMulti(row: StatefulTableRow): void {
     const rowSelections = [...(this.selections ?? [])];
     const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
     rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
+    this.selections = rowSelections;
     this.selectionsChange.emit(rowSelections);
     this.changeDetector.markForCheck();
   }

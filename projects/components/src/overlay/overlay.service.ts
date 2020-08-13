@@ -8,8 +8,12 @@ import { ModalOverlayConfig } from './modal/modal';
 import { ModalOverlayComponent } from './modal/modal-overlay.component';
 import { SheetOverlayComponent } from './sheet/sheet-overlay.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class OverlayService {
+  private activePopover?: PopoverRef;
+
   public constructor(private readonly popoverService: PopoverService, private readonly defaultInjector: Injector) {}
 
   public createSheet(config: SheetOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
@@ -23,10 +27,16 @@ export class OverlayService {
       data: config
     });
 
+    popover.closeOnNavigation();
+
+    this.setActivePopover(popover);
+
     return popover;
   }
 
   public createModal(config: ModalOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
+    this.activePopover?.close();
+
     const popover = this.popoverService.drawPopover({
       componentOrTemplate: ModalOverlayComponent,
       parentInjector: injector,
@@ -37,6 +47,15 @@ export class OverlayService {
       data: config
     });
 
+    popover.closeOnNavigation();
+
+    this.setActivePopover(popover);
+
     return popover;
+  }
+
+  private setActivePopover(popover: PopoverRef): void {
+    this.activePopover?.close();
+    this.activePopover = popover;
   }
 }

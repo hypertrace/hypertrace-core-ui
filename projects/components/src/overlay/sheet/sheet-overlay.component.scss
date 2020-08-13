@@ -20,11 +20,17 @@
   &.sheet-size-small {
     width: 320px;
   }
+
   &.sheet-size-medium {
     width: 600px;
   }
+
   &.sheet-size-large {
     width: 840px;
+  }
+
+  &.sheet-size-extra-large {
+    width: 1280px;
   }
 
   .header {
