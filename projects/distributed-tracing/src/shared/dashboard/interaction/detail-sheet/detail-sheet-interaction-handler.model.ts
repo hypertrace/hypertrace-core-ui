@@ -46,11 +46,17 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   @ModelInject(DetailSheetInteractionHandlerService)
   private readonly handlerService!: DetailSheetInteractionHandlerService;
 
-  public execute(source: unknown): Observable<void> {
-    const title = get(source, this.titlePropertyPath ?? '');
-    const model = this.getDetailModel(source);
+  private popover?: PopoverRef;
 
-    this.handlerService.showSheet(model, this.sheetSize, title);
+  public execute(source?: unknown): Observable<void> {
+    if (source) {
+      const title = get(source, this.titlePropertyPath ?? '');
+      const model = this.getDetailModel(source);
+
+      this.popover = this.handlerService.showSheet(model, this.sheetSize, title);
+    } else {
+      this.popover?.close();
+    }
 
     return of();
   }
