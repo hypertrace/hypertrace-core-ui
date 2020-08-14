@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { isEqualIgnoreFunctions, NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
+import { without } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
@@ -421,11 +422,17 @@ export class TableComponent
     this.changeDetector.markForCheck();
   }
 
-  public toggleRowSelected(row: StatefulTableRow): void {
-    const rowSelections = [...(this.selections ?? [])];
-    const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
-    rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
-    this.selectionsChange.emit(rowSelections);
+  public toggleRowSelected(toggledRow: StatefulTableRow): void {
+    const previousSelections = this.selections ?? [];
+    const deselectedRow = previousSelections.find(selection => isEqualIgnoreFunctions(selection, toggledRow));
+    if (deselectedRow !== undefined) {
+      this.selections = without(previousSelections, deselectedRow);
+    } else if (this.hasMultiSelect()) {
+      this.selections = [...previousSelections, toggledRow];
+    } else {
+      this.selections = [toggledRow];
+    }
+    this.selectionsChange.emit(this.selections);
     this.changeDetector.markForCheck();
   }
 
