@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { isEqualIgnoreFunctions, NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
+import { without } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { PageEvent } from '../paginator/page.event';
@@ -175,7 +176,7 @@ export class TableComponent
     width: '32px',
     visible: true,
     renderer: StandardTableCellRendererType.Checkbox,
-    onClick: (row: StatefulTableRow) => this.toggleRowSelectedForMulti(row)
+    onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
@@ -345,7 +346,7 @@ export class TableComponent
 
   public onDataRowClick(row: StatefulTableRow): void {
     if (this.hasSelectableRows()) {
-      this.toggleExistingOrSelectNewRow(row);
+      this.toggleRowSelected(row);
     }
   }
 
@@ -421,19 +422,17 @@ export class TableComponent
     this.changeDetector.markForCheck();
   }
 
-  public toggleExistingOrSelectNewRow(row: StatefulTableRow): void {
-    const rowIndexInSelections = (this.selections ?? []).findIndex(selection => isEqualIgnoreFunctions(selection, row));
-    rowIndexInSelections >= 0 ? (this.selections = []) : (this.selections = [row]);
+  public toggleRowSelected(toggledRow: StatefulTableRow): void {
+    const previousSelections = this.selections ?? [];
+    const deselectedRow = previousSelections.find(selection => isEqualIgnoreFunctions(selection, toggledRow));
+    if (deselectedRow !== undefined) {
+      this.selections = without(previousSelections, deselectedRow);
+    } else if (this.hasMultiSelect()) {
+      this.selections = [...previousSelections, toggledRow];
+    } else {
+      this.selections = [toggledRow];
+    }
     this.selectionsChange.emit(this.selections);
-    this.changeDetector.markForCheck();
-  }
-
-  public toggleRowSelectedForMulti(row: StatefulTableRow): void {
-    const rowSelections = [...(this.selections ?? [])];
-    const rowIndexInSelections = rowSelections.findIndex(selection => isEqualIgnoreFunctions(selection, row));
-    rowIndexInSelections >= 0 ? rowSelections.splice(rowIndexInSelections, 1) : rowSelections.push(row);
-    this.selections = rowSelections;
-    this.selectionsChange.emit(rowSelections);
     this.changeDetector.markForCheck();
   }
 

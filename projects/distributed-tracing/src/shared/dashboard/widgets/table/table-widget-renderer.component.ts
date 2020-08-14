@@ -62,6 +62,6 @@ export class TableWidgetRendererComponent
   }
 
   public onRowSelection(selections: TableRow[]): void {
-    this.api.model.selectionHandler?.execute(selections[0]);
+    this.api.model.selectionHandler?.execute(selections);
   }
 }
