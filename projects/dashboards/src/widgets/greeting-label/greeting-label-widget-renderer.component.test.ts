@@ -33,6 +33,6 @@ describe('Greeting label widget renderer component', () => {
 
   test('should render greeting label correctly', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(9);
-    expect(spectator.query('htc-greeting-label')).toHaveText('Good Morning, test');
+    expect(spectator.query('htc-greeting-label')).toHaveText('Good Evening, test');
   });
 });
