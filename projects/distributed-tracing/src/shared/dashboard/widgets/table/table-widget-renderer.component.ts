@@ -1,18 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import {
-  FilterAttribute,
-  TableColumnConfig,
-  TableDataSource,
-  TableRow,
-  TableStyle,
-  toFilterType
-} from '@hypertrace/components';
+import { FilterAttribute, TableColumnConfig, TableDataSource, TableRow, TableStyle } from '@hypertrace/components';
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable } from 'rxjs';
 import { map, mergeMap, startWith, switchMap } from 'rxjs/operators';
-import { AttributeMetadata } from '../../../graphql/model/metadata/attribute-metadata';
+import { AttributeMetadata, toFilterType } from '../../../graphql/model/metadata/attribute-metadata';
 import { MetadataService } from '../../../services/metadata/metadata.service';
 import { TableWidgetModel } from './table-widget.model';
 

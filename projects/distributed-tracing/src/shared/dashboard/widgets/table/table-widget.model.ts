@@ -26,6 +26,7 @@ import {
 } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { Observable, of } from 'rxjs';
+import { InteractionHandler } from '../../interaction/interaction-handler';
 import { SpecificationBackedTableColumnDef, TableWidgetColumnModel } from './table-widget-column.model';
 
 @Model({

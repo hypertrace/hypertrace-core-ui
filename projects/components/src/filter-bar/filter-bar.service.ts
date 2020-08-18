@@ -6,21 +6,17 @@ import { FilterAttribute } from './filter-attribute';
 import { Filter } from './filter/filter-api';
 import { FilterParserService } from './filter/parser/filter-parser.service';
 
-export type GetFiltersFunction = (attributes: FilterAttribute[]) => Filter[];
-
 @Injectable({ providedIn: 'root' })
 export class FilterBarService {
   private static readonly FILTER_QUERY_PARAM: string = 'filter';
 
-  public readonly urlFilterChanges$: Observable<GetFiltersFunction>;
-
   public constructor(
     private readonly navigationService: NavigationService,
     private readonly filterParserService: FilterParserService
-  ) {
-    this.urlFilterChanges$ = this.navigationService.navigation$.pipe(
-      map(() => (attributes: FilterAttribute[]) => this.getUrlFilters(attributes))
-    );
+  ) {}
+
+  public getUrlFiltersChanges$(attributes: FilterAttribute[]): Observable<Filter[]> {
+    return this.navigationService.navigation$.pipe(map(() => this.getUrlFilters(attributes)));
   }
 
   public setUrlFilters(filters: Filter[]): void {

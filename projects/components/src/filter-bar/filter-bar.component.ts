@@ -12,11 +12,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
+import { TypedSimpleChanges } from '@hypertrace/common';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { mergeMap } from 'rxjs/operators';
 import { IconSize } from '../icon/icon-size';
 import { FilterAttribute } from './filter-attribute';
-import { FilterBarService, GetFiltersFunction } from './filter-bar.service';
+import { FilterBarService } from './filter-bar.service';
 import { Filter } from './filter/filter-api';
 
 @Component({
@@ -86,7 +87,8 @@ export class FilterBarComponent implements OnChanges, OnInit, OnDestroy {
 
   public isFocused: boolean = false;
 
-  public readonly internalFiltersSubject$: BehaviorSubject<Filter[]> = new BehaviorSubject<Filter[]>([]);
+  private readonly attributeSubject$: BehaviorSubject<FilterAttribute[]> = new BehaviorSubject<FilterAttribute[]>([]);
+  private readonly internalFiltersSubject$: BehaviorSubject<Filter[]> = new BehaviorSubject<Filter[]>([]);
   public readonly internalFilters$: Observable<Filter[]> = this.internalFiltersSubject$.asObservable();
 
   private subscription?: Subscription;
@@ -100,8 +102,9 @@ export class FilterBarComponent implements OnChanges, OnInit, OnDestroy {
     private readonly filterBarService: FilterBarService
   ) {}
 
-  public ngOnChanges(): void {
-    if (!!this.attributes) {
+  public ngOnChanges(changes: TypedSimpleChanges<this>): void {
+    if (changes.attributes) {
+      this.attributeSubject$.next(this.attributes || []);
       this.syncWithUrl ? this.readFromUrlFilters() : this.onFiltersChanged(this.filters || [], false);
     }
   }
@@ -117,11 +120,9 @@ export class FilterBarComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private subscribeToUrlFilterChanges(): void {
-    this.subscription = this.filterBarService.urlFilterChanges$
-      .pipe(map((getFilters: GetFiltersFunction) => getFilters(this.attributes || [])))
-      .subscribe(filters => {
-        this.onFiltersChanged(filters, true, false);
-      });
+    this.subscription = this.attributeSubject$
+      .pipe(mergeMap(attributes => this.filterBarService.getUrlFiltersChanges$(attributes)))
+      .subscribe(filters => this.onFiltersChanged(filters, true, false));
   }
 
   private onFiltersChanged(filters: Filter[], emit: boolean = true, writeIfSyncEnabled: boolean = true): void {
