@@ -1,11 +1,12 @@
-import { SheetSize } from '@hypertrace/components';
+import { PopoverRef, SheetSize } from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE, ModelTemplatePropertyType } from '@hypertrace/dashboards';
 import { Model, ModelApi, ModelJson, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
-import { get } from 'lodash-es';
+import { get, isEmpty } from 'lodash-es';
 import { Observable, of } from 'rxjs';
 import { InteractionHandler } from '../interaction-handler';
 import { DetailSheetInteractionHandlerService } from './detail-sheet-interaction-handler.service';
+
 @Model({
   type: 'detail-sheet-interaction-handler'
 })
@@ -22,7 +23,7 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
     // tslint:disable-next-line: no-object-literal-type-assertion
     type: {
       key: ENUM_TYPE.type,
-      values: [SheetSize.Small, SheetSize.Medium, SheetSize.Large]
+      values: [SheetSize.Small, SheetSize.Medium, SheetSize.Large, SheetSize.ExtraLarge]
     } as EnumPropertyTypeInstance
   })
   public sheetSize: SheetSize = SheetSize.Large;
@@ -46,13 +47,35 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   @ModelInject(DetailSheetInteractionHandlerService)
   private readonly handlerService!: DetailSheetInteractionHandlerService;
 
-  public execute(source: unknown): Observable<void> {
+  private popover?: PopoverRef;
+
+  public execute(data?: unknown): Observable<void> {
+    if (isEmpty(data)) {
+      this.clear();
+
+      return of();
+    }
+
+    let source = data;
+
+    if (Array.isArray(data)) {
+      if (data.length > 1) {
+        throw new Error('multiple source data found');
+      }
+
+      source = data[0];
+    }
+
+    this.showSheet(source);
+
+    return of();
+  }
+
+  private showSheet(source: unknown): void {
     const title = get(source, this.titlePropertyPath ?? '');
     const model = this.getDetailModel(source);
 
-    this.handlerService.showSheet(model, this.sheetSize, title);
-
-    return of();
+    this.popover = this.handlerService.showSheet(model, this.sheetSize, title);
   }
 
   private getDetailModel(source: unknown): object {
@@ -60,5 +83,9 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
     this.api.setVariable(this.injectSourceAs, source, detailModel);
 
     return detailModel;
+  }
+
+  private clear(): void {
+    this.popover?.close();
   }
 }

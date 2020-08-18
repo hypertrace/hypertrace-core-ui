@@ -5,7 +5,9 @@ import {
   DETAIL_SHEET_INTERACTION_MODEL
 } from './container/detail-sheet-interaction-container.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DetailSheetInteractionHandlerService {
   public constructor(private readonly injector: Injector, private readonly overlayService: OverlayService) {}
 

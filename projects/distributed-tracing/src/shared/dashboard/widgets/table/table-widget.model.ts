@@ -88,6 +88,13 @@ export class TableWidgetModel {
   public selectionMode: TableSelectionMode = TableSelectionMode.Single;
 
   @ModelProperty({
+    key: 'selection-handler',
+    displayName: 'Row selection Handler',
+    type: ModelPropertyType.TYPE
+  })
+  public selectionHandler?: InteractionHandler;
+
+  @ModelProperty({
     key: 'style',
     displayName: 'Table Style',
     // tslint:disable-next-line: no-object-literal-type-assertion

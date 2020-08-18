@@ -7,5 +7,6 @@ export interface SheetOverlayConfig extends OverlayConfig {
 export const enum SheetSize {
   Small = 'small',
   Medium = 'medium',
-  Large = 'large'
+  Large = 'large',
+  ExtraLarge = 'extra-large'
 }
