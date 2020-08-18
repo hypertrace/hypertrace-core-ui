@@ -5,7 +5,7 @@ import { EMPTY } from 'rxjs';
 import { GreetingLabelWidgetRendererComponent } from './greeting-label-widget-renderer.component';
 import { GreetingLabelWidgetModel } from './greeting-label-widget.model';
 
-describe('Highlighted label widget renderer component', () => {
+describe('Greeting label widget renderer component', () => {
   let spectator: Spectator<GreetingLabelWidgetRendererComponent>;
   const mockModel: Partial<GreetingLabelWidgetModel> = {};
   const createComponent = createComponentFactory<GreetingLabelWidgetRendererComponent>({
