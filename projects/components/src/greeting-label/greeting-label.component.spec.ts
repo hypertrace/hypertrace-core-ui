@@ -1,7 +1,6 @@
 import { GreetingLabelComponent } from '@hypertrace/components';
 import { createHostFactory, Spectator } from '@ngneat/spectator/jest';
 
-// WIP
 describe('Greeting Label component', () => {
   let spectator: Spectator<GreetingLabelComponent>;
 
@@ -10,24 +9,36 @@ describe('Greeting Label component', () => {
     component: GreetingLabelComponent
   });
 
-  test('should render interpolated string correctly', () => {
-    jest.SpyOn(global.Date, new Date('2020-01-01T08:00:00.000Z').valueOf());
+  test('should render interpolated string correctly for morning', () => {
+    spyOn(Date.prototype, 'getHours').and.returnValue(8);
     spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
       hostProps: {
-        templateString: 'test {a} and {b}'
+        templateString: "{greeting}, here's your report"
       }
     });
 
-    expect(spectator.component.tokens).toEqual([
-      { value: 'test ', highlight: false },
-      { value: 'first value', highlight: true },
-      { value: ' and ', highlight: false },
-      { value: '2', highlight: true }
-    ]);
+    expect(spectator.query('.greeting-label')).toContainText("Good Morning, here's your report");
+  });
 
-    const highlightedSections = spectator.queryAll('.highlight');
-    expect(highlightedSections.length).toBe(2);
-    expect(highlightedSections[0]).toContainText('first value');
-    expect(highlightedSections[1]).toContainText('2');
+  test('should render interpolated string correctly for afternoon', () => {
+    spyOn(Date.prototype, 'getHours').and.returnValue(13);
+    spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
+      hostProps: {
+        templateString: "{greeting}, here's your report"
+      }
+    });
+
+    expect(spectator.query('.greeting-label')).toContainText("Good Afternoon, here's your report");
+  });
+
+  test('should render interpolated string correctly for evening', () => {
+    spyOn(Date.prototype, 'getHours').and.returnValue(17);
+    spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
+      hostProps: {
+        templateString: "{greeting}, here's your report"
+      }
+    });
+
+    expect(spectator.query('.greeting-label')).toContainText("Good Evening, here's your report");
   });
 });
