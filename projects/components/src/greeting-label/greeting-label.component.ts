@@ -13,7 +13,7 @@ export class GreetingLabelComponent implements OnChanges {
 
   public greetingMessage: string = '';
 
-  public ngOnChanges(changes: TypedSimpleChanges<this>) {
+  public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.label) {
       this.setGreetingMessage();
     }
@@ -29,10 +29,12 @@ export class GreetingLabelComponent implements OnChanges {
 
     if (hour < 12) {
       return 'Good Morning';
-    } else if (hour < 16) {
-      return 'Good Afternoon';
-    } else {
-      return 'Good Evening';
     }
+
+    if (hour < 16) {
+      return 'Good Afternoon';
+    }
+
+    return 'Good Evening';
   }
 }
