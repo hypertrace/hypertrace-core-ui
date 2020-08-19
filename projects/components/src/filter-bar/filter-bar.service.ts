@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NavigationService } from '@hypertrace/common';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FilterAttribute } from './filter-attribute';
 import { Filter } from './filter/filter-api';
 import { FilterParserService } from './filter/parser/filter-parser.service';
@@ -12,6 +14,10 @@ export class FilterBarService {
     private readonly navigationService: NavigationService,
     private readonly filterParserService: FilterParserService
   ) {}
+
+  public getUrlFiltersChanges$(attributes: FilterAttribute[]): Observable<Filter[]> {
+    return this.navigationService.navigation$.pipe(map(() => this.getUrlFilters(attributes)));
+  }
 
   public setUrlFilters(filters: Filter[]): void {
     this.navigationService.addQueryParametersToUrl({

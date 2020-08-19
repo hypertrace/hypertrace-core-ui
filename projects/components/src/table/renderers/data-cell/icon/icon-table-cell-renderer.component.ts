@@ -20,7 +20,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   alignment: TableCellAlignmentType.Center
 })
 export class IconTableCellRendererComponent extends TableCellRendererComponent<string> {
-  protected parseValue(raw: string): string {
-    return raw;
+  public parseValue(cellData: string): string {
+    return cellData;
   }
 }

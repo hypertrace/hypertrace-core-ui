@@ -320,9 +320,8 @@ describe('Table component', () => {
       }
     };
 
-    const multiSelectRowColumnConfig = spectator.component.columnConfigsSubject.value[0];
     const spyToggleRowSelection = spyOn(spectator.component, 'toggleRowSelected');
-    spectator.component.onDataCellClick(multiSelectRowColumnConfig, row);
+    spectator.component.onDataCellClick(row);
     expect(spyToggleRowSelection).toHaveBeenCalledWith(row);
   });
 

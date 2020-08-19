@@ -16,6 +16,7 @@ import { isEqualIgnoreFunctions, NavigationService, NumberCoercer, TypedSimpleCh
 import { without } from 'lodash-es';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
@@ -87,11 +88,13 @@ import {
             class="data-cell"
           >
             <htc-table-data-cell-renderer
+              class="data-cell-renderer"
+              [metadata]="this.metadata"
               [columnConfig]="columnDef"
               [index]="this.columnIndex(columnDef, index)"
-              [cellData]="row[columnDef.field]"
               [rowData]="row"
-              (click)="this.onDataCellClick(columnDef, row)"
+              [cellData]="row[columnDef.field]"
+              (click)="this.onDataCellClick(row)"
             ></htc-table-data-cell-renderer>
           </cdk-cell>
         </ng-container>
@@ -185,6 +188,9 @@ export class TableComponent
 
   @Input()
   public columnConfigs?: TableColumnConfig[];
+
+  @Input()
+  public metadata?: FilterAttribute[];
 
   @Input()
   public data?: TableDataSource<TableRow>;
@@ -325,22 +331,15 @@ export class TableComponent
     }
   }
 
-  public onDataCellClick(columnConfig: TableColumnConfig, row: StatefulTableRow): void {
+  public onDataCellClick(row: StatefulTableRow): void {
     // NOTE: Cell Renderers generally handle their own clicks. We should only perform table actions here.
-    if (this.isExpanderColumn(columnConfig)) {
-      this.toggleRowExpanded(row);
 
-      return;
-    }
-
-    columnConfig.onClick && columnConfig.onClick(row, columnConfig);
-
-    // Propagate the cell click to the row
     /*
      * TODO: The reason we have this here is so that when the expander column is clicked it doesn't cause a
      *  row selection as well. The disadvantage is now the row selection only happens when clicking within the
      *  bounds of a cell, which is a smaller hit box due to row padding. Need to revisit.
      */
+    // Propagate the cell click to the row
     this.onDataRowClick(row);
   }
 
@@ -500,6 +499,10 @@ export class TableComponent
   }
 
   public hasSelectableRows(): boolean {
+    return this.hasSingleSelect() || this.hasMultiSelect();
+  }
+
+  public hasSingleSelect(): boolean {
     return this.selectionMode === TableSelectionMode.Single;
   }
 

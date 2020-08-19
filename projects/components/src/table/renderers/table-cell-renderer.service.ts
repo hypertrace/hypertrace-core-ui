@@ -1,6 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
-import { Dictionary, LoggerService } from '@hypertrace/common';
-import { TableColumnConfig } from '../table-api';
+import { LoggerService } from '@hypertrace/common';
+import { TableColumnConfig, TableRow } from '../table-api';
 import {
   TableCellRendererConstructor,
   TABLE_CELL_RENDERER_CELL_DATA,
@@ -59,7 +59,7 @@ export class TableCellRendererService {
     columnConfig: TableColumnConfig,
     index: number,
     value: unknown,
-    row: Dictionary<unknown> | undefined,
+    row: TableRow,
     injector: Injector
   ): Injector {
     return Injector.create({

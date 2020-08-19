@@ -1,15 +1,14 @@
 import { NavigationService } from '@hypertrace/common';
-import { FilterAttribute, FilterType } from '@hypertrace/components';
+import { Filter, FilterAttribute, FilterType, UserFilterOperator } from '@hypertrace/components';
 import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator/jest';
 import { EMPTY } from 'rxjs';
-import { FilterBarService } from './filter-bar.service';
-import { NumberFilterBuilder } from './filter/builder/number-filter-builder';
-import { StringFilterBuilder } from './filter/builder/string-filter-builder';
-import { Filter, UserFilterOperator } from './filter/filter-api';
-import { FilterParserService } from './filter/parser/filter-parser.service';
+import { NumberFilterBuilder } from '../filter-bar/filter/builder/number-filter-builder';
+import { StringFilterBuilder } from '../filter-bar/filter/builder/string-filter-builder';
+import { FilterParserService } from '../filter-bar/filter/parser/filter-parser.service';
+import { FilterButtonService } from './filter-button.service';
 
-describe('Filter Bar service', () => {
-  let spectator: SpectatorService<FilterBarService>;
+describe('Filter Button service', () => {
+  let spectator: SpectatorService<FilterButtonService>;
   let navigationService: NavigationService;
 
   const attributes: FilterAttribute[] = [
@@ -33,7 +32,7 @@ describe('Filter Bar service', () => {
   ];
 
   const buildService = createServiceFactory({
-    service: FilterBarService,
+    service: FilterButtonService,
     providers: [
       mockProvider(NavigationService, {
         navigation$: EMPTY,
@@ -52,22 +51,11 @@ describe('Filter Bar service', () => {
   });
 
   test('correctly sets filters in url', () => {
-    spectator.service.setUrlFilters(filters);
+    spectator.service.applyUrlFilter(attributes, filters[0]);
+    spectator.service.applyUrlFilter(attributes, filters[1]);
 
     expect(navigationService.addQueryParametersToUrl).toHaveBeenCalledWith({
       filter: ['duration_gte_50', 'apiName_neq_test']
-    });
-  });
-
-  test('correctly decodes filters string from url and build filter objects', () => {
-    expect(spectator.service.getUrlFilters(attributes)).toEqual([filters[0]]);
-  });
-
-  test('clears filters in url if provided an empty array', () => {
-    spectator.service.setUrlFilters([]);
-
-    expect(navigationService.addQueryParametersToUrl).toHaveBeenCalledWith({
-      filter: undefined
     });
   });
 });

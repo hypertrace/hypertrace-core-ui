@@ -24,7 +24,7 @@ import { TableCellRendererComponent } from '../table-cell-renderer.component';
   alignment: TableCellAlignmentType.Center
 })
 export class TableExpanderCellRendererComponent extends TableCellRendererComponent<TableRowState> {
-  protected parseValue(raw: TableRowState): TableRowState {
-    return raw;
+  public parseValue(cellData: TableRowState): TableRowState {
+    return cellData;
   }
 }

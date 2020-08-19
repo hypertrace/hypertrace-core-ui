@@ -37,6 +37,7 @@ export const mockDashboardProviders = [
     getCurrentTimeRange: jest.fn().mockReturnValue(new RelativeTimeRange(new TimeDuration(15, TimeUnit.Minute)))
   }),
   mockProvider(NavigationService, {
+    navigation$: EMPTY,
     getAllValuesForQueryParameter: () => []
   }),
   mockProvider(MetadataService, {

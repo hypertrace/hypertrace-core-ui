@@ -64,6 +64,13 @@ export * from './filter-bar/filter/filter-api';
 export * from './filter-bar/filter-type';
 export * from './filter-bar/filter-attribute';
 
+// Filter Builder
+export * from './filter-bar/filter/builder/filter-builder';
+
+// Filter Button
+export * from './filter-button/filter-button.module';
+export * from './filter-button/filter-button.component';
+
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';

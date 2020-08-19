@@ -23,7 +23,7 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   alignment: TableCellAlignmentType.Left
 })
 export class TextTableCellRendererComponent extends TableCellRendererComponent<string> {
-  protected parseValue(raw: string): string {
-    return raw;
+  public parseValue(cellData: string): string {
+    return cellData;
   }
 }
