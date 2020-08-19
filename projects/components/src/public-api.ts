@@ -239,3 +239,7 @@ export * from './toggle-group/toggle-item';
 
 // Tooltip
 export { TooltipModule } from './tooltip/tooltip.module';
+
+// Greeting label
+export { GreetingLabelModule } from './greeting-label/greeting-label.module';
+export { GreetingLabelComponent } from './greeting-label/greeting-label.component';
