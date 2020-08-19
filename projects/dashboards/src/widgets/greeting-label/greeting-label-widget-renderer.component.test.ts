@@ -28,11 +28,11 @@ describe('Greeting label widget renderer component', () => {
 
   beforeEach(() => {
     mockModel.labelTemplate = '{greeting}, test';
-    spectator = createComponent();
   });
 
   test('should render greeting label correctly', () => {
-    spyOn(Date.prototype, 'getHours').and.returnValue(9);
+    spyOn(Date.prototype, 'getHours').and.returnValue(18);
+    spectator = createComponent();
     expect(spectator.query('htc-greeting-label')).toHaveText('Good Evening, test');
   });
 });
