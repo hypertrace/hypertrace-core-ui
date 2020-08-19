@@ -5,12 +5,13 @@ import {
   ComponentRef,
   Injector,
   Input,
-  OnInit
+  OnInit,
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import { FilterAttribute } from '../../../filter-bar/filter-attribute';
 import { TableColumnConfig, TableRow } from '../../table-api';
 import { TableCellAlignmentType } from '../table-cell-alignment-type';
-import { TableCellRendererConstructor } from '../table-cell-renderer';
 import { TableCellRendererComponent } from '../table-cell-renderer.component';
 import { TableCellRendererService } from '../table-cell-renderer.service';
 
@@ -29,7 +30,7 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
         (popoverOpen)="this.popoverOpen = $event"
       ></htc-filter-button>
       <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick()">
-        <ng-container *ngComponentOutlet="this.rendererConstructor; injector: this.rendererInjector"></ng-container>
+        <div #cellRenderer></div>
       </div>
       <htc-filter-button
         class="filter-button"
@@ -58,13 +59,14 @@ export class TableDataCellRendererComponent implements OnInit {
   @Input()
   public cellData?: unknown;
 
+  @ViewChild('cellRenderer', { read: ViewContainerRef, static: true })
+  public cellRenderer!: ViewContainerRef;
+
   public alignment?: TableCellAlignmentType;
   public leftAlignFilterButton: boolean = false;
   public popoverOpen: boolean = false;
 
-  public rendererConstructor?: TableCellRendererConstructor;
-  public rendererInjector?: Injector;
-  public componentRef?: ComponentRef<TableCellRendererComponent<unknown, unknown>>;
+  private componentRef?: ComponentRef<TableCellRendererComponent<unknown, unknown>>;
 
   public constructor(
     private readonly injector: Injector,
@@ -86,22 +88,22 @@ export class TableDataCellRendererComponent implements OnInit {
     }
 
     // Dynamic Component Setup
-    this.rendererConstructor = this.tableCellRendererService.lookup(this.columnConfig.renderer);
-    this.rendererInjector = this.tableCellRendererService.createInjector(
-      this.columnConfig,
-      this.index,
-      this.cellData,
-      this.rowData,
-      this.injector
+    const tableCellRendererConstructor = this.tableCellRendererService.lookup(this.columnConfig.renderer);
+
+    this.componentRef = this.cellRenderer.createComponent(
+      this.componentFactoryResolver.resolveComponentFactory(tableCellRendererConstructor),
+      0,
+      this.tableCellRendererService.createInjector(
+        this.columnConfig,
+        this.index,
+        this.cellData,
+        this.rowData,
+        this.injector
+      )
     );
 
-    // Use cell renderer to initialize value for filtering
-    this.componentRef = this.componentFactoryResolver
-      .resolveComponentFactory(this.rendererConstructor)
-      .create(this.rendererInjector);
-
     // Allow columnConfig to override default alignment for cell renderer
-    this.alignment = this.columnConfig.alignment ?? this.rendererConstructor.alignment;
+    this.alignment = this.columnConfig.alignment ?? tableCellRendererConstructor.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
   }
 
