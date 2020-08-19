@@ -26,11 +26,11 @@ export class GreetingLabelComponent implements OnChanges {
   private getGreeting(): string {
     const hour = new Date().getHours();
 
-    if (hour < 12) {
+    if (hour > 4 && hour < 12) {
       return 'Good Morning';
     }
 
-    if (hour < 16) {
+    if (hour > 12 && hour < 17) {
       return 'Good Afternoon';
     }
 
