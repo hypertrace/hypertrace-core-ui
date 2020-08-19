@@ -20,8 +20,7 @@ export class GreetingLabelComponent implements OnChanges {
   }
 
   private setGreetingMessage(): void {
-    const parts = this.label.split('{greeting}');
-    this.greetingMessage = [parts[0], this.getGreeting(), parts[1]].join('');
+    this.greetingMessage = `${this.getGreeting()}${this.label}`;
   }
 
   private getGreeting(): string {

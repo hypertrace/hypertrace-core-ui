@@ -13,7 +13,7 @@ describe('Greeting Label component', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(8);
     spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
       hostProps: {
-        templateString: "{greeting}, here's your report"
+        templateString: ", here's your report"
       }
     });
 
@@ -24,7 +24,7 @@ describe('Greeting Label component', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(13);
     spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
       hostProps: {
-        templateString: "{greeting}, here's your report"
+        templateString: ", here's your report"
       }
     });
 
@@ -35,7 +35,7 @@ describe('Greeting Label component', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(17);
     spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
       hostProps: {
-        templateString: "{greeting}, here's your report"
+        templateString: ", here's your report"
       }
     });
 
