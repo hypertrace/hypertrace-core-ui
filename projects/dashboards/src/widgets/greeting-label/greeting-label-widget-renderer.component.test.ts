@@ -27,7 +27,7 @@ describe('Greeting label widget renderer component', () => {
   });
 
   beforeEach(() => {
-    mockModel.labelTemplate = ', test';
+    mockModel.suffixLabel = ', test';
   });
 
   test('should render greeting label correctly', () => {

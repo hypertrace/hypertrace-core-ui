@@ -6,8 +6,8 @@ import { Model, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 export class GreetingLabelWidgetModel {
   @ModelProperty({
     type: STRING_PROPERTY.type,
-    key: 'label-template',
+    key: 'suffix-label',
     required: true
   })
-  public labelTemplate!: string;
+  public suffixLabel!: string;
 }

@@ -9,18 +9,18 @@ import { TypedSimpleChanges } from '@hypertrace/common';
 })
 export class GreetingLabelComponent implements OnChanges {
   @Input()
-  public readonly label: string = '';
+  public readonly suffixLabel: string = '';
 
   public greetingMessage: string = '';
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
-    if (changes.label) {
+    if (changes.suffixLabel) {
       this.setGreetingMessage();
     }
   }
 
   private setGreetingMessage(): void {
-    this.greetingMessage = `${this.getGreeting()}${this.label}`;
+    this.greetingMessage = `${this.getGreeting()}${this.suffixLabel}`;
   }
 
   private getGreeting(): string {

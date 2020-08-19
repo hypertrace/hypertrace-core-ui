@@ -11,7 +11,7 @@ describe('Greeting Label component', () => {
 
   test('should render interpolated string correctly for morning', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(8);
-    spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
+    spectator = createHost(`<htc-greeting-label [suffixLabel]="templateString"></htc-greeting-label>`, {
       hostProps: {
         templateString: ", here's your report"
       }
@@ -22,7 +22,7 @@ describe('Greeting Label component', () => {
 
   test('should render interpolated string correctly for afternoon', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(13);
-    spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
+    spectator = createHost(`<htc-greeting-label [suffixLabel]="templateString"></htc-greeting-label>`, {
       hostProps: {
         templateString: ", here's your report"
       }
@@ -33,7 +33,7 @@ describe('Greeting Label component', () => {
 
   test('should render interpolated string correctly for evening', () => {
     spyOn(Date.prototype, 'getHours').and.returnValue(17);
-    spectator = createHost(`<htc-greeting-label [label]="templateString"></htc-greeting-label>`, {
+    spectator = createHost(`<htc-greeting-label [suffixLabel]="templateString"></htc-greeting-label>`, {
       hostProps: {
         templateString: ", here's your report"
       }
