@@ -32,7 +32,7 @@ describe('Greeting Label component', () => {
   });
 
   test('should render interpolated string correctly for evening', () => {
-    spyOn(Date.prototype, 'getHours').and.returnValue(17);
+    spyOn(Date.prototype, 'getHours').and.returnValue(1);
     spectator = createHost(`<htc-greeting-label [suffixLabel]="templateString"></htc-greeting-label>`, {
       hostProps: {
         templateString: ", here's your report"
