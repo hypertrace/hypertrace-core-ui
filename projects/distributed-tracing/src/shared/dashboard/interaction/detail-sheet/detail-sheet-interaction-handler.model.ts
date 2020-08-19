@@ -1,6 +1,6 @@
 import { PopoverRef, SheetSize } from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE, ModelTemplatePropertyType } from '@hypertrace/dashboards';
-import { Model, ModelApi, ModelJson, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
+import { BOOLEAN_PROPERTY, Model, ModelApi, ModelJson, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
 import { get, isEmpty } from 'lodash-es';
 import { Observable, of } from 'rxjs';
@@ -41,6 +41,12 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
   })
   public injectSourceAs: string = 'source';
 
+  @ModelProperty({
+    key: 'show-header',
+    type: BOOLEAN_PROPERTY.type
+  })
+  public showHeader: boolean = true;
+
   @ModelInject(MODEL_API)
   private readonly api!: ModelApi;
 
@@ -75,7 +81,7 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
     const title = get(source, this.titlePropertyPath ?? '');
     const model = this.getDetailModel(source);
 
-    this.popover = this.handlerService.showSheet(model, this.sheetSize, title);
+    this.popover = this.handlerService.showSheet(model, this.sheetSize, title, this.showHeader);
   }
 
   private getDetailModel(source: unknown): object {

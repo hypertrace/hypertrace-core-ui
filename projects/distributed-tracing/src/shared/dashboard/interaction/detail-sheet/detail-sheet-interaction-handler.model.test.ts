@@ -49,7 +49,8 @@ describe('Detail Sheet Interaction Handler Model', () => {
     expect(spectator.get(DetailSheetInteractionHandlerService).showSheet).toHaveBeenCalledWith(
       mockModelObject,
       SheetSize.Large,
-      undefined
+      undefined,
+      true
     );
   });
 
@@ -87,7 +88,8 @@ describe('Detail Sheet Interaction Handler Model', () => {
     expect(spectator.get(DetailSheetInteractionHandlerService).showSheet).toHaveBeenCalledWith(
       mockModelObject,
       SheetSize.Medium,
-      'Test Type'
+      'Test Type',
+      true
     );
   });
 });
