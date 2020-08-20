@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { assertUnreachable } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-attribute';
 import { FilterBuilderService } from '../builder/filter-builder.service';
 import {
   Filter,
+  toUserFilterOperator,
   UrlFilterOperator,
   URL_FILTER_OPERATORS,
   UserFilterOperator,
@@ -24,7 +24,8 @@ export class FilterParserService {
   public constructor(private readonly filterBuilderService: FilterBuilderService) {}
 
   public parseUserFilterString(filterString: string, attribute: FilterAttribute): Filter | undefined {
-    const parsed = this.parseFilterString(filterString, attribute, USER_FILTER_OPERATORS, attribute.displayName);
+    const spacedOperators = USER_FILTER_OPERATORS.map(op => ` ${op} `);
+    const parsed = this.parseFilterString(filterString, attribute, spacedOperators, attribute.displayName);
 
     if (parsed === undefined) {
       return undefined;
@@ -52,7 +53,7 @@ export class FilterParserService {
 
         return this.filterBuilderService
           .lookup(attr)
-          .buildFilter(attr, this.toUserFilterOperator(parsed.operator as UrlFilterOperator), parsed.value);
+          .buildFilter(attr, toUserFilterOperator(parsed.operator as UrlFilterOperator), parsed.value);
       })
       .filter((parsedFilter): parsedFilter is Filter => parsedFilter !== undefined);
 
@@ -84,31 +85,8 @@ export class FilterParserService {
     return {
       metadata: attribute,
       field: attribute.name,
-      operator: parts[1],
-      value: parts[2]
+      operator: parts[1].trim(),
+      value: parts[2].trim()
     };
-  }
-
-  private toUserFilterOperator(operator: UrlFilterOperator): UserFilterOperator {
-    switch (operator) {
-      case UrlFilterOperator.Equals:
-        return UserFilterOperator.Equals;
-      case UrlFilterOperator.NotEquals:
-        return UserFilterOperator.NotEquals;
-      case UrlFilterOperator.LessThan:
-        return UserFilterOperator.LessThan;
-      case UrlFilterOperator.LessThanOrEqualTo:
-        return UserFilterOperator.LessThanOrEqualTo;
-      case UrlFilterOperator.GreaterThan:
-        return UserFilterOperator.GreaterThan;
-      case UrlFilterOperator.GreaterThanOrEqualTo:
-        return UserFilterOperator.GreaterThanOrEqualTo;
-      case UrlFilterOperator.ContainsKey:
-        return UserFilterOperator.ContainsKey;
-      case UrlFilterOperator.ContainsKeyValue:
-        return UserFilterOperator.ContainsKeyValue;
-      default:
-        return assertUnreachable(operator);
-    }
   }
 }
