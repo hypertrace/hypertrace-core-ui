@@ -24,10 +24,7 @@ export class PredefinedTimeDurationService {
       new TimeDuration(3, TimeUnit.Day),
       new TimeDuration(1, TimeUnit.Week),
       new TimeDuration(2, TimeUnit.Week),
-      new TimeDuration(1, TimeUnit.Month),
-      new TimeDuration(3, TimeUnit.Month),
-      new TimeDuration(6, TimeUnit.Month),
-      new TimeDuration(1, TimeUnit.Year)
+      new TimeDuration(1, TimeUnit.Month)
     ];
   }
 
