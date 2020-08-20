@@ -1,5 +1,4 @@
-@import 'color-palette';
-@import 'font';
+@import 'mixins';
 
 .titled-content-container {
   display: flex;
@@ -26,7 +25,7 @@
     }
 
     .title {
-      @include widget-title($gray-7);
+      @include widget-title($gray-5);
       margin-top: 16px;
     }
   }

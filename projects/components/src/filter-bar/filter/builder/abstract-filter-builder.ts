@@ -9,8 +9,8 @@ export abstract class AbstractFilterBuilder<T> {
   public abstract supportedValue(): FilterType;
   public abstract supportedOperators(): UserFilterOperator[];
 
-  public buildFiltersForAvailableOperators(attribute: FilterAttribute): Filter<T>[] {
-    return this.supportedOperators().map(operator => this.buildFilter(attribute, operator));
+  public buildFiltersForAvailableOperators(attribute: FilterAttribute, value?: T): Filter<T>[] {
+    return this.supportedOperators().map(operator => this.buildFilter(attribute, operator, value));
   }
 
   public buildFilter(attribute: FilterAttribute, operator: UserFilterOperator, value?: T): Filter<T> {

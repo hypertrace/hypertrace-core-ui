@@ -2,6 +2,7 @@ import { TableDataRequest, TableDataResponse, TableRow } from '@hypertrace/compo
 import { Model } from '@hypertrace/hyperdash';
 
 import { GraphQlFilter } from '../../../../../graphql/model/schema/filter/graphql-filter';
+import { SPAN_SCOPE } from '../../../../../graphql/model/schema/span';
 import {
   GraphQlSpansRequest,
   SpansResponse,
@@ -14,6 +15,10 @@ import { TableDataSourceModel } from '../table-data-source.model';
   type: 'spans-table-data-source'
 })
 export class SpansTableDataSourceModel extends TableDataSourceModel {
+  public getScope(): string {
+    return SPAN_SCOPE;
+  }
+
   protected buildGraphQlRequest(
     filters: GraphQlFilter[],
     request: TableDataRequest<SpecificationBackedTableColumnDef>

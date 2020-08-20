@@ -1,9 +1,11 @@
 import { Dictionary } from '@hypertrace/common';
 import { Observable } from 'rxjs';
+import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { TableCellAlignmentType } from './renderers/table-cell-alignment-type';
 
 export interface TableColumnConfig {
   field: string;
+  filterAttribute?: FilterAttribute;
   title?: string;
   titleTooltip?: string;
   renderer?: string;

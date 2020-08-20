@@ -21,9 +21,12 @@ export abstract class TableDataSourceModel extends GraphQlDataSourceModel<TableD
       getData: request =>
         this.query(filters => this.buildGraphQlRequest(filters, request)).pipe(
           map(response => this.buildTableResponse(response, request))
-        )
+        ),
+      getScope: () => this.getScope()
     });
   }
+
+  public abstract getScope(): string | undefined;
 
   protected abstract buildGraphQlRequest(
     inheritedFilters: GraphQlFilter[],

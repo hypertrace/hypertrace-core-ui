@@ -4,6 +4,7 @@ import { Inject, InjectionToken, NgModule } from '@angular/core';
 import { FormattingModule } from '@hypertrace/common';
 import { TraceCheckboxModule } from '../../checkbox/checkbox.module';
 import { ExpanderToggleModule } from '../../expander/expander-toggle.module';
+import { FilterButtonModule } from '../../filter-button/filter-button.module';
 import { IconModule } from '../../icon/icon.module';
 import { TooltipModule } from '../../tooltip/tooltip.module';
 import { TableCheckboxCellRendererComponent } from './checkbox-cell/table-checkbox-cell-renderer.component';
@@ -28,7 +29,8 @@ export const TABLE_CELL_RENDERERS = new InjectionToken<unknown[][]>('TABLE_CELL_
     FormattingModule,
     IconModule,
     TooltipModule,
-    TraceCheckboxModule
+    TraceCheckboxModule,
+    FilterButtonModule
   ],
   exports: [
     TableHeaderCellRendererComponent,

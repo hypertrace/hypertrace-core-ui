@@ -141,7 +141,8 @@ export class WaterfallChartComponent implements OnChanges {
         of({
           data: rootLevelRows,
           totalCount: rootLevelRows.length
-        })
+        }),
+      getScope: () => ''
     };
   }
 

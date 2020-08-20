@@ -64,6 +64,13 @@ export * from './filter-bar/filter/filter-api';
 export * from './filter-bar/filter-type';
 export * from './filter-bar/filter-attribute';
 
+// Filter Builder
+export * from './filter-bar/filter/builder/filter-builder';
+
+// Filter Button
+export * from './filter-button/filter-button.module';
+export * from './filter-button/filter-button.component';
+
 // Header
 export * from './header/application/application-header.component';
 export * from './header/application/application-header.module';
@@ -239,3 +246,7 @@ export * from './toggle-group/toggle-item';
 
 // Tooltip
 export { TooltipModule } from './tooltip/tooltip.module';
+
+// Greeting label
+export { GreetingLabelModule } from './greeting-label/greeting-label.module';
+export { GreetingLabelComponent } from './greeting-label/greeting-label.component';

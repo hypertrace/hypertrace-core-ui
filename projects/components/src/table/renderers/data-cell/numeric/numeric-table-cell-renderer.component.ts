@@ -18,18 +18,18 @@ import { TableCellRendererComponent } from '../../table-cell-renderer.component'
   type: StandardTableCellRendererType.Number,
   alignment: TableCellAlignmentType.Right
 })
-export class NumericTableCellRendererComponent extends TableCellRendererComponent<Raw, Parsed> {
-  protected parseValue(raw: Raw): Parsed {
-    switch (typeof raw) {
+export class NumericTableCellRendererComponent extends TableCellRendererComponent<CellData, Value> {
+  public parseValue(cellData: CellData): Value {
+    switch (typeof cellData) {
       case 'number':
-        return raw;
+        return cellData;
       case 'object':
-        return raw.value;
+        return cellData.value;
       default:
         return undefined;
     }
   }
 }
 
-type Raw = number | { value: number };
-type Parsed = number | undefined;
+type CellData = number | { value: number };
+type Value = number | undefined;
