@@ -32,6 +32,8 @@ export class GraphQlFilterBuilderService {
         return GraphQlOperatorType.GreaterThan;
       case UserFilterOperator.GreaterThanOrEqualTo:
         return GraphQlOperatorType.GreaterThanOrEqualTo;
+      case UserFilterOperator.In:
+        return GraphQlOperatorType.In;
       case UserFilterOperator.ContainsKey:
         return GraphQlOperatorType.ContainsKey;
       case UserFilterOperator.ContainsKeyValue:

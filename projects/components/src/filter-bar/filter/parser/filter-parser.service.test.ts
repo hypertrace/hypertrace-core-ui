@@ -21,6 +21,12 @@ describe('Filter Parser service', () => {
       displayName: 'Call count',
       units: '',
       type: FilterType.Number
+    },
+    {
+      name: 'serviceName',
+      displayName: 'Service Name',
+      units: '',
+      type: FilterType.String
     }
   ];
 
@@ -68,14 +74,30 @@ describe('Filter Parser service', () => {
     expect(spectator.service.parseUrlFilterString('call_gt_100', attributes)).toEqual(
       numberBuilder.buildFilter(attributes[1], UserFilterOperator.GreaterThan, 100)
     );
+
+    expect(spectator.service.parseUrlFilterString('serviceName_in_shippingservice%2Cuserservice', attributes)).toEqual(
+      stringBuilder.buildFilter(attributes[2], UserFilterOperator.In, ['shippingservice', 'userservice'])
+    );
   });
 
   test('correctly parses complete user filter string to Filter', () => {
-    const expected = numberBuilder.buildFilter(attributes[1], UserFilterOperator.GreaterThanOrEqualTo, 100);
+    const expectedNumber = numberBuilder.buildFilter(attributes[1], UserFilterOperator.GreaterThanOrEqualTo, 100);
+    const expectedString = stringBuilder.buildFilter(attributes[2], UserFilterOperator.In, [
+      'shippingservice',
+      'userservice'
+    ]);
 
-    expect(spectator.service.parseUserFilterString('call count >= 100', attributes[1])).toEqual(expected);
-    expect(spectator.service.parseUserFilterString('call count>=100', attributes[1])).toEqual(expected);
-    expect(spectator.service.parseUserFilterString('  call count   >=    100   ', attributes[1])).toEqual(expected);
-    expect(spectator.service.parseUserFilterString('calls >= 100', attributes[1])).not.toEqual(expected);
+    expect(spectator.service.parseUserFilterString('call count >= 100', attributes[1])).toEqual(expectedNumber);
+    expect(spectator.service.parseUserFilterString('  call count   >=    100   ', attributes[1])).toEqual(
+      expectedNumber
+    );
+    expect(spectator.service.parseUserFilterString('calls >= 100', attributes[1])).not.toEqual(expectedNumber);
+
+    expect(
+      spectator.service.parseUserFilterString('Service Name IN shippingservice,userservice', attributes[2])
+    ).toEqual(expectedString);
+    expect(
+      spectator.service.parseUserFilterString('service name IN shippingservice, userservice', attributes[2])
+    ).toEqual(expectedString);
   });
 });

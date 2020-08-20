@@ -1,11 +1,17 @@
-import { assertUnreachable, collapseWhitespace } from '@hypertrace/common';
+import { collapseWhitespace } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-attribute';
 import { FilterType } from '../../filter-type';
-import { Filter, UrlFilterOperator, UserFilterOperator } from '../filter-api';
+import {
+  Filter,
+  toUrlFilterOperator,
+  toUserFilterOperator,
+  UrlFilterOperator,
+  UserFilterOperator
+} from '../filter-api';
 
 export abstract class AbstractFilterBuilder<T> {
-  public abstract convertValue(value: unknown): T;
-  public abstract convertValueToString(value: unknown): string;
+  public abstract convertValue(value: unknown, operator?: UserFilterOperator): T;
+  public abstract convertValueToString(value: unknown, operator?: UserFilterOperator): string;
   public abstract supportedValue(): FilterType;
   public abstract supportedOperators(): UserFilterOperator[];
 
@@ -18,42 +24,21 @@ export abstract class AbstractFilterBuilder<T> {
       metadata: attribute,
       field: attribute.name,
       operator: operator,
-      value: this.convertValue(value),
+      value: this.convertValue(value, operator),
       userString: this.buildUserFilterString(attribute, operator, value),
-      urlString: this.buildUrlFilterString(attribute, this.toUrlFilterOperator(operator), value)
+      urlString: this.buildUrlFilterString(attribute, toUrlFilterOperator(operator), value)
     };
   }
 
   public buildUserFilterString(attribute: FilterAttribute, operator?: UserFilterOperator, value?: unknown): string {
     return collapseWhitespace(
-      `${attribute.displayName} ${operator !== undefined ? operator : ''} ${this.convertValueToString(value)}`
+      `${attribute.displayName} ${operator !== undefined ? operator : ''} ${this.convertValueToString(value, operator)}`
     ).trim();
   }
 
   protected buildUrlFilterString(attribute: FilterAttribute, operator: UrlFilterOperator, value: unknown): string {
-    return encodeURIComponent(`${attribute.name}${operator}${this.convertValueToString(value)}`);
-  }
-
-  private toUrlFilterOperator(operator: UserFilterOperator): UrlFilterOperator {
-    switch (operator) {
-      case UserFilterOperator.Equals:
-        return UrlFilterOperator.Equals;
-      case UserFilterOperator.NotEquals:
-        return UrlFilterOperator.NotEquals;
-      case UserFilterOperator.LessThan:
-        return UrlFilterOperator.LessThan;
-      case UserFilterOperator.LessThanOrEqualTo:
-        return UrlFilterOperator.LessThanOrEqualTo;
-      case UserFilterOperator.GreaterThan:
-        return UrlFilterOperator.GreaterThan;
-      case UserFilterOperator.GreaterThanOrEqualTo:
-        return UrlFilterOperator.GreaterThanOrEqualTo;
-      case UserFilterOperator.ContainsKey:
-        return UrlFilterOperator.ContainsKey;
-      case UserFilterOperator.ContainsKeyValue:
-        return UrlFilterOperator.ContainsKeyValue;
-      default:
-        return assertUnreachable(operator);
-    }
+    return encodeURIComponent(
+      `${attribute.name}${operator}${this.convertValueToString(value, toUserFilterOperator(operator))}`
+    );
   }
 }
