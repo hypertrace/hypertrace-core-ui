@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { LayoutChangeService } from '@hypertrace/common';
 import { POPOVER_DATA } from '../popover';
+import { LayoutChangeService } from '@hypertrace/common';
 
 export const POPOVER_CONTAINER_DATA = new InjectionToken<PopoverContainerData>('POPOVER_CONTAINER_DATA');
 
