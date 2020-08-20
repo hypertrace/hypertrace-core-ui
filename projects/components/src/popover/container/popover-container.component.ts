@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Inject,
-  InjectionToken,
-  Injector,
-  TemplateRef,
-  Type
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, InjectionToken, Injector, TemplateRef, Type } from '@angular/core';
 import { LayoutChangeService } from '@hypertrace/common';
 import { POPOVER_DATA } from '../popover';
 
@@ -36,7 +27,6 @@ export class PopoverContainerComponent {
   public constructor(
     @Inject(POPOVER_CONTAINER_DATA)
     public readonly containerData: PopoverContainerData,
-    hostElementRef: ElementRef,
     layoutChangeService: LayoutChangeService
   ) {
     this.isComponentRenderer = !(containerData.popoverRenderer instanceof TemplateRef);
@@ -45,10 +35,6 @@ export class PopoverContainerComponent {
 
     this.componentInjector = Injector.create({
       providers: [
-        {
-          provide: ElementRef,
-          useValue: hostElementRef
-        },
         {
           provide: LayoutChangeService,
           useValue: layoutChangeService
