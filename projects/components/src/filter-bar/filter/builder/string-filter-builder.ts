@@ -2,15 +2,35 @@ import { FilterType } from '../../filter-type';
 import { UserFilterOperator } from '../filter-api';
 import { AbstractFilterBuilder } from './abstract-filter-builder';
 
-export class StringFilterBuilder extends AbstractFilterBuilder<string | undefined> {
-  public convertValue(value: unknown): string | undefined {
-    return value === undefined ? undefined : String(value);
+export class StringFilterBuilder extends AbstractFilterBuilder<string | string[] | undefined> {
+  private static readonly DELIMITER: string = ',';
+
+  public convertValue(value: unknown, operator: UserFilterOperator): string | string[] | undefined {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (operator === UserFilterOperator.In) {
+      return String(value)
+        .split(StringFilterBuilder.DELIMITER)
+        .map(str => str.trim());
+    }
+
+    return String(value);
   }
 
-  public convertValueToString(value: unknown): string {
-    const converted = this.convertValue(value);
+  public convertValueToString(value: unknown, operator: UserFilterOperator): string {
+    const converted = this.convertValue(value, operator);
 
-    return converted === undefined ? '' : converted;
+    if (converted === undefined) {
+      return '';
+    }
+
+    if (converted instanceof Array) {
+      return converted.join(StringFilterBuilder.DELIMITER);
+    }
+
+    return converted;
   }
 
   public supportedValue(): FilterType {
@@ -18,6 +38,6 @@ export class StringFilterBuilder extends AbstractFilterBuilder<string | undefine
   }
 
   public supportedOperators(): UserFilterOperator[] {
-    return [UserFilterOperator.Equals, UserFilterOperator.NotEquals];
+    return [UserFilterOperator.Equals, UserFilterOperator.NotEquals, UserFilterOperator.In];
   }
 }

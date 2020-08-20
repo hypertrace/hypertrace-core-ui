@@ -18,7 +18,7 @@ import { FilterButtonService } from './filter-button.service';
       >
         <htc-popover-trigger>
           <div #trigger>
-            <htc-icon icon="${IconType.MoreHorizontal}" size="${IconSize.Small}"></htc-icon>
+            <htc-icon icon="${IconType.Filter}" size="${IconSize.Small}"></htc-icon>
           </div>
         </htc-popover-trigger>
         <htc-popover-content>

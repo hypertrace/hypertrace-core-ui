@@ -30,7 +30,7 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
         (popoverOpen)="this.popoverOpen = $event"
       ></htc-filter-button>
       <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick()">
-        <div #cellRenderer></div>
+        <ng-container #cellRenderer></ng-container>
       </div>
       <htc-filter-button
         class="filter-button"
