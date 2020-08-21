@@ -12,6 +12,7 @@
   min-height: 0;
   padding: $padding-top $padding-sides $padding-bottom;
   overflow: auto;
+  max-height: -webkit-fill-available; // For safari
 }
 
 @mixin non-scrollable-container($padding-sides: 0, $padding-top: 0, $padding-bottom: 0) {
