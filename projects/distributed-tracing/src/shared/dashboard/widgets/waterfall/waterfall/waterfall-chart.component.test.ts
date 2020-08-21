@@ -1,4 +1,4 @@
-import { fakeAsync } from '@angular/core/testing';
+import { fakeAsync, flush } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { IconLibraryTestingModule } from '@hypertrace/assets-library';
 import { DEFAULT_COLOR_PALETTE, NavigationService } from '@hypertrace/common';
@@ -116,6 +116,8 @@ describe('Waterfall Chart component', () => {
 
     // Should set initial selection based on data
     expect(spectator.component.selectedNode?.id).toEqual('first-id');
+
+    flush();
   }));
 
   test('gets callback when collapsing all', fakeAsync(() => {
@@ -161,5 +163,7 @@ describe('Waterfall Chart component', () => {
     expect(spectator.component.segments[0].color).toEqual('rgb(0, 83, 215)');
     expect(spectator.component.segments[1].color).toEqual('rgb(112, 167, 255)');
     expect(spectator.component.segments[2].color).toEqual(spectator.component.segments[0].color);
+
+    flush();
   }));
 });

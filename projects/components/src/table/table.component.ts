@@ -312,7 +312,6 @@ export class TableComponent
   public ngAfterViewInit(): void {
     setTimeout(() => {
       this.initializeData();
-      this.changeDetector.detectChanges();
     });
   }
 
