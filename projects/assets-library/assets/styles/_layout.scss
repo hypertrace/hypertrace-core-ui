@@ -1,5 +1,7 @@
 @import 'color-palette';
 
+$paginator-height: 50px;
+
 @mixin flex-layout($direction: column) {
   height: 100%;
   width: 100%;

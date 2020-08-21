@@ -55,7 +55,7 @@ import {
     <cdk-table
       [multiTemplateDataRows]="this.isDetailType()"
       [dataSource]="this.dataSource"
-      [ngClass]="this.display"
+      [ngClass]="[this.display, this.pageable ? 'bottom-margin' : '']"
       class="table"
     >
       <!-- Columns -->
