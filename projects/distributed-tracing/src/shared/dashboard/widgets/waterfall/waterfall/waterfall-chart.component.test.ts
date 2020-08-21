@@ -124,6 +124,8 @@ describe('Waterfall Chart component', () => {
         data: data
       }
     });
+    spectator.tick();
+
     const spy = spyOn(spectator.component, 'onToggleAll');
     spectator.component.onCollapseAll();
     spectator.tick(200);
@@ -137,6 +139,7 @@ describe('Waterfall Chart component', () => {
         data: data
       }
     });
+    spectator.tick();
 
     const spy = spyOn(spectator.component, 'onToggleAll');
     spectator.component.onExpandAll();
