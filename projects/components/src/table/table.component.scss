@@ -1,4 +1,5 @@
 @import 'mixins';
+@import 'layout';
 
 :host {
   display: flex;
@@ -21,7 +22,7 @@
 }
 
 .bottom-margin {
-  margin-bottom: 50px; // Leave space for pagination controls
+  margin-bottom: $paginator-height; // Leave space for pagination controls
 }
 
 .header-row {
