@@ -293,11 +293,21 @@ export class TableComponent
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
 
-    if (this.dataSource && changes.selections) {
+    if (!this.dataSource) {
+      this.initializeData();
+
+      return;
+    }
+
+    /*
+     * DataSource required for all changes that follow
+     */
+
+    if (changes.selections) {
       this.toggleRowSelections(this.selections);
     }
 
-    if (this.dataSource && changes.data) {
+    if (changes.data) {
       // The dataSource changes on refresh. Only reassign if already initialized (this.dataSource !== undefined)
       this.rowStateSubject.next(undefined);
       this.dataSource = this.buildDataSource();
@@ -305,8 +315,7 @@ export class TableComponent
   }
 
   public ngAfterViewInit(): void {
-    this.dataSource = this.buildDataSource();
-    this.toggleRowSelections(this.selections);
+    !this.dataSource && this.initializeData();
     this.changeDetector.detectChanges();
   }
 
@@ -315,6 +324,18 @@ export class TableComponent
     this.rowStateSubject.complete();
     this.columnStateSubject.complete();
     this.columnConfigsSubject.complete();
+  }
+
+  private initializeData(): void {
+    if (!this.data || !this.columnConfigs) {
+      this.dataSource = undefined;
+
+      return;
+    }
+
+    this.dataSource = this.buildDataSource();
+    this.rowStateSubject.next(undefined);
+    this.toggleRowSelections(this.selections);
   }
 
   public onHeaderCellClick(columnConfig: TableColumnConfig): void {
