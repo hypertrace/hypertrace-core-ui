@@ -1,3 +1,4 @@
+import { fakeAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
 import {
@@ -360,7 +361,7 @@ describe('Table component', () => {
     expect(mockSelectionsChange).toHaveBeenCalledWith([row]);
   });
 
-  test('should select only selected rows', () => {
+  test('should select only selected rows', fakeAsync(() => {
     const columns = buildColumns();
     const rows = buildData();
     const statefulRows = TableCdkRowUtil.buildInitialRowStates(rows);
@@ -378,6 +379,8 @@ describe('Table component', () => {
       }
     );
 
+    spectator.tick();
+
     expect(spectator.component.selections).toBeDefined();
     statefulRows.forEach(row => expect(row.$$state.selected).toBeTruthy());
 
@@ -388,7 +391,7 @@ describe('Table component', () => {
     spectator.detectChanges();
     expect(spyUnselectRows).toHaveBeenCalled();
     expect(firstStatefulRow.$$state.selected).toBeTruthy();
-  });
+  }));
 
   test('row should be highlighted only in non multi selection mode', () => {
     const columns = buildColumns();

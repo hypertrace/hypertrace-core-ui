@@ -293,30 +293,26 @@ export class TableComponent
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
 
+    /*
+     * All changes beyond here require a dataSource
+     */
     if (!this.dataSource) {
-      this.initializeData();
-
       return;
     }
 
-    /*
-     * DataSource required for all changes that follow
-     */
+    if (changes.data || changes.columnConfigs || changes.pageSize || changes.pageSizeOptions || changes.pageable) {
+      this.initializeData();
+    }
 
     if (changes.selections) {
       this.toggleRowSelections(this.selections);
     }
-
-    if (changes.data) {
-      // The dataSource changes on refresh. Only reassign if already initialized (this.dataSource !== undefined)
-      this.rowStateSubject.next(undefined);
-      this.dataSource = this.buildDataSource();
-    }
   }
 
   public ngAfterViewInit(): void {
-    !this.dataSource && this.initializeData();
-    this.changeDetector.detectChanges();
+    setTimeout(() => {
+      this.initializeData();
+    });
   }
 
   public ngOnDestroy(): void {
