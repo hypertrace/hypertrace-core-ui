@@ -293,6 +293,10 @@ export class TableComponent
   }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
+    if (changes.display) {
+      this.isTableFullPage = this.display === TableStyle.FullPage;
+    }
+
     if (changes.columnConfigs || changes.detailContent) {
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
