@@ -55,7 +55,7 @@ import {
     <cdk-table
       [multiTemplateDataRows]="this.isDetailType()"
       [dataSource]="this.dataSource"
-      [ngClass]="[this.display, this.pageable ? 'bottom-margin' : '']"
+      [ngClass]="[this.display, this.pageable && this.display === '${TableStyle.FullPage}' ? 'bottom-margin' : '']"
       class="table"
     >
       <!-- Columns -->
@@ -144,7 +144,7 @@ import {
     <div
       class="pagination-controls"
       *ngIf="this.pageable"
-      [style.position]="this.display === 'full-page' ? 'fixed' : 'sticky'"
+      [style.position]="this.display === '${TableStyle.FullPage}' ? 'fixed' : 'sticky'"
     >
       <htc-paginator
         *htcLetAsync="this.urlPageData$ as pageData"
