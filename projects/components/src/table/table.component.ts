@@ -55,7 +55,7 @@ import {
     <cdk-table
       [multiTemplateDataRows]="this.isDetailType()"
       [dataSource]="this.dataSource"
-      [ngClass]="[this.display, this.pageable && this.display === '${TableStyle.FullPage}' ? 'bottom-margin' : '']"
+      [ngClass]="[this.display, this.pageable && this.isTableFullPage ? 'bottom-margin' : '']"
       class="table"
     >
       <!-- Columns -->
@@ -141,11 +141,7 @@ import {
     </div>
 
     <!-- Pagination -->
-    <div
-      class="pagination-controls"
-      *ngIf="this.pageable"
-      [style.position]="this.display === '${TableStyle.FullPage}' ? 'fixed' : 'sticky'"
-    >
+    <div class="pagination-controls" *ngIf="this.pageable" [style.position]="this.isTableFullPage ? 'fixed' : 'sticky'">
       <htc-paginator
         *htcLetAsync="this.urlPageData$ as pageData"
         (pageChange)="this.onPageChange($event)"
@@ -277,6 +273,8 @@ export class TableComponent
     map(params => this.getPageData(params))
   );
 
+  public isTableFullPage: boolean;
+
   public dataSource?: TableCdkDataSource;
 
   public constructor(
@@ -284,6 +282,8 @@ export class TableComponent
     private readonly navigationService: NavigationService,
     private readonly activatedRoute: ActivatedRoute
   ) {
+    this.isTableFullPage = this.display === TableStyle.FullPage;
+
     combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
       .pipe(
         map(([queryParamMap, columns]) => this.sortDataFromUrl(queryParamMap, columns)),
