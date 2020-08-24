@@ -141,7 +141,11 @@ import {
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-controls" *ngIf="this.pageable">
+    <div
+      class="pagination-controls"
+      *ngIf="this.pageable"
+      [style.position]="this.display === 'full-page' ? 'fixed' : 'sticky'"
+    >
       <htc-paginator
         *htcLetAsync="this.urlPageData$ as pageData"
         (pageChange)="this.onPageChange($event)"
