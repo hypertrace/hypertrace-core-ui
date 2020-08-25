@@ -4,6 +4,6 @@ export const enum IconSize {
   Medium = 'medium',
   Large = 'large',
   ExtraLarge = 'extra-large',
-  ExtraExtraLarge = 'extra-extra-large',
+  Hodor = 'hodor',
   Inherit = 'inherit'
 }
