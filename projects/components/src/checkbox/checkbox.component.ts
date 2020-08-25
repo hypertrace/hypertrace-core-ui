@@ -13,7 +13,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
       [disabled]="this.disabled"
       class="htc-checkbox"
     >
-      <htc-label class="label" *ngIf="this.label" [label]="this.label"></htc-label>
+      <htc-label class="label" *ngIf="this.label !== undefined" [label]="this.label"></htc-label>
     </mat-checkbox>
   `
 })

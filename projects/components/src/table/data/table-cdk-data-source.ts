@@ -68,6 +68,19 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.loadingState.complete();
   }
 
+  public getValues(columnConfig: TableColumnConfig): unknown[] {
+    return this.cachedRows
+      .map(row => row[columnConfig.field])
+      .filter((value, index, arr) => arr.indexOf(value) === index) // Unique only
+      .sort((a, b) => {
+        if (typeof a === 'number' && typeof b === 'number') {
+          return a - b;
+        }
+
+        return String(a).localeCompare(String(b));
+      });
+  }
+
   private cacheRows(rows: StatefulTableRow[]): void {
     this.cachedRows = rows.map(TableCdkRowUtil.cloneRow);
   }

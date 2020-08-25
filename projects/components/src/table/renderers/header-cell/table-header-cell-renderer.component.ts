@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
+import { FilterAttribute } from '../../../filter-bar/filter-attribute';
 import { TableColumnConfig, TableSortDirection } from '../../table-api';
 import { TableCellAlignmentType } from '../table-cell-alignment-type';
 import { TableCellRendererConstructor } from '../table-cell-renderer';
@@ -16,11 +17,28 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
       [htcTooltip]="this.columnConfig.title"
       class="table-header-cell-renderer"
     >
-      {{ this.columnConfig.title }}
+      <htc-in-filter-button
+        class="filter-button"
+        *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton"
+        [metadata]="this.metadata"
+        [attribute]="this.columnConfig.filterAttribute"
+        [values]="this.values"
+      ></htc-in-filter-button>
+      <div class="title" [ngClass]="this.classes" (click)="this.sortChange.emit()">{{ this.columnConfig.title }}</div>
+      <htc-in-filter-button
+        class="filter-button"
+        *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
+        [metadata]="this.metadata"
+        [attribute]="this.columnConfig.filterAttribute"
+        [values]="this.values"
+      ></htc-in-filter-button>
     </div>
   `
 })
 export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
+  @Input()
+  public metadata?: FilterAttribute[];
+
   @Input()
   public columnConfig?: TableColumnConfig;
 
@@ -30,7 +48,14 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
   @Input()
   public sort?: TableSortDirection;
 
+  @Input()
+  public values?: unknown[];
+
+  @Output()
+  public readonly sortChange: EventEmitter<void> = new EventEmitter();
+
   public alignment?: TableCellAlignmentType;
+  public leftAlignFilterButton: boolean = false;
   public rendererConstructor?: TableCellRendererConstructor;
   public classes: string[] = [];
 
@@ -55,6 +80,7 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
 
     // Allow columnConfig to override default alignment for cell renderer
     this.alignment = this.columnConfig.alignment ?? this.rendererConstructor.alignment;
+    this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
     this.classes = this.buildClasses();
   }
 

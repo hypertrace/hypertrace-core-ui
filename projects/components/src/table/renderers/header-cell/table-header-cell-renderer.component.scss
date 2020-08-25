@@ -6,9 +6,10 @@
 }
 
 .table-header-cell-renderer {
-  cursor: pointer;
   @include ellipsis-overflow();
   @include overline($gray-5);
+  display: flex;
+  cursor: pointer;
 
   &:hover {
     color: $gray-9;
@@ -26,17 +27,33 @@
     text-align: right;
   }
 
-  &:after {
-    display: inline-block;
-    font-size: 9px;
+  .filter-button {
+    display: none;
   }
 
-  &.desc:after {
-    content: '▼';
+  &:hover {
+    .filter-button {
+      display: inherit;
+    }
   }
 
-  &.asc:after {
-    content: '▼';
-    transform: scale(1, -1) translateY(1.5px); // That's right! Half pixels!
+  .title {
+    min-width: 0;
+    width: 100%;
+
+    &:after {
+      display: inline-block;
+    }
+
+    &.desc:after {
+      content: '▼';
+      font-size: 9px;
+    }
+
+    &.asc:after {
+      content: '▼';
+      font-size: 10px;
+      transform: scale(1, -1) translateY(-1.5px); // That's right! Half pixels!
+    }
   }
 }

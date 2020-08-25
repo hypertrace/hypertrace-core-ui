@@ -14,7 +14,7 @@ import {
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { isEqualIgnoreFunctions, NavigationService, NumberCoercer, TypedSimpleChanges } from '@hypertrace/common';
 import { without } from 'lodash-es';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
@@ -69,10 +69,12 @@ import {
             class="header-cell"
           >
             <htc-table-header-cell-renderer
+              [metadata]="this.metadata"
               [columnConfig]="columnDef"
               [index]="index"
               [sort]="columnDef.sort"
-              (click)="this.onHeaderCellClick(columnDef)"
+              [values]="this.getAvailableValues(columnDef) | async"
+              (sortChange)="this.onHeaderCellClick(columnDef)"
             >
             </htc-table-header-cell-renderer>
           </cdk-header-cell>
@@ -582,6 +584,14 @@ export class TableComponent
           direction: sortDirection
         }
       : undefined;
+  }
+
+  public getAvailableValues(columnConfig: TableColumnConfig): Observable<ReadonlyArray<unknown>> {
+    if (this.dataSource === undefined) {
+      return of([]);
+    }
+
+    return of(this.dataSource.getValues(columnConfig));
   }
 }
 

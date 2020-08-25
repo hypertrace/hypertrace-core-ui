@@ -70,6 +70,7 @@ export * from './filter-bar/filter/builder/filter-builder';
 // Filter Button
 export * from './filter-button/filter-button.module';
 export * from './filter-button/filter-button.component';
+export * from './filter-button/in-filter-button.component';
 
 // Header
 export * from './header/application/application-header.component';
