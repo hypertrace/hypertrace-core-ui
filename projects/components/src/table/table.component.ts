@@ -282,8 +282,6 @@ export class TableComponent
     private readonly navigationService: NavigationService,
     private readonly activatedRoute: ActivatedRoute
   ) {
-    this.isTableFullPage = this.display === TableStyle.FullPage;
-
     combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
       .pipe(
         map(([queryParamMap, columns]) => this.sortDataFromUrl(queryParamMap, columns)),
