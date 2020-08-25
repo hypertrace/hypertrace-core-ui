@@ -17,21 +17,23 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
       [htcTooltip]="this.columnConfig.title"
       class="table-header-cell-renderer"
     >
-      <htc-in-filter-button
-        class="filter-button"
-        *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton"
-        [metadata]="this.metadata"
-        [attribute]="this.columnConfig.filterAttribute"
-        [values]="this.values"
-      ></htc-in-filter-button>
+      <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
+        <ng-container *ngTemplateOutlet="filterButton"></ng-container>
+      </ng-container>
       <div class="title" [ngClass]="this.classes" (click)="this.sortChange.emit()">{{ this.columnConfig.title }}</div>
-      <htc-in-filter-button
-        class="filter-button"
-        *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
-        [metadata]="this.metadata"
-        [attribute]="this.columnConfig.filterAttribute"
-        [values]="this.values"
-      ></htc-in-filter-button>
+      <ng-container *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton">
+        <ng-container *ngTemplateOutlet="filterButton"></ng-container>
+      </ng-container>
+
+      <ng-template #filterButton>
+        <htc-in-filter-button
+          class="filter-button"
+          *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
+          [metadata]="this.metadata"
+          [attribute]="this.columnConfig.filterAttribute"
+          [values]="this.values"
+        ></htc-in-filter-button>
+      </ng-template>
     </div>
   `
 })
