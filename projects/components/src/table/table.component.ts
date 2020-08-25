@@ -56,7 +56,7 @@ import {
       *ngIf="this.dataSource"
       [multiTemplateDataRows]="this.isDetailType()"
       [dataSource]="this.dataSource"
-      [ngClass]="[this.display, this.pageable ? 'bottom-margin' : '']"
+      [ngClass]="[this.display, this.pageable && this.isTableFullPage ? 'bottom-margin' : '']"
       class="table"
     >
       <!-- Columns -->
@@ -142,7 +142,7 @@ import {
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-controls" *ngIf="this.pageable">
+    <div class="pagination-controls" *ngIf="this.pageable" [style.position]="this.isTableFullPage ? 'fixed' : 'sticky'">
       <htc-paginator
         *htcLetAsync="this.urlPageData$ as pageData"
         (pageChange)="this.onPageChange($event)"
@@ -274,6 +274,8 @@ export class TableComponent
     map(params => this.getPageData(params))
   );
 
+  public isTableFullPage: boolean = false;
+
   public dataSource?: TableCdkDataSource;
 
   public constructor(
@@ -290,6 +292,10 @@ export class TableComponent
   }
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
+    if (changes.display) {
+      this.isTableFullPage = this.display === TableStyle.FullPage;
+    }
+
     if (changes.columnConfigs || changes.detailContent) {
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
