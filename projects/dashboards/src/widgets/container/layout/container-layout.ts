@@ -24,6 +24,7 @@ export abstract class ContainerLayout {
 
   @ModelProperty({
     key: 'widget-theme',
+    // tslint:disable-next-line: no-object-literal-type-assertion
     type: {
       key: ENUM_TYPE.type,
       values: [WidgetTheme.Dark, WidgetTheme.Light]
