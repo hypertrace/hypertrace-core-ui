@@ -53,6 +53,7 @@ import {
 
     <!-- Table -->
     <cdk-table
+      *ngIf="this.dataSource"
       [multiTemplateDataRows]="this.isDetailType()"
       [dataSource]="this.dataSource"
       [ngClass]="[this.display, this.pageable && this.isTableFullPage ? 'bottom-margin' : '']"
@@ -299,13 +300,6 @@ export class TableComponent
       this.columnConfigsSubject.next(this.buildColumnConfigs());
     }
 
-    /*
-     * All changes beyond here require a dataSource
-     */
-    if (!this.dataSource) {
-      return;
-    }
-
     if (changes.data || changes.columnConfigs || changes.pageSize || changes.pageSizeOptions || changes.pageable) {
       this.initializeData();
     }
@@ -317,7 +311,7 @@ export class TableComponent
 
   public ngAfterViewInit(): void {
     setTimeout(() => {
-      this.initializeData();
+      !this.dataSource && this.initializeData();
     });
   }
 
@@ -329,7 +323,7 @@ export class TableComponent
   }
 
   private initializeData(): void {
-    if (!this.data || !this.columnConfigs) {
+    if (!this.canBuildDataSource()) {
       this.dataSource = undefined;
 
       return;
@@ -338,6 +332,10 @@ export class TableComponent
     this.dataSource = this.buildDataSource();
     this.rowStateSubject.next(undefined);
     this.toggleRowSelections(this.selections);
+  }
+
+  private canBuildDataSource(): boolean {
+    return !!this.data && !!this.columnConfigs && (this.pageable ? !!this.paginator : true);
   }
 
   public onHeaderCellClick(columnConfig: TableColumnConfig): void {
@@ -415,8 +413,8 @@ export class TableComponent
   }
 
   private buildDataSource(): TableCdkDataSource | undefined {
-    if (!this.data || !this.columnConfigs) {
-      throw new Error('Undefined data or columnConfigs');
+    if (!this.canBuildDataSource()) {
+      throw new Error('Undefined data, columnConfigs, or paginator');
     }
 
     return new TableCdkDataSource(this, this, this, this, this, this.paginator);
