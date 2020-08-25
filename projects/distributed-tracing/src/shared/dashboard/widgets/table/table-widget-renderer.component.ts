@@ -3,7 +3,7 @@ import { FilterAttribute, TableColumnConfig, TableDataSource, TableRow, TableSty
 import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, mergeMap, startWith, switchMap } from 'rxjs/operators';
 import { AttributeMetadata, toFilterType } from '../../../graphql/model/metadata/attribute-metadata';
 import { MetadataService } from '../../../services/metadata/metadata.service';
@@ -78,7 +78,7 @@ export class TableWidgetRendererComponent
     return this.getScope().pipe(
       switchMap(scope => {
         if (scope === undefined) {
-          return [];
+          return of([]);
         }
 
         return this.metadataService.getFilterAttributes(scope);

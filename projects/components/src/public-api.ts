@@ -187,6 +187,7 @@ export { OverlayService } from './overlay/overlay.service';
 export * from './overlay/overlay';
 export * from './overlay/overlay.module';
 export * from './overlay/sheet/sheet';
+export * from './overlay/modal/modal';
 
 // Snippet
 export { SnippetViewerComponent } from './viewer/snippet-viewer/snippet-viewer.component';
