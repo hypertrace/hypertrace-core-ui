@@ -274,7 +274,7 @@ export class TableComponent
     map(params => this.getPageData(params))
   );
 
-  public isTableFullPage: boolean = true;
+  public isTableFullPage: boolean = false;
 
   public dataSource?: TableCdkDataSource;
 
