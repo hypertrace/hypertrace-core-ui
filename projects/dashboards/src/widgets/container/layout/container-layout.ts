@@ -27,11 +27,11 @@ export abstract class ContainerLayout {
     // tslint:disable-next-line: no-object-literal-type-assertion
     type: {
       key: ENUM_TYPE.type,
-      values: [WidgetTheme.Dark, WidgetTheme.Light]
+      values: [WidgetTheme.Gray, WidgetTheme.White]
     } as EnumPropertyTypeInstance,
     required: false
   })
-  public widgetTheme: WidgetTheme = WidgetTheme.Light;
+  public widgetTheme: WidgetTheme = WidgetTheme.White;
 
   public abstract getContainerLayoutData(children: object[]): ContainerLayoutData;
 

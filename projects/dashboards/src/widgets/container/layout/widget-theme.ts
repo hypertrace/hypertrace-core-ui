@@ -1,4 +1,4 @@
 export enum WidgetTheme {
-  Dark = 'dark',
-  Light = 'light'
+  Gray = 'gray',
+  White = 'white'
 }

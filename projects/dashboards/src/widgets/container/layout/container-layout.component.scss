@@ -12,12 +12,12 @@
   padding: 0 16px;
 }
 
-.dark {
-  background: $widget-background-dark;
+.gray {
+  background: $widget-background-gray;
   border: 1px solid $gray-1;
   box-shadow: inset 2px 2px 12px rgba(225, 228, 229, 0.24);
 }
 
-.light {
-  background-color: $widget-background-light;
+.white {
+  background-color: $widget-background-white;
 }
