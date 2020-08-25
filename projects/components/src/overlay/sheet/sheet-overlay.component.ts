@@ -5,13 +5,14 @@ import { ButtonStyle } from '../../button/button';
 import { POPOVER_DATA } from '../../popover/popover';
 import { PopoverRef } from '../../popover/popover-ref';
 import { SheetOverlayConfig, SheetSize } from './sheet';
+import {BreakpointObserver} from '@angular/cdk/layout';
 
 @Component({
   selector: 'htc-sheet-overlay',
   styleUrls: ['./sheet-overlay.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div *ngIf="this.visible" class="sheet-overlay" [ngClass]="'sheet-size-' + this.size">
+    <div *ngIf="this.visible" class="sheet-overlay" [ngClass]="this.getSheetSize()">
       <div *ngIf="this.showHeader" class="header">
         <h3 class="header-title">{{ sheetTitle }}</h3>
         <htc-button
@@ -44,11 +45,13 @@ export class SheetOverlayComponent {
   public readonly renderer: TemplateRef<unknown> | Type<unknown>;
 
   public visible: boolean = true;
+  private isSmallScreen: boolean;
 
   public constructor(
     private readonly popoverRef: PopoverRef,
     @Inject(POPOVER_DATA) sheetConfig: SheetOverlayConfig,
-    @Inject(GLOBAL_HEADER_HEIGHT) globalHeaderHeight: string
+    @Inject(GLOBAL_HEADER_HEIGHT) globalHeaderHeight: string,
+    breakpointObserver: BreakpointObserver
   ) {
     this.showHeader = sheetConfig.showHeader === true;
     this.sheetTitle = sheetConfig.title === undefined ? '' : sheetConfig.title;
@@ -56,6 +59,17 @@ export class SheetOverlayComponent {
     this.isComponentSheet = !(sheetConfig.content instanceof TemplateRef);
     this.renderer = sheetConfig.content;
     this.popoverRef.height(`calc(100vh - ${globalHeaderHeight})`);
+
+    this.isSmallScreen = breakpointObserver.isMatched('(max-width: 1200px)');
+  }
+
+  public getSheetSize(): string {
+    if (this.isSmallScreen) {
+      return 'sheet-size-' + SheetSize.Small;
+
+    }
+
+    return 'sheet-size-' + this.size;
   }
 
   public close(): void {
