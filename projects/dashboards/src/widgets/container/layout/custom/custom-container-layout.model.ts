@@ -34,6 +34,7 @@ export class CustomContainerLayoutModel extends ContainerLayout {
       columns: this.getColumnStyles(),
       gap: `${this.gridGap}`,
       enableStyle: this.enableStyle,
+      widgetTheme: this.widgetTheme,
       children: this.getChildLayoutData(children)
     };
   }

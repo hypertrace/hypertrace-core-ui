@@ -12,7 +12,7 @@ export const CONTAINER_LAYOUT = new InjectionToken<ContainerLayoutData>('CONTAIN
       <div
         *ngFor="let child of layout.children; let index = index"
         [gdArea]="child.areaSpan"
-        [ngClass]="{ 'container-child': layout.enableStyle }"
+        [ngClass]="[layout.enableStyle ? 'container-child' : '', layout.widgetTheme]"
       >
         <ng-container [hdaDashboardModel]="child.model"> </ng-container>
       </div>

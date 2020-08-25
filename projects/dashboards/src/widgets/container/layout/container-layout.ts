@@ -1,6 +1,8 @@
 import { ComponentFactoryResolver, Injector, Type, ViewContainerRef } from '@angular/core';
 import { BOOLEAN_PROPERTY, ModelProperty, STRING_PROPERTY } from '@hypertrace/hyperdash';
+import { EnumPropertyTypeInstance, ENUM_TYPE } from '../../../properties/enums/enum-property-type';
 import { ContainerLayoutComponent, CONTAINER_LAYOUT } from './container-layout.component';
+import { WidgetTheme } from './widget-theme';
 
 // Make abstract so it exists at runtime and can be used by the dashboard system
 export abstract class ContainerLayout {
@@ -19,6 +21,16 @@ export abstract class ContainerLayout {
     required: false
   })
   public gridGap: string = '16px';
+
+  @ModelProperty({
+    key: 'widget-theme',
+    type: {
+      key: ENUM_TYPE.type,
+      values: [WidgetTheme.Dark, WidgetTheme.Light]
+    } as EnumPropertyTypeInstance,
+    required: false
+  })
+  public widgetTheme: WidgetTheme = WidgetTheme.Light;
 
   public abstract getContainerLayoutData(children: object[]): ContainerLayoutData;
 
@@ -59,5 +71,6 @@ export interface ContainerLayoutData {
   rows?: string;
   columns: string;
   enableStyle: boolean;
+  widgetTheme: WidgetTheme;
   children: ContainerLayoutChildData[];
 }

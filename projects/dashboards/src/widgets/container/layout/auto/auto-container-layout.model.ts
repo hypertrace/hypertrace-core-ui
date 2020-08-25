@@ -41,6 +41,7 @@ export class AutoContainerLayoutModel extends ContainerLayout {
       columns: `repeat(${gridDimension[1]}, minmax(${this.minColumnWidth}px, 1fr))`,
       gap: `${this.gridGap}`,
       enableStyle: this.enableStyle,
+      widgetTheme: this.widgetTheme,
       children: children.map(child => ({ model: child, areaSpan: '' }))
     };
   }
