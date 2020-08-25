@@ -42,8 +42,7 @@ describe('Table component', () => {
       mockProvider(ActivatedRoute),
       mockProvider(ActivatedRoute, {
         queryParamMap: EMPTY
-      }),
-      mockProvider(NavigationService)
+      })
     ],
     declarations: [MockComponent(PaginatorComponent)],
     template: `

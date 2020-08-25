@@ -1,5 +1,5 @@
 import { DataSource } from '@angular/cdk/collections';
-import { forkJoinSafeEmpty, isEqualIgnoreFunctions, RequireBy } from '@hypertrace/common';
+import { forkJoinSafeEmpty, isEqualIgnoreFunctions, RequireBy, sortUnknown } from '@hypertrace/common';
 import { combineLatest, NEVER, Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, debounceTime, map, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
 import { PageEvent } from '../../paginator/page.event';
@@ -69,13 +69,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   }
 
   public getValues(columnConfig: TableColumnConfig): unknown[] {
-    return Array.from(new Set(this.cachedRows.map(row => row[columnConfig.field]))).sort((a, b) => {
-      if (typeof a === 'number' && typeof b === 'number') {
-        return a - b;
-      }
-
-      return String(a).localeCompare(String(b));
-    });
+    return [...new Set(this.cachedRows.map(row => row[columnConfig.field]))].sort(sortUnknown);
   }
 
   private cacheRows(rows: StatefulTableRow[]): void {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { IconType } from '@hypertrace/assets-library';
-import { TypedSimpleChanges } from '@hypertrace/common';
+import { sortUnknown, TypedSimpleChanges } from '@hypertrace/common';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { UserFilterOperator } from '../filter-bar/filter/filter-api';
 import { IconSize } from '../icon/icon-size';
@@ -82,7 +82,7 @@ export class InFilterButtonComponent<T = unknown> implements OnChanges {
       return;
     }
 
-    const filter = this.filterButtonService.buildFilter(this.attribute, Array.from(this.selected.values()));
+    const filter = this.filterButtonService.buildFilter(this.attribute, [...this.selected.values()].sort(sortUnknown));
 
     if (this.selected.size > 0) {
       this.filterButtonService.applyUrlFilter(this.metadata, filter);
