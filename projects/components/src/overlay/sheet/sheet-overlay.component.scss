@@ -17,6 +17,10 @@
   border-radius: 16px 0 0 16px;
   z-index: 1;
 
+  &.sheet-size-responsive {
+    width: 100%;
+  }
+
   &.sheet-size-small {
     width: 320px;
   }
@@ -37,6 +41,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+
     padding-bottom: 20px;
 
     .header-title {
