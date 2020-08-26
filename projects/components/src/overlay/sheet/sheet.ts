@@ -9,5 +9,5 @@ export const enum SheetSize {
   Medium = 'medium',
   Large = 'large',
   ExtraLarge = 'extra-large',
-  Responsive = 'responsive'
+  ResponsiveExtraLarge = 'responsive-extra-large'
 }
