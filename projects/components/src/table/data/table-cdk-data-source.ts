@@ -29,10 +29,13 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   private static readonly FILTER_DEBOUNCE_MS: number = 200;
 
   private cachedRows: StatefulTableRow[] = [];
+  private readonly cachedValues: Map<string, Set<unknown>> = new Map<string, Set<unknown>>();
   private lastRowChange: StatefulTableRow | undefined;
   private readonly rowsChange$: Subject<StatefulTableRow[]> = new Subject<StatefulTableRow[]>();
-  public loadingState: Subject<Observable<StatefulTableRow[]>> = new Subject<Observable<StatefulTableRow[]>>();
-  public loadingStateChange$: Observable<Observable<StatefulTableRow[]>> = this.loadingState.asObservable();
+  private readonly loadingStateSubject: Subject<Observable<StatefulTableRow[]>> = new Subject<
+    Observable<StatefulTableRow[]>
+  >();
+  public loadingStateChange$: Observable<Observable<StatefulTableRow[]>> = this.loadingStateSubject.asObservable();
 
   public constructor(
     private readonly tableDataSourceProvider: TableDataSourceProvider,
@@ -50,7 +53,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   public connect(): Observable<ReadonlyArray<TableRow>> {
     this.buildChangeObservable()
       .pipe(
-        tap(() => this.loadingState.next(NEVER)),
+        tap(() => this.loadingStateSubject.next(NEVER)),
         mergeMap(([columnConfigs, pageEvent, filter, changedColumn, changedRow]) =>
           this.buildDataObservable(columnConfigs, pageEvent, filter, changedColumn, changedRow)
         )
@@ -59,21 +62,43 @@ export class TableCdkDataSource implements DataSource<TableRow> {
 
     return this.rowsChange$.pipe(
       tap(rows => this.cacheRows(rows)),
-      tap(rows => this.loadingState.next(of(rows)))
+      tap(rows => this.cacheValues(rows)),
+      tap(rows => this.loadingStateSubject.next(of(rows)))
     );
   }
 
   public disconnect(): void {
     this.rowsChange$.complete();
-    this.loadingState.complete();
+    this.loadingStateSubject.complete();
   }
 
   public getValues(columnConfig: TableColumnConfig): unknown[] {
-    return [...new Set(this.cachedRows.map(row => row[columnConfig.field]))].sort(sortUnknown);
+    return this.cachedValues.has(columnConfig.field)
+      ? [...this.cachedValues.get(columnConfig.field)!].sort(sortUnknown)
+      : [];
   }
 
   private cacheRows(rows: StatefulTableRow[]): void {
     this.cachedRows = rows.map(TableCdkRowUtil.cloneRow);
+  }
+
+  private cacheValues(rows: StatefulTableRow[]): void {
+    this.cachedValues.clear();
+
+    rows.forEach(row => {
+      Object.entries(row).forEach((keyValueTuple: [string, unknown]) => {
+        const key = keyValueTuple[0];
+        const value = keyValueTuple[1];
+
+        if (!this.cachedValues.has(key)) {
+          this.cachedValues.set(key, new Set());
+        }
+
+        const set = this.cachedValues.get(key);
+
+        set ? set.add(value) : this.cachedValues.set(key, new Set([value]));
+      });
+    });
   }
 
   /****************************
@@ -224,7 +249,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
           : rows
       ),
       catchError(error => {
-        this.loadingState.next(throwError(error));
+        this.loadingStateSubject.next(throwError(error));
 
         return [];
       })

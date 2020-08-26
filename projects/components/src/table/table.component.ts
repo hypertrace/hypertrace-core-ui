@@ -73,7 +73,7 @@ import {
               [columnConfig]="columnDef"
               [index]="index"
               [sort]="columnDef.sort"
-              [values]="this.getAvailableValues(columnDef)"
+              [values]="this.availableValues?.get(columnDef.field)"
               (sortChange)="this.onHeaderCellClick(columnDef)"
             >
             </htc-table-header-cell-renderer>
@@ -279,6 +279,7 @@ export class TableComponent
   public isTableFullPage: boolean = false;
 
   public dataSource?: TableCdkDataSource;
+  public availableValues?: Map<string, unknown[]>;
 
   public constructor(
     private readonly changeDetector: ChangeDetectorRef,
@@ -332,6 +333,9 @@ export class TableComponent
     }
 
     this.dataSource = this.buildDataSource();
+    this.dataSource?.loadingStateChange$.subscribe(() => {
+      this.availableValues = this.getAvailableValues();
+    });
     this.rowStateSubject.next(undefined);
     this.toggleRowSelections(this.selections);
   }
@@ -420,6 +424,20 @@ export class TableComponent
     }
 
     return new TableCdkDataSource(this, this, this, this, this, this.paginator);
+  }
+
+  public getAvailableValues(): Map<string, unknown[]> {
+    const valueMap = new Map<string, unknown[]>();
+
+    if (this.dataSource === undefined) {
+      return valueMap;
+    }
+
+    this.columnConfigs?.forEach(columnConfig => {
+      valueMap.set(columnConfig.field, this.dataSource!.getValues(columnConfig));
+    });
+
+    return valueMap;
   }
 
   public applyFilter(value: string): void {
@@ -584,14 +602,6 @@ export class TableComponent
           direction: sortDirection
         }
       : undefined;
-  }
-
-  public getAvailableValues(columnConfig: TableColumnConfig): ReadonlyArray<unknown> {
-    if (this.dataSource === undefined) {
-      return [];
-    }
-
-    return this.dataSource.getValues(columnConfig);
   }
 }
 
