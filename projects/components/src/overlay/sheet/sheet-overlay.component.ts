@@ -58,7 +58,7 @@ export class SheetOverlayComponent {
     this.popoverRef.height(`calc(100vh - ${globalHeaderHeight})`);
 
     if (this.size === SheetSize.Responsive) {
-      this.popoverRef.width('50%');
+      this.popoverRef.width('60%');
     }
   }
 
