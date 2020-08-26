@@ -46,15 +46,7 @@ export class FilterButtonService {
   }
 
   public removeUrlFilter(attributes: FilterAttribute[], filter: Filter): void {
-    const filters = this.getUrlFilters(attributes);
-
-    const foundIndex = filters.findIndex(f => filter.field === f.field);
-
-    if (foundIndex !== -1) {
-      filters.splice(foundIndex, 1);
-    }
-
-    this.setUrlFilters([...filters]);
+    this.setUrlFilters([...this.getUrlFilters(attributes).filter(f => filter.field === f.field)]);
   }
 
   private setUrlFilters(filters: Filter[]): void {

@@ -29,7 +29,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   private static readonly FILTER_DEBOUNCE_MS: number = 200;
 
   private cachedRows: StatefulTableRow[] = [];
-  private readonly cachedValues: Map<string, Set<unknown>> = new Map<string, Set<unknown>>();
+  private readonly cachedValues: Map<string, unknown[]> = new Map<string, unknown[]>();
   private lastRowChange: StatefulTableRow | undefined;
   private readonly rowsChange$: Subject<StatefulTableRow[]> = new Subject<StatefulTableRow[]>();
   private readonly loadingStateSubject: Subject<Observable<StatefulTableRow[]>> = new Subject<
@@ -73,9 +73,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   }
 
   public getValues(columnConfig: TableColumnConfig): unknown[] {
-    return this.cachedValues.has(columnConfig.field)
-      ? [...this.cachedValues.get(columnConfig.field)!].sort(sortUnknown)
-      : [];
+    return this.cachedValues.has(columnConfig.field) ? this.cachedValues.get(columnConfig.field)! : [];
   }
 
   private cacheRows(rows: StatefulTableRow[]): void {
@@ -83,21 +81,26 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   }
 
   private cacheValues(rows: StatefulTableRow[]): void {
-    this.cachedValues.clear();
+    const valueMap: Map<string, Set<unknown>> = new Map<string, Set<unknown>>();
 
+    // Iterate a row at a time adding each entry to the map. Use a set to store values so we have only unique.
     rows.forEach(row => {
       Object.entries(row).forEach((keyValueTuple: [string, unknown]) => {
         const key = keyValueTuple[0];
         const value = keyValueTuple[1];
 
-        if (!this.cachedValues.has(key)) {
-          this.cachedValues.set(key, new Set());
+        if (valueMap.has(key)) {
+          valueMap.get(key)?.add(value);
+        } else {
+          valueMap.set(key, new Set([value]));
         }
-
-        const set = this.cachedValues.get(key);
-
-        set ? set.add(value) : this.cachedValues.set(key, new Set([value]));
       });
+    });
+
+    // All unique values found, so now sort and transfer to cached storage.
+    this.cachedValues.clear();
+    valueMap.forEach((set, key) => {
+      this.cachedValues.set(key, [...set.values()].sort(sortUnknown));
     });
   }
 
