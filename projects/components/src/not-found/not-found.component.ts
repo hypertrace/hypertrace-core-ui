@@ -8,9 +8,7 @@ import { ButtonStyle } from '../button/button';
   styleUrls: ['./not-found.component.scss'],
   template: `
     <div class="not-found-container fill-container">
-      <div class="not-found-message">
-        The requested page is not available
-      </div>
+      <div class="not-found-message">The requested page is not available</div>
       <htc-button
         class="navigate-home-button"
         label="Take me home"
