@@ -112,10 +112,11 @@ describe('Filter service', () => {
     expect(spectator.service.lookupAvailableMatchingFilters(attributes, 'calls')).toEqual([
       numberBuilder.buildFilter(attributes[0], UserFilterOperator.Equals),
       numberBuilder.buildFilter(attributes[0], UserFilterOperator.NotEquals),
+      numberBuilder.buildFilter(attributes[0], UserFilterOperator.LessThan),
+      numberBuilder.buildFilter(attributes[0], UserFilterOperator.LessThanOrEqualTo),
       numberBuilder.buildFilter(attributes[0], UserFilterOperator.GreaterThan),
       numberBuilder.buildFilter(attributes[0], UserFilterOperator.GreaterThanOrEqualTo),
-      numberBuilder.buildFilter(attributes[0], UserFilterOperator.LessThan),
-      numberBuilder.buildFilter(attributes[0], UserFilterOperator.LessThanOrEqualTo)
+      numberBuilder.buildFilter(attributes[0], UserFilterOperator.In)
     ]);
   });
 });

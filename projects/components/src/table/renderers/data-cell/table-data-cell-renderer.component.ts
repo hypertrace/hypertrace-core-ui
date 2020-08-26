@@ -21,25 +21,25 @@ import { TableCellRendererService } from '../table-cell-renderer.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="table-data-cell-renderer" [class.selected]="this.popoverOpen">
-      <htc-filter-button
-        class="filter-button"
-        *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton"
-        [metadata]="this.metadata"
-        [attribute]="this.columnConfig?.filterAttribute"
-        [value]="this.parseValue()"
-        (popoverOpen)="this.popoverOpen = $event"
-      ></htc-filter-button>
+      <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
+        <ng-container *ngTemplateOutlet="filterButton"></ng-container>
+      </ng-container>
       <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick()">
         <ng-container #cellRenderer></ng-container>
       </div>
-      <htc-filter-button
-        class="filter-button"
-        *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
-        [metadata]="this.metadata"
-        [attribute]="this.columnConfig?.filterAttribute"
-        [value]="this.parseValue()"
-        (popoverOpen)="this.popoverOpen = $event"
-      ></htc-filter-button>
+      <ng-container *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton">
+        <ng-container *ngTemplateOutlet="filterButton"></ng-container>
+      </ng-container>
+
+      <ng-template #filterButton>
+        <htc-filter-button
+          class="filter-button"
+          [metadata]="this.metadata"
+          [attribute]="this.columnConfig?.filterAttribute"
+          [value]="this.parseValue()"
+          (popoverOpen)="this.popoverOpen = $event"
+        ></htc-filter-button>
+      </ng-template>
     </div>
   `
 })
