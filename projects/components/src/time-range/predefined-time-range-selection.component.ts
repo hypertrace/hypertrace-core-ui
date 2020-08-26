@@ -8,9 +8,7 @@ import { PredefinedTimeDurationService } from './predefined-time-duration.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="predefined-time-range-selection">
-      <div class="popover-item" (click)="this.onSelectCustom()">
-        Custom
-      </div>
+      <div class="popover-item" (click)="this.onSelectCustom()">Custom</div>
       <div class="divider"></div>
       <div class="popover-item" *ngFor="let time of this.predefinedTimeDurations" (click)="this.onSelect(time)">
         {{ time.toRelativeString() }}

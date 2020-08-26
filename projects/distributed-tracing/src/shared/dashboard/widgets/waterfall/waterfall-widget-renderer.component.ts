@@ -113,7 +113,7 @@ export class WaterfallWidgetRendererComponent extends WidgetRenderer<WaterfallWi
 
     this.popoverRef = this.overlayService.createSheet({
       showHeader: false,
-      size: SheetSize.Large,
+      size: SheetSize.ResponsiveExtraLarge,
       content: this.sidebarDetails
     });
   }

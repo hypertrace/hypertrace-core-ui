@@ -81,6 +81,12 @@ export class PopoverRef {
     });
   }
 
+  public width(width: string): void {
+    this.overlayRef.updateSize({
+      width: width
+    });
+  }
+
   public closeOnBackdropClick(): () => void {
     this.assertHasBackdrop();
     const subscription = this.backdropClick$.pipe(takeUntil(this.closed$)).subscribe(() => this.close());
