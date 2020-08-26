@@ -56,6 +56,10 @@ export class SheetOverlayComponent {
     this.isComponentSheet = !(sheetConfig.content instanceof TemplateRef);
     this.renderer = sheetConfig.content;
     this.popoverRef.height(`calc(100vh - ${globalHeaderHeight})`);
+
+    if (this.size === SheetSize.ResponsiveExtraLarge) {
+      this.popoverRef.width('60%');
+    }
   }
 
   public close(): void {

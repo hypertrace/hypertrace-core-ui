@@ -23,7 +23,7 @@ export class DetailSheetInteractionHandlerModel implements InteractionHandler {
     // tslint:disable-next-line: no-object-literal-type-assertion
     type: {
       key: ENUM_TYPE.type,
-      values: [SheetSize.Small, SheetSize.Medium, SheetSize.Large, SheetSize.ExtraLarge]
+      values: [SheetSize.Small, SheetSize.Medium, SheetSize.Large, SheetSize.ExtraLarge, SheetSize.ResponsiveExtraLarge]
     } as EnumPropertyTypeInstance
   })
   public sheetSize: SheetSize = SheetSize.Large;
