@@ -12,3 +12,4 @@ Dockerfile
 nginx/
 .*
 browserslist
+LICENSE.txt
