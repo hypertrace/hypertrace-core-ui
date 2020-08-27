@@ -17,7 +17,7 @@ import { isNil } from 'lodash-es';
 import { Observable, of, Subject } from 'rxjs';
 import { delay, finalize, switchMap } from 'rxjs/operators';
 import { ButtonSize, ButtonStyle } from '../button/button';
-import { PopoverPositionType, PopoverRelativePositionLocation } from '../popover/popover';
+import { PopoverBackdrop, PopoverPositionType, PopoverRelativePositionLocation } from '../popover/popover';
 import { PopoverRef } from '../popover/popover-ref';
 import { PopoverService } from '../popover/popover.service';
 
@@ -117,7 +117,7 @@ export class CopyToClipboardComponent implements OnInit, OnDestroy {
         locationPreferences: [PopoverRelativePositionLocation.AboveCentered]
       },
       componentOrTemplate: this.notificationTemplate,
-      backdrop: true
+      backdrop: PopoverBackdrop.Transparent
     });
 
     return of(popoverRef).pipe(

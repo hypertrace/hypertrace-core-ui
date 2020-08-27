@@ -5,7 +5,13 @@ export interface PopoverOptions<TData = never> {
   data?: TData;
   position: PopoverPosition;
   parentInjector?: Injector;
-  backdrop?: boolean;
+  backdrop?: PopoverBackdrop;
+}
+
+export const enum PopoverBackdrop {
+  Transparent = 'transparent',
+  Opaque = 'opaque',
+  None = 'none'
 }
 
 export interface PopoverMousePosition {

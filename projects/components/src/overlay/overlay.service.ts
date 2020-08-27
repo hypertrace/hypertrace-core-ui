@@ -1,5 +1,5 @@
 import { Injectable, Injector, OnDestroy } from '@angular/core';
-import { PopoverFixedPositionLocation, PopoverPositionType } from '../popover/popover';
+import { PopoverBackdrop, PopoverFixedPositionLocation, PopoverPositionType } from '../popover/popover';
 import { PopoverRef } from '../popover/popover-ref';
 import { PopoverService } from '../popover/popover.service';
 import { SheetOverlayConfig } from './sheet/sheet';
@@ -50,7 +50,8 @@ export class OverlayService implements OnDestroy {
         type: PopoverPositionType.Fixed,
         location: PopoverFixedPositionLocation.Centered
       },
-      data: config
+      data: config,
+      backdrop: PopoverBackdrop.Opaque
     });
 
     popover.closeOnNavigation();

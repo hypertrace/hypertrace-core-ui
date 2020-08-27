@@ -7,7 +7,7 @@ import {
   PopoverContainerData,
   POPOVER_CONTAINER_DATA
 } from './container/popover-container.component';
-import { PopoverOptions, POPOVER_DATA } from './popover';
+import { PopoverBackdrop, PopoverOptions, POPOVER_DATA } from './popover';
 import { PopoverPositionBuilder } from './popover-position-builder';
 import { PopoverRef } from './popover-ref';
 
@@ -24,8 +24,8 @@ export class PopoverService {
     const initialPositionStrategy = this.positionBuilder.buildPositionStrategy(options.position);
     const overlayRef = this.overlay.create({
       positionStrategy: initialPositionStrategy,
-      hasBackdrop: options.backdrop,
-      backdropClass: 'cdk-overlay-transparent-backdrop'
+      hasBackdrop: this.hasBackdrop(options.backdrop),
+      backdropClass: this.getBackdropClass(options.backdrop)
     });
 
     const popoverRef = new PopoverRef(overlayRef, this.positionBuilder, this.navigationService);
@@ -77,5 +77,21 @@ export class PopoverService {
         [PopoverRef, popoverRef]
       ])
     );
+  }
+
+  private hasBackdrop(backdrop?: PopoverBackdrop): boolean {
+    return backdrop === PopoverBackdrop.Opaque || backdrop === PopoverBackdrop.Transparent;
+  }
+
+  private getBackdropClass(backdrop?: PopoverBackdrop): string {
+    switch (backdrop) {
+      case PopoverBackdrop.Transparent:
+        return 'cdk-overlay-transparent-backdrop';
+      case PopoverBackdrop.Opaque:
+        return 'modal-overlay-backdrop';
+      case PopoverBackdrop.None:
+      default:
+        return '';
+    }
   }
 }

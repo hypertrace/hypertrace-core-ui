@@ -10,7 +10,7 @@ import {
   Output
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PopoverPositionType, PopoverRelativePositionLocation } from './popover';
+import { PopoverBackdrop, PopoverPositionType, PopoverRelativePositionLocation } from './popover';
 import { PopoverContentComponent } from './popover-content.component';
 import { PopoverRef } from './popover-ref';
 import { PopoverTriggerComponent } from './popover-trigger.component';
@@ -72,7 +72,7 @@ export class PopoverComponent implements OnDestroy {
         locationPreferences: this.locationPreferences
       },
       componentOrTemplate: this.content.content,
-      backdrop: true
+      backdrop: PopoverBackdrop.Transparent
     });
 
     // Closing can happen internal to the Popover for things like closeOnBackdropClick. Let the consumer know.
