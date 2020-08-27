@@ -4,7 +4,7 @@ import { NavigationService } from '@hypertrace/common';
 import { recordObservable, runFakeRxjs } from '@hypertrace/test-utils';
 import { createHostFactory, mockProvider, SpectatorHost } from '@ngneat/spectator/jest';
 import { Subject } from 'rxjs';
-import { PopoverPositionType, PopoverRelativePositionLocation } from './popover';
+import { PopoverBackdrop, PopoverPositionType, PopoverRelativePositionLocation } from './popover';
 import { PopoverModule } from './popover.module';
 import { PopoverService } from './popover.service';
 
@@ -34,7 +34,17 @@ describe('Popover service', () => {
   });
 
   const popoverContent = () => spectator.query('popover-test-content', { root: true })!;
-  const popoverBackdrop = () => spectator.query('.cdk-overlay-transparent-backdrop', { root: true })!;
+  const popoverBackdrop = (backdrop: PopoverBackdrop) => {
+    switch (backdrop) {
+      case PopoverBackdrop.Transparent:
+        return spectator.query('.cdk-overlay-transparent-backdrop', { root: true })!;
+      case PopoverBackdrop.Opaque:
+        return spectator.query('.modal-overlay-backdrop', { root: true })!;
+      case PopoverBackdrop.None:
+      default:
+        return undefined;
+    }
+  };
 
   beforeEach(() => {
     spectator = popoverHostFactory(`<popover-parent></popover-parent>`);
@@ -52,6 +62,42 @@ describe('Popover service', () => {
     tick(); // CDK overlay is async
     spectator.detectChanges();
     expect(popoverContent()).toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Opaque)).not.toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Transparent)).not.toExist();
+  }));
+
+  test('can open a basic popover with transparent backdrop', fakeAsync(() => {
+    service.drawPopover({
+      position: {
+        type: PopoverPositionType.Relative,
+        origin: spectator.debugElement,
+        locationPreferences: [PopoverRelativePositionLocation.InsideTopLeft]
+      },
+      componentOrTemplate: testContent,
+      backdrop: PopoverBackdrop.Transparent
+    });
+    tick(); // CDK overlay is async
+    spectator.detectChanges();
+    expect(popoverContent()).toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Transparent)).toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Opaque)).not.toExist();
+  }));
+
+  test('can open a basic popover with opaque backdrop', fakeAsync(() => {
+    service.drawPopover({
+      position: {
+        type: PopoverPositionType.Relative,
+        origin: spectator.debugElement,
+        locationPreferences: [PopoverRelativePositionLocation.InsideTopLeft]
+      },
+      componentOrTemplate: testContent,
+      backdrop: PopoverBackdrop.Opaque
+    });
+    tick(); // CDK overlay is async
+    spectator.detectChanges();
+    expect(popoverContent()).toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Opaque)).toExist();
+    expect(popoverBackdrop(PopoverBackdrop.Transparent)).not.toExist();
   }));
 
   test('can close a popover on navigation', fakeAsync(() => {
@@ -61,7 +107,7 @@ describe('Popover service', () => {
         origin: spectator.debugElement,
         locationPreferences: [PopoverRelativePositionLocation.InsideTopLeft]
       },
-      backdrop: true,
+      backdrop: PopoverBackdrop.Transparent,
       componentOrTemplate: testContent
     });
     popover.show();
@@ -91,7 +137,7 @@ describe('Popover service', () => {
         origin: spectator.debugElement,
         locationPreferences: [PopoverRelativePositionLocation.InsideTopLeft]
       },
-      backdrop: true,
+      backdrop: PopoverBackdrop.Transparent,
       componentOrTemplate: testContent
     });
     tick(); // CDK overlay is async
@@ -102,7 +148,7 @@ describe('Popover service', () => {
       expectObservable(popover.closed$).toBe('(x|)', { x: undefined });
       expectObservable(recordObservable(popover.hidden$)).toBe('|'); // Record hidden/shown for test, since they're hot
       expectObservable(recordObservable(popover.shown$)).toBe('|');
-      spectator.click(popoverBackdrop());
+      spectator.click(popoverBackdrop(PopoverBackdrop.Transparent));
     });
 
     expect(popover.closed).toBe(true);
@@ -117,7 +163,7 @@ describe('Popover service', () => {
         origin: spectator.debugElement,
         locationPreferences: [PopoverRelativePositionLocation.InsideTopLeft]
       },
-      backdrop: true,
+      backdrop: PopoverBackdrop.Transparent,
       componentOrTemplate: testContent
     });
     tick(); // CDK overlay is async
@@ -128,7 +174,7 @@ describe('Popover service', () => {
       expectObservable(popover.closed$).toBe(''); // Still open, no events
       expectObservable(recordObservable(popover.hidden$)).toBe('x', { x: undefined });
       expectObservable(recordObservable(popover.shown$)).toBe('');
-      spectator.click(popoverBackdrop());
+      spectator.click(popoverBackdrop(PopoverBackdrop.Transparent));
     });
 
     expect(popoverContent()).not.toExist(); // Not visible
@@ -153,7 +199,7 @@ describe('Popover service', () => {
       expectObservable(popover.closed$).toBe(''); // Still open, no events
       expectObservable(recordObservable(popover.hidden$)).toBe('');
       expectObservable(recordObservable(popover.shown$)).toBe('');
-      spectator.click(popoverBackdrop());
+      spectator.click(popoverBackdrop(PopoverBackdrop.Transparent));
     });
 
     popover.close();
