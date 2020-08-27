@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular/core';
-import { StatefulTableRow } from '../../table-api';
+import { StatefulTableRow } from '../../../table-api';
 
 @Component({
   selector: 'htc-table-expanded-detail-row-cell-renderer',

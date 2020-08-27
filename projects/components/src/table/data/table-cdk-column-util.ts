@@ -1,4 +1,4 @@
-import { StandardTableCellRendererType } from '../renderers/standard-table-cell-renderer-type';
+import { StandardTableCellRendererType } from '../cells/types/standard-table-cell-renderer-type';
 import { TableColumnConfig } from '../table-api';
 
 // tslint:disable-next-line:no-namespace

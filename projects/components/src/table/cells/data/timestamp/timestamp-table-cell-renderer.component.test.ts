@@ -1,15 +1,15 @@
 import { FormattingModule } from '@hypertrace/common';
-import { byText, createComponentFactory } from '@ngneat/spectator/jest';
+import { createComponentFactory } from '@ngneat/spectator/jest';
 import { TableColumnConfig, TableRow } from '../../../table-api';
 import {
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
   TABLE_CELL_RENDERER_ROW_DATA
-} from '../../table-cell-renderer';
-import { NumericTableCellRendererComponent } from './numeric-table-cell-renderer.component';
+} from '../../table-cell-injection-tokens';
+import { TimestampTableCellRendererComponent } from './timestamp-table-cell-renderer.component';
 
-describe('Numeric table cell renderer component', () => {
+describe('Timestamp table cell renderer component', () => {
   const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
     provide: TABLE_CELL_RENDERER_COLUMN_CONFIG,
     useValue: column
@@ -31,7 +31,7 @@ describe('Numeric table cell renderer component', () => {
   });
 
   const buildComponent = createComponentFactory({
-    component: NumericTableCellRendererComponent,
+    component: TimestampTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
       tableCellRendererColumnProvider({ field: 'test' }),
@@ -42,41 +42,25 @@ describe('Numeric table cell renderer component', () => {
     shallow: true
   });
 
-  test('should render a plain number', () => {
+  test('renders a timestamp with format y-M-d hh:mm:ss a', () => {
     const spectator = buildComponent({
-      providers: [tableCellDataRendererCellDataProvider(36)]
+      providers: [tableCellDataRendererCellDataProvider(new Date('2019-10-25T18:35:25.428Z').getTime())]
     });
 
-    expect(spectator.element).toHaveText('36');
+    expect(spectator.element).toHaveText('2019-10-25 06:35:25 PM');
   });
 
-  test('should render a missing number', () => {
+  test('renders a date with format y-M-d hh:mm:ss a', () => {
+    const spectator = buildComponent({
+      providers: [tableCellDataRendererCellDataProvider(new Date('2019-10-25T18:35:25.428Z'))]
+    });
+
+    expect(spectator.element).toHaveText('2019-10-25 06:35:25 PM');
+  });
+
+  test('renders a missing date', () => {
     const spectator = buildComponent();
 
     expect(spectator.element).toHaveText('-');
-  });
-
-  test('should add clickable class for clickable columns', () => {
-    const spectator = buildComponent({
-      providers: [
-        tableCellRendererColumnProvider({
-          field: 'test',
-          onClick: () => {
-            /* NOOP */
-          }
-        }),
-        tableCellDataRendererCellDataProvider(42)
-      ]
-    });
-
-    expect(spectator.query(byText('42'))).toHaveClass('clickable');
-  });
-
-  test('should not add clickable class for columns without a click handler', () => {
-    const spectator = buildComponent({
-      providers: [tableCellDataRendererCellDataProvider(22)]
-    });
-
-    expect(spectator.query(byText('22'))).not.toHaveClass('clickable');
   });
 });

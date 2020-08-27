@@ -1,14 +1,14 @@
 import { LoggerService } from '@hypertrace/common';
 import { createServiceFactory, mockProvider } from '@ngneat/spectator/jest';
-import { IconTableCellRendererComponent } from './data-cell/icon/icon-table-cell-renderer.component';
-import { NumericTableCellRendererComponent } from './data-cell/numeric/numeric-table-cell-renderer.component';
-import { TextTableCellRendererComponent } from './data-cell/text/text-table-cell-renderer.component';
-import { TimestampTableCellRendererComponent } from './data-cell/timestamp/timestamp-table-cell-renderer.component';
-import { TableCellRendererService } from './table-cell-renderer.service';
+import { IconTableCellRendererComponent } from './data/icon/icon-table-cell-renderer.component';
+import { NumericTableCellRendererComponent } from './data/numeric/numeric-table-cell-renderer.component';
+import { TextTableCellRendererComponent } from './data/text/text-table-cell-renderer.component';
+import { TimestampTableCellRendererComponent } from './data/timestamp/timestamp-table-cell-renderer.component';
+import { TableCellRendererLookupService } from './table-cell-renderer-lookup.service';
 
 describe('Table cell renderer service', () => {
   const createService = createServiceFactory({
-    service: TableCellRendererService,
+    service: TableCellRendererLookupService,
     providers: [mockProvider(LoggerService)]
   });
 
