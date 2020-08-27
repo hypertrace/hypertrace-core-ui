@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { DateFormatMode, DateFormatOptions } from '@hypertrace/common';
 import { TableColumnConfig, TableRow } from '../../../table-api';
-import { StandardTableCellRendererType } from '../../standard-table-cell-renderer-type';
-import { TableCellAlignmentType } from '../../table-cell-alignment-type';
 import {
-  TableCellRenderer,
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
   TABLE_CELL_RENDERER_ROW_DATA
-} from '../../table-cell-renderer';
+} from '../../table-cell-injection-tokens';
+import { TableCellRenderer } from '../../table-cell-renderer';
 import { TableCellRendererComponent } from '../../table-cell-renderer.component';
+import { StandardTableCellRendererType } from '../../types/standard-table-cell-renderer-type';
+import { TableCellAlignmentType } from '../../types/table-cell-alignment-type';
 
 @Component({
   selector: 'htc-timestamp-table-cell-renderer',

@@ -6,7 +6,7 @@ import {
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
   TABLE_CELL_RENDERER_ROW_DATA
-} from '../../table-cell-renderer';
+} from '../../table-cell-injection-tokens';
 import { TextTableCellRendererComponent } from './text-table-cell-renderer.component';
 
 describe('Text table cell renderer component', () => {

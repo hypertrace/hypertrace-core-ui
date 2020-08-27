@@ -1,13 +1,13 @@
 import { Directive, Inject, OnInit } from '@angular/core';
 import { TableColumnConfig, TableRow } from '../table-api';
-import { StandardTableCellRendererType } from './standard-table-cell-renderer-type';
-import { TableCellAlignmentType } from './table-cell-alignment-type';
 import {
   TABLE_CELL_RENDERER_CELL_DATA,
   TABLE_CELL_RENDERER_COLUMN_CONFIG,
   TABLE_CELL_RENDERER_COLUMN_INDEX,
   TABLE_CELL_RENDERER_ROW_DATA
-} from './table-cell-renderer';
+} from './table-cell-injection-tokens';
+import { StandardTableCellRendererType } from './types/standard-table-cell-renderer-type';
+import { TableCellAlignmentType } from './types/table-cell-alignment-type';
 
 @Directive() // Angular 9 Requires superclasses to be annotated as well in order to resolve injectables for constructor
 // tslint:disable-next-line:directive-class-suffix

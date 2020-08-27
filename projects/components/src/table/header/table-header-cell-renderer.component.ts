@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { FilterAttribute } from '../../../filter-bar/filter-attribute';
-import { TableColumnConfig, TableSortDirection } from '../../table-api';
-import { TableCellAlignmentType } from '../table-cell-alignment-type';
-import { TableCellRendererConstructor } from '../table-cell-renderer';
-import { TableCellRendererService } from '../table-cell-renderer.service';
+import { FilterAttribute } from '../../filter-bar/filter-attribute';
+import { TableCellRendererConstructor } from '../cells/table-cell-renderer';
+import { TableCellRendererLookupService } from '../cells/table-cell-renderer-lookup.service';
+import { TableCellAlignmentType } from '../cells/types/table-cell-alignment-type';
+import { TableColumnConfig, TableSortDirection } from '../table-api';
 
 @Component({
   selector: 'htc-table-header-cell-renderer',
@@ -61,7 +61,7 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
   public rendererConstructor?: TableCellRendererConstructor;
   public classes: string[] = [];
 
-  public constructor(private readonly tableCellRendererService: TableCellRendererService) {}
+  public constructor(private readonly tableCellRendererService: TableCellRendererLookupService) {}
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfig || changes.sort) {
