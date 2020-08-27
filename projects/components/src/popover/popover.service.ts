@@ -25,7 +25,7 @@ export class PopoverService {
     const overlayRef = this.overlay.create({
       positionStrategy: initialPositionStrategy,
       hasBackdrop: options.backdrop,
-      backdropClass: 'cdk-overlay-transparent-backdrop'
+      backdropClass: options.backdrop ? 'modal-overlay-backdrop' : 'cdk-overlay-transparent-backdrop'
     });
 
     const popoverRef = new PopoverRef(overlayRef, this.positionBuilder, this.navigationService);

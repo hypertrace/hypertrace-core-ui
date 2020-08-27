@@ -50,7 +50,8 @@ export class OverlayService implements OnDestroy {
         type: PopoverPositionType.Fixed,
         location: PopoverFixedPositionLocation.Centered
       },
-      data: config
+      data: config,
+      backdrop: true
     });
 
     popover.closeOnNavigation();
