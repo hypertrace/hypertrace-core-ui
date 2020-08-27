@@ -1,7 +1,7 @@
 import { Dictionary } from '@hypertrace/common';
 import { Observable } from 'rxjs';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
-import { TableCellAlignmentType } from './renderers/table-cell-alignment-type';
+import { TableCellAlignmentType } from './cells/types/table-cell-alignment-type';
 
 export interface TableColumnConfig {
   field: string;

@@ -212,16 +212,11 @@ export * from './table/table.module';
 export * from './table/table.component';
 export * from './table/table-api';
 export * from './table/data/table-data-source';
-export * from './table/renderers/table-cell-alignment-type';
-export { StandardTableCellRendererType } from './table/renderers/standard-table-cell-renderer-type';
-export {
-  TABLE_CELL_RENDERER_CELL_DATA,
-  TABLE_CELL_RENDERER_COLUMN_CONFIG,
-  TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA,
-  TableCellRenderer
-} from './table/renderers/table-cell-renderer';
-export { TableCellRendererComponent } from './table/renderers/table-cell-renderer.component';
+export * from './table/cells/types/table-cell-alignment-type';
+export * from './table/cells/table-cell-injection-tokens';
+export { StandardTableCellRendererType } from './table/cells/types/standard-table-cell-renderer-type';
+export { TableCellRenderer } from './table/cells/table-cell-renderer';
+export { TableCellRendererComponent } from './table/cells/table-cell-renderer.component';
 
 // TextArea
 export * from './textarea/textarea.component';

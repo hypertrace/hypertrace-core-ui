@@ -19,6 +19,7 @@ import { filter, map } from 'rxjs/operators';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { StandardTableCellRendererType } from './cells/types/standard-table-cell-renderer-type';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
   ColumnConfigProvider,
@@ -29,7 +30,6 @@ import {
 } from './data/table-cdk-data-source-api';
 import { TableCdkRowUtil } from './data/table-cdk-row-util';
 import { TableDataSource } from './data/table-data-source';
-import { StandardTableCellRendererType } from './renderers/standard-table-cell-renderer-type';
 import {
   StatefulTableRow,
   TableColumnConfig,

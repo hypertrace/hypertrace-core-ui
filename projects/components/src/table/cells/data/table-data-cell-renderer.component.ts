@@ -11,9 +11,9 @@ import {
 } from '@angular/core';
 import { FilterAttribute } from '../../../filter-bar/filter-attribute';
 import { TableColumnConfig, TableRow } from '../../table-api';
-import { TableCellAlignmentType } from '../table-cell-alignment-type';
+import { TableCellRendererLookupService } from '../table-cell-renderer-lookup.service';
 import { TableCellRendererComponent } from '../table-cell-renderer.component';
-import { TableCellRendererService } from '../table-cell-renderer.service';
+import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
 
 @Component({
   selector: 'htc-table-data-cell-renderer',
@@ -70,7 +70,7 @@ export class TableDataCellRendererComponent implements OnInit {
 
   public constructor(
     private readonly injector: Injector,
-    private readonly tableCellRendererService: TableCellRendererService,
+    private readonly tableCellRendererService: TableCellRendererLookupService,
     private readonly componentFactoryResolver: ComponentFactoryResolver
   ) {}
 

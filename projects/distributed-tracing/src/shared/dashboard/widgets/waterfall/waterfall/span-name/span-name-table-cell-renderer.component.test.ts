@@ -1,6 +1,4 @@
 import { FormattingModule } from '@hypertrace/common';
-import { createComponentFactory } from '@ngneat/spectator/jest';
-
 import {
   TableColumnConfig,
   TableRow,
@@ -9,6 +7,7 @@ import {
   TABLE_CELL_RENDERER_COLUMN_INDEX,
   TABLE_CELL_RENDERER_ROW_DATA
 } from '@hypertrace/components';
+import { createComponentFactory } from '@ngneat/spectator/jest';
 import { SpanNameTableCellRendererComponent } from './span-name-table-cell-renderer.component';
 
 describe('Span name table cell renderer component', () => {

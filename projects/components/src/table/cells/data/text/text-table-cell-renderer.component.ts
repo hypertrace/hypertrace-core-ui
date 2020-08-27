@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { StandardTableCellRendererType } from '../../standard-table-cell-renderer-type';
-import { TableCellAlignmentType } from '../../table-cell-alignment-type';
 import { TableCellRenderer } from '../../table-cell-renderer';
 import { TableCellRendererComponent } from '../../table-cell-renderer.component';
+import { StandardTableCellRendererType } from '../../types/standard-table-cell-renderer-type';
+import { TableCellAlignmentType } from '../../types/table-cell-alignment-type';
 
 @Component({
   selector: 'htc-text-table-cell-renderer',

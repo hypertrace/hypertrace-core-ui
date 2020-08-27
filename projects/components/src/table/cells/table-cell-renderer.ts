@@ -1,7 +1,6 @@
-import { InjectionToken, Type } from '@angular/core';
-import { TableColumnConfig } from '../table-api';
-import { TableCellAlignmentType } from './table-cell-alignment-type';
+import { Type } from '@angular/core';
 import { TableCellRendererComponent } from './table-cell-renderer.component';
+import { TableCellAlignmentType } from './types/table-cell-alignment-type';
 
 export interface TableCellRendererMetadata {
   type: string;
@@ -21,14 +20,3 @@ export function TableCellRenderer(tableCellRendererMetadata: TableCellRendererMe
     constructor.alignment = tableCellRendererMetadata.alignment;
   };
 }
-
-export const TABLE_CELL_RENDERER_COLUMN_CONFIG: InjectionToken<TableColumnConfig> = new InjectionToken(
-  'TABLE_CELL_RENDERER_COLUMN_CONFIG'
-);
-export const TABLE_CELL_RENDERER_COLUMN_INDEX: InjectionToken<TableColumnConfig> = new InjectionToken(
-  'TABLE_CELL_RENDERER_COLUMN_INDEX'
-);
-export const TABLE_CELL_RENDERER_CELL_DATA: InjectionToken<unknown> = new InjectionToken(
-  'TABLE_CELL_RENDERER_CELL_DATA'
-);
-export const TABLE_CELL_RENDERER_ROW_DATA: InjectionToken<unknown> = new InjectionToken('TABLE_CELL_RENDERER_ROW_DATA');
