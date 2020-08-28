@@ -1,8 +1,10 @@
 import { fakeAsync } from '@angular/core/testing';
 import { FixedTimeRange } from '@hypertrace/common';
+import { MetadataService } from '@hypertrace/distributed-tracing';
 import { GraphQlEnumArgument } from '@hypertrace/graphql-client';
 import { runFakeRxjs } from '@hypertrace/test-utils';
-import { createServiceFactory } from '@ngneat/spectator/jest';
+import { createServiceFactory, mockProvider } from '@ngneat/spectator/jest';
+import { of } from 'rxjs';
 import { GraphQlTimeRange } from '../../../model/schema/timerange/graphql-time-range';
 import { traceIdKey, traceTypeKey, TRACE_SCOPE } from '../../../model/schema/trace';
 import { SpecificationBuilder } from '../../builders/specification/specification-builder';
@@ -14,7 +16,16 @@ import {
 
 describe('TracesGraphQlQueryHandlerService', () => {
   const createService = createServiceFactory({
-    service: TracesGraphQlQueryHandlerService
+    service: TracesGraphQlQueryHandlerService,
+    providers: [
+      mockProvider(MetadataService, {
+        getAttribute: jest.fn().mockReturnValue(
+          of({
+            units: 'ms'
+          })
+        )
+      })
+    ]
   });
 
   const testTimeRange = GraphQlTimeRange.fromTimeRange(
@@ -98,7 +109,10 @@ describe('TracesGraphQlQueryHandlerService', () => {
             {
               [traceIdKey]: 'first-trace-id',
               [traceTypeKey]: TRACE_SCOPE,
-              name: 'first-trace-name'
+              name: {
+                units: 'ms',
+                value: 'first-trace-name'
+              }
             }
           ],
           total: 1

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Dictionary, forkJoinSafeEmpty } from '@hypertrace/common';
 import { GraphQlHandlerType, GraphQlQueryHandler, GraphQlSelection } from '@hypertrace/graphql-client';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MetadataService } from '../../../../services/metadata/metadata.service';
 import { GraphQlFilter } from '../../../model/schema/filter/graphql-filter';
 import { GraphQlSortBySpecification } from '../../../model/schema/sort/graphql-sort-by-specification';
 import { Specification } from '../../../model/schema/specifier/specification';
@@ -16,6 +17,8 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
   private readonly argBuilder: GraphQlArgumentBuilder = new GraphQlArgumentBuilder();
   private readonly selectionBuilder: GraphQlSelectionBuilder = new GraphQlSelectionBuilder();
   public readonly type: GraphQlHandlerType.Query = GraphQlHandlerType.Query;
+
+  public constructor(private readonly metadataService: MetadataService) {}
 
   public matchesRequest(request: unknown): request is GraphQlTracesRequest {
     return (
@@ -63,10 +66,12 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
         const alias = spec.resultAlias();
         const data = spec.extractFromServerData(rawResult);
 
-        return of({
-          alias: alias,
-          data: data
-        });
+        return this.resultUnits(spec, request.traceType!).pipe(
+          map(units => ({
+            alias: alias,
+            data: units !== undefined ? { units: units, value: data } : data
+          }))
+        );
       })
     ).pipe(
       map(results => {
@@ -80,6 +85,12 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
         return trace;
       })
     );
+  }
+
+  private resultUnits(specification: Specification, scope: string): Observable<string | undefined> {
+    return this.metadataService
+      .getAttribute(scope, specification.name)
+      .pipe(map(attribute => (attribute.units !== '' ? attribute.units : undefined)));
   }
 }
 
