@@ -24,7 +24,7 @@ import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
       <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
         <ng-container *ngTemplateOutlet="filterButton"></ng-container>
       </ng-container>
-      <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick()">
+      <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick($event)">
         <ng-container #cellRenderer></ng-container>
       </div>
       <ng-container *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton">
@@ -107,8 +107,13 @@ export class TableDataCellRendererComponent implements OnInit {
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
   }
 
-  public onClick(): void {
-    this.columnConfig && this.columnConfig.onClick && this.columnConfig.onClick(this.rowData!, this.columnConfig);
+  public onClick(event: MouseEvent): void {
+    const hasClickHandler = this.columnConfig && this.columnConfig.onClick;
+
+    if (hasClickHandler) {
+      this.columnConfig!.onClick!(this.rowData!, this.columnConfig!);
+      event.stopPropagation();
+    }
   }
 
   public parseValue(): unknown {
