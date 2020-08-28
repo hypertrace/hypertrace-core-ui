@@ -66,7 +66,7 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
         const alias = spec.resultAlias();
         const data = spec.extractFromServerData(rawResult);
 
-        return this.resultUnits(spec).pipe(
+        return this.resultUnits(spec, request.traceType!).pipe(
           map(units => ({
             alias: alias,
             data: units !== undefined ? { units: units, value: data } : data
@@ -87,9 +87,9 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
     );
   }
 
-  private resultUnits(specification: Specification): Observable<string | undefined> {
+  private resultUnits(specification: Specification, scope: string): Observable<string | undefined> {
     return this.metadataService
-      .getAttribute('API_TRACE', specification.name)
+      .getAttribute(scope, specification.name)
       .pipe(map(attribute => (attribute.units !== '' ? attribute.units : undefined)));
   }
 }
