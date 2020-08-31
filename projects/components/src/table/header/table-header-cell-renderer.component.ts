@@ -14,7 +14,7 @@ import { TableColumnConfig, TableSortDirection } from '../table-api';
     <div
       *ngIf="this.columnConfig"
       [ngClass]="this.classes"
-      [htcTooltip]="this.columnConfig.title"
+      [htcTooltip]="this.columnConfig.titleTooltip || this.columnConfig.title"
       class="table-header-cell-renderer"
     >
       <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">

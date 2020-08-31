@@ -3,6 +3,7 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
 import {
   LetAsyncModule,
+  SearchBoxComponent,
   StandardTableCellRendererType,
   StatefulTableRow,
   TableMode,
@@ -44,7 +45,7 @@ describe('Table component', () => {
         queryParamMap: EMPTY
       })
     ],
-    declarations: [MockComponent(PaginatorComponent)],
+    declarations: [MockComponent(PaginatorComponent), MockComponent(SearchBoxComponent)],
     template: `
     <htc-table
       [columnConfigs]="columnConfigs"
@@ -66,6 +67,20 @@ describe('Table component', () => {
     );
 
     expect(spectator.query(PaginatorComponent)?.pageSizeOptions).toEqual([10, 25]);
+  });
+
+  test('pass custom placeholder to search box', () => {
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" searchable="true" searchPlaceholder="Custom"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: buildData()
+        }
+      }
+    );
+
+    expect(spectator.query(SearchBoxComponent)?.placeholder).toEqual('Custom');
   });
 
   test('does not alter the URL on paging if syncWithUrl false', () => {
@@ -93,6 +108,28 @@ describe('Table component', () => {
       pageIndex: 1,
       pageSize: 50
     });
+  });
+
+  test('should clear selections on page change', () => {
+    const mockSelectionsChange = jest.fn();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" syncWithUrl="false"
+         (selectionsChange)="selectionsChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: buildData(),
+          selectionsChange: mockSelectionsChange
+        }
+      }
+    );
+
+    spectator.triggerEventHandler(PaginatorComponent, 'pageChange', {
+      pageIndex: 1,
+      pageSize: 50
+    });
+
+    expect(mockSelectionsChange).toHaveBeenCalledWith([]);
   });
 
   test('updates the URL on paging if syncWithUrl true', () => {
