@@ -242,7 +242,7 @@ export class TableComponent
   public pageSize?: number;
 
   @Input()
-  public searchPlaceholder?: string;
+  public searchPlaceholder: string = 'Search';
 
   @Output()
   public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
