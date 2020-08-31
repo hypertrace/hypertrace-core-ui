@@ -20,6 +20,7 @@ import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { StandardTableCellRendererType } from './cells/types/standard-table-cell-renderer-type';
+import { TableCdkColumnUtil } from './data/table-cdk-column-util';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
   ColumnConfigProvider,
@@ -352,7 +353,7 @@ export class TableComponent
   }
 
   public onHeaderCellClick(columnConfig: TableColumnConfig): void {
-    if (this.isColumnSortable(columnConfig)) {
+    if (TableCdkColumnUtil.isColumnSortable(columnConfig)) {
       this.updateSort({
         column: columnConfig,
         direction: this.getNextSortDirection(columnConfig.sort)
@@ -572,8 +573,10 @@ export class TableComponent
       });
     }
 
-    this.selections = [];
-    this.selectionsChange.emit(this.selections);
+    if (this.selections && this.selections.length > 0) {
+      this.selections = [];
+      this.selectionsChange.emit(this.selections);
+    }
 
     this.pageChange.emit(pageEvent);
   }
@@ -615,10 +618,6 @@ export class TableComponent
           direction: sortDirection
         }
       : undefined;
-  }
-
-  private isColumnSortable(columnConfig: TableColumnConfig): boolean {
-    return columnConfig.sortable === undefined || columnConfig.sortable;
   }
 }
 

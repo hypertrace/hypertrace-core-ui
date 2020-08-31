@@ -18,6 +18,7 @@ import { PaginatorComponent } from '../paginator/paginator.component';
 import { TableCdkRowUtil } from './data/table-cdk-row-util';
 import { TableComponent } from './table.component';
 
+// tslint:disable max-file-line-count
 describe('Table component', () => {
   // TODO remove builders once table stops mutating inputs
   const buildData = () => [
@@ -110,15 +111,40 @@ describe('Table component', () => {
     });
   });
 
-  test('should clear selections on page change', () => {
+  test('should not clear empty selections on page change', () => {
+    const rows = buildData();
     const mockSelectionsChange = jest.fn();
     const spectator = createHost(
       `<htc-table [columnConfigs]="columnConfigs" [data]="data" syncWithUrl="false"
-         (selectionsChange)="selectionsChange($event)"></htc-table>`,
+          (selectionsChange)="selectionsChange($event)"></htc-table>`,
       {
         hostProps: {
           columnConfigs: buildColumns(),
-          data: buildData(),
+          data: rows,
+          selectionsChange: mockSelectionsChange
+        }
+      }
+    );
+
+    spectator.triggerEventHandler(PaginatorComponent, 'pageChange', {
+      pageIndex: 1,
+      pageSize: 50
+    });
+
+    expect(mockSelectionsChange).not.toHaveBeenCalled();
+  });
+
+  test('should clear non empty selections on page change', () => {
+    const rows = buildData();
+    const mockSelectionsChange = jest.fn();
+    const spectator = createHost(
+      `<htc-table [columnConfigs]="columnConfigs" [data]="data" syncWithUrl="false"
+         [selections]="selections" (selectionsChange)="selectionsChange($event)"></htc-table>`,
+      {
+        hostProps: {
+          columnConfigs: buildColumns(),
+          data: rows,
+          selections: TableCdkRowUtil.buildInitialRowStates(rows),
           selectionsChange: mockSelectionsChange
         }
       }

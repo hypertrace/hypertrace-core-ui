@@ -9,7 +9,10 @@
   @include ellipsis-overflow();
   @include overline($gray-5);
   display: flex;
-  cursor: pointer;
+
+  &.sortable {
+    cursor: pointer;
+  }
 
   &:hover {
     color: $gray-9;
