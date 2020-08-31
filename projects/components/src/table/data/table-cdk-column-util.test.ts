@@ -17,6 +17,7 @@ describe('Table column util', () => {
       {
         field: 'test-text',
         renderer: StandardTableCellRendererType.Text,
+        sort: TableSortDirection.Descending,
         visible: true
       },
       {
@@ -57,8 +58,7 @@ describe('Table column util', () => {
       {
         field: 'test-text',
         renderer: StandardTableCellRendererType.Text,
-        visible: true,
-        sortable: false
+        visible: true
       },
       {
         field: 'test-numeric',
