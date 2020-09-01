@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent } from '@hypertrace/components';
+import { TableCellAlignmentType, TableCellRenderer, TableCellRendererBase } from '@hypertrace/components';
+import { SpanNameCellData } from './span-name-cell-data';
+import { WaterfallTableCellType } from './span-name-cell-type';
 
 @Component({
   selector: 'htc-span-name-table-cell-renderer',
@@ -21,24 +23,8 @@ import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent }
   `
 })
 @TableCellRenderer({
-  type: SpanNameTableCellRendererComponent.SPAN_NAME,
-  alignment: TableCellAlignmentType.Left
+  type: WaterfallTableCellType.SpanName,
+  alignment: TableCellAlignmentType.Left,
+  parser: WaterfallTableCellType.SpanName
 })
-export class SpanNameTableCellRendererComponent extends TableCellRendererComponent<SpanNameCellRendererData> {
-  public static readonly SPAN_NAME: string = 'span-name';
-
-  public parseValue(cellData: SpanNameCellRendererData): SpanNameCellRendererData {
-    return cellData;
-  }
-
-  protected parseTooltip(cellData: SpanNameCellRendererData): string {
-    return `${cellData.serviceName} ${cellData.protocolName} ${cellData.name}`;
-  }
-}
-
-export interface SpanNameCellRendererData {
-  serviceName: string;
-  protocolName: string;
-  name: string;
-  color?: string;
-}
+export class SpanNameTableCellRendererComponent extends TableCellRendererBase<SpanNameCellData> {}

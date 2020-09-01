@@ -1,14 +1,18 @@
 import { Dictionary } from '@hypertrace/common';
 import { Observable } from 'rxjs';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
+import { TableCellParserConstructor } from './cells/table-cell-parser';
+import { TableCellRendererConstructor } from './cells/table-cell-renderer';
 import { TableCellAlignmentType } from './cells/types/table-cell-alignment-type';
 
 export interface TableColumnConfig {
   field: string;
+  display?: string;
+  renderer?: TableCellRendererConstructor;
+  parser?: TableCellParserConstructor<unknown, unknown, unknown>;
   filterAttribute?: FilterAttribute;
   title?: string;
   titleTooltip?: string;
-  renderer?: string;
   sort?: TableSortDirection;
   visible?: boolean;
   sortable?: boolean;

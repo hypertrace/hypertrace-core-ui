@@ -1,4 +1,4 @@
-export const enum StandardTableCellRendererType {
+export const enum CoreTableCellRendererType {
   Checkbox = 'checkbox',
   Icon = 'icon',
   Number = 'number',

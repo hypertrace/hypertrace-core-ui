@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconSize } from '../../../../icon/icon-size';
 import { TableCellRenderer } from '../../table-cell-renderer';
-import { TableCellRendererComponent } from '../../table-cell-renderer.component';
-import { StandardTableCellRendererType } from '../../types/standard-table-cell-renderer-type';
+import { TableCellRendererBase } from '../../table-cell-renderer-base';
+import { CoreTableCellParserType } from '../../types/core-table-cell-parser-type';
+import { CoreTableCellRendererType } from '../../types/core-table-cell-renderer-type';
 import { TableCellAlignmentType } from '../../types/table-cell-alignment-type';
 
 @Component({
@@ -16,11 +17,8 @@ import { TableCellAlignmentType } from '../../types/table-cell-alignment-type';
   `
 })
 @TableCellRenderer({
-  type: StandardTableCellRendererType.Icon,
-  alignment: TableCellAlignmentType.Center
+  type: CoreTableCellRendererType.Icon,
+  alignment: TableCellAlignmentType.Center,
+  parser: CoreTableCellParserType.Icon
 })
-export class IconTableCellRendererComponent extends TableCellRendererComponent<string> {
-  public parseValue(cellData: string): string {
-    return cellData;
-  }
-}
+export class IconTableCellRendererComponent extends TableCellRendererBase<string> {}

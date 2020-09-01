@@ -3,7 +3,7 @@ import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
 import {
   LetAsyncModule,
-  StandardTableCellRendererType,
+  CoreTableCellRendererType,
   StatefulTableRow,
   TableMode,
   TableSelectionMode,
@@ -228,7 +228,7 @@ describe('Table component', () => {
         x: [
           expect.objectContaining({
             field: '$$state',
-            renderer: StandardTableCellRendererType.Checkbox,
+            renderer: CoreTableCellRendererType.Checkbox,
             visible: true
           }),
           {
@@ -283,7 +283,7 @@ describe('Table component', () => {
         x: [
           expect.objectContaining({
             field: '$$state',
-            renderer: StandardTableCellRendererType.RowExpander,
+            renderer: CoreTableCellRendererType.RowExpander,
             visible: true
           }),
           {

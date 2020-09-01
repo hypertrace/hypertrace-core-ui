@@ -1,4 +1,4 @@
-import { StandardTableCellRendererType } from '@hypertrace/components';
+import { CoreTableCellRendererType } from '@hypertrace/components';
 import { SpecificationBuilder } from '../../../graphql/request/builders/specification/specification-builder';
 import { TableWidgetColumnModel } from './table-widget-column.model';
 
@@ -15,7 +15,7 @@ describe('Table widget column model', () => {
     const model = buildModel({
       value: specBuilder.attributeSpecificationForKey('name'),
       title: 'Name column',
-      display: StandardTableCellRendererType.Text
+      display: CoreTableCellRendererType.Text
     });
 
     const columnDef = model.asTableColumnDef();
@@ -23,7 +23,7 @@ describe('Table widget column model', () => {
       expect.objectContaining({
         field: 'name',
         title: 'Name column',
-        renderer: StandardTableCellRendererType.Text
+        renderer: CoreTableCellRendererType.Text
       })
     );
   });

@@ -28,6 +28,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   private static readonly DEFAULT_PAGE_SIZE: number = 1000;
   private static readonly FILTER_DEBOUNCE_MS: number = 200;
 
+  private columnConfigs: Map<string, TableColumnConfig> = new Map<string, TableColumnConfig>();
   private cachedRows: StatefulTableRow[] = [];
   private readonly cachedValues: Map<string, unknown[]> = new Map<string, unknown[]>();
   private lastRowChange: StatefulTableRow | undefined;
@@ -62,7 +63,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
 
     return this.rowsChange$.pipe(
       tap(rows => this.cacheRows(rows)),
-      tap(rows => this.cacheValues(rows)),
+      tap(rows => this.cacheFilterableValues(rows)),
       tap(rows => this.loadingStateSubject.next(of(rows)))
     );
   }
@@ -72,7 +73,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.loadingStateSubject.complete();
   }
 
-  public getValues(columnConfig: TableColumnConfig): unknown[] {
+  public getFilterValues(columnConfig: TableColumnConfig): unknown[] {
     return this.cachedValues.has(columnConfig.field) ? this.cachedValues.get(columnConfig.field)! : [];
   }
 
@@ -80,7 +81,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.cachedRows = rows.map(TableCdkRowUtil.cloneRow);
   }
 
-  private cacheValues(rows: StatefulTableRow[]): void {
+  private cacheFilterableValues(rows: StatefulTableRow[]): void {
     const valueMap: Map<string, Set<unknown>> = new Map<string, Set<unknown>>();
 
     // Iterate a row at a time adding each entry to the map. Use a set to store values so we have only unique.
@@ -89,10 +90,14 @@ export class TableCdkDataSource implements DataSource<TableRow> {
         const key = keyValueTuple[0];
         const value = keyValueTuple[1];
 
+        const columnConfig = this.columnConfigs.get(key)!;
+        const parser = new columnConfig.parser!();
+        const filterValue = parser.parseFilterValue(value);
+
         if (valueMap.has(key)) {
-          valueMap.get(key)?.add(value);
+          valueMap.get(key)?.add(filterValue);
         } else {
-          valueMap.set(key, new Set([value]));
+          valueMap.set(key, new Set([filterValue]));
         }
       });
     });
@@ -138,12 +143,21 @@ export class TableCdkDataSource implements DataSource<TableRow> {
 
   private buildChangeObservable(): Observable<WatchedObservables> {
     return combineLatest([
-      this.columnConfigProvider.columnConfigs$,
+      this.columnConfigChange(),
       this.pageChange(),
       this.filterChange(),
       this.columnStateChangeProvider.columnState$,
       this.rowStateChangeProvider.rowState$
     ]).pipe(map(values => this.detectRowStateChanges(...values)));
+  }
+
+  private columnConfigChange(): Observable<TableColumnConfig[]> {
+    return this.columnConfigProvider.columnConfigs$.pipe(
+      tap(columnConfigs => {
+        this.columnConfigs.clear();
+        columnConfigs.forEach(columnConfig => this.columnConfigs.set(columnConfig.field, columnConfig));
+      })
+    );
   }
 
   private pageChange(): Observable<PageEvent> {

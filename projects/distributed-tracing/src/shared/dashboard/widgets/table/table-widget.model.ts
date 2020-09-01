@@ -136,7 +136,7 @@ export class TableWidgetModel {
   public getColumns(attributes: FilterAttribute[]): Observable<SpecificationBackedTableColumnDef[]> {
     return of(
       this.columns.map(column =>
-        column.asTableColumnDef(attributes.find(attribute => attribute.name === column.value.resultAlias()))
+        column.asTableColumnDef(attributes.find(attribute => attribute.name === column.value.name))
       )
     );
   }

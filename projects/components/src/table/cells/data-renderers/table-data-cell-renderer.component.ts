@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ComponentFactoryResolver,
-  ComponentRef,
   Injector,
   Input,
   OnInit,
@@ -12,7 +11,6 @@ import {
 import { FilterAttribute } from '../../../filter-bar/filter-attribute';
 import { TableColumnConfig, TableRow } from '../../table-api';
 import { TableCellRendererLookupService } from '../table-cell-renderer-lookup.service';
-import { TableCellRendererComponent } from '../table-cell-renderer.component';
 import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
 
 @Component({
@@ -66,11 +64,9 @@ export class TableDataCellRendererComponent implements OnInit {
   public leftAlignFilterButton: boolean = false;
   public popoverOpen: boolean = false;
 
-  private componentRef?: ComponentRef<TableCellRendererComponent<unknown, unknown>>;
-
   public constructor(
     private readonly injector: Injector,
-    private readonly tableCellRendererService: TableCellRendererLookupService,
+    private readonly tableCellRendererLookupService: TableCellRendererLookupService,
     private readonly componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
@@ -88,12 +84,10 @@ export class TableDataCellRendererComponent implements OnInit {
     }
 
     // Dynamic Component Setup
-    const tableCellRendererConstructor = this.tableCellRendererService.lookup(this.columnConfig.renderer);
-
-    this.componentRef = this.cellRenderer.createComponent(
-      this.componentFactoryResolver.resolveComponentFactory(tableCellRendererConstructor),
+    this.cellRenderer.createComponent(
+      this.componentFactoryResolver.resolveComponentFactory(this.columnConfig.renderer!),
       0,
-      this.tableCellRendererService.createInjector(
+      this.tableCellRendererLookupService.createInjector(
         this.columnConfig,
         this.index,
         this.cellData,
@@ -103,7 +97,7 @@ export class TableDataCellRendererComponent implements OnInit {
     );
 
     // Allow columnConfig to override default alignment for cell renderer
-    this.alignment = this.columnConfig.alignment ?? tableCellRendererConstructor.alignment;
+    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer!.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
   }
 
@@ -117,6 +111,6 @@ export class TableDataCellRendererComponent implements OnInit {
   }
 
   public parseValue(): unknown {
-    return this.componentRef?.instance.parseValue(this.cellData, this.rowData);
+    return new this.columnConfig!.parser!().parseFilterValue(this.cellData);
   }
 }
