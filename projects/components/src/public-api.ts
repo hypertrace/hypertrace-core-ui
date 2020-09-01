@@ -214,9 +214,13 @@ export * from './table/table-api';
 export * from './table/data/table-data-source';
 export * from './table/cells/types/table-cell-alignment-type';
 export * from './table/cells/table-cell-injection-tokens';
-export { StandardTableCellRendererType } from './table/cells/types/standard-table-cell-renderer-type';
+export * from './table/cells/types/core-table-cell-renderer-type';
+export * from './table/cells/table-cell-renderer-base';
+export * from './table/cells/table-cell-parser-base';
+export * from './table/cells/table-cell-renderer-lookup.service';
+export * from './table/cells/table-cell-parser-lookup.service';
 export { TableCellRenderer } from './table/cells/table-cell-renderer';
-export { TableCellRendererComponent } from './table/cells/table-cell-renderer.component';
+export { TableCellParser } from './table/cells/table-cell-parser';
 
 // TextArea
 export * from './textarea/textarea.component';

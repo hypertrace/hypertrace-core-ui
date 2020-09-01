@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TypedSimpleChanges } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-bar/filter-attribute';
-import { TableCellRendererConstructor } from '../cells/table-cell-renderer';
-import { TableCellRendererLookupService } from '../cells/table-cell-renderer-lookup.service';
 import { TableCellAlignmentType } from '../cells/types/table-cell-alignment-type';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 
@@ -28,7 +26,6 @@ import { TableColumnConfig, TableSortDirection } from '../table-api';
       <ng-template #filterButton>
         <htc-in-filter-button
           class="filter-button"
-          *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton"
           [metadata]="this.metadata"
           [attribute]="this.columnConfig.filterAttribute"
           [values]="this.values"
@@ -58,10 +55,7 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
 
   public alignment?: TableCellAlignmentType;
   public leftAlignFilterButton: boolean = false;
-  public rendererConstructor?: TableCellRendererConstructor;
   public classes: string[] = [];
-
-  public constructor(private readonly tableCellRendererService: TableCellRendererLookupService) {}
 
   public ngOnChanges(changes: TypedSimpleChanges<this>): void {
     if (changes.columnConfig || changes.sort) {
@@ -78,10 +72,8 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
       throw new Error('Table column index undefined');
     }
 
-    this.rendererConstructor = this.tableCellRendererService.lookup(this.columnConfig.renderer);
-
     // Allow columnConfig to override default alignment for cell renderer
-    this.alignment = this.columnConfig.alignment ?? this.rendererConstructor.alignment;
+    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer?.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
     this.classes = this.buildClasses();
   }

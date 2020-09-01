@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash-es';
-import { StandardTableCellRendererType } from '../cells/types/standard-table-cell-renderer-type';
+import { CoreTableCellRendererType } from '../cells/types/core-table-cell-renderer-type';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 import { TableCdkColumnUtil } from './table-cdk-column-util';
 
@@ -16,12 +16,12 @@ describe('Table column util', () => {
       },
       {
         field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
+        renderer: CoreTableCellRendererType.Text,
         visible: true
       },
       {
         field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
+        renderer: CoreTableCellRendererType.Number,
         visible: true
       }
     ];
@@ -30,7 +30,7 @@ describe('Table column util', () => {
       ...dataColumnConfigs,
       {
         field: 'test-expander',
-        renderer: StandardTableCellRendererType.RowExpander
+        renderer: CoreTableCellRendererType.RowExpander
       }
     ];
 
@@ -41,13 +41,13 @@ describe('Table column util', () => {
       },
       {
         field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
+        renderer: CoreTableCellRendererType.Text,
         sort: TableSortDirection.Ascending,
         visible: true
       },
       {
         field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
+        renderer: CoreTableCellRendererType.Number,
         visible: true
       }
     ];

@@ -19,7 +19,10 @@ import { filter, map } from 'rxjs/operators';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
-import { StandardTableCellRendererType } from './cells/types/standard-table-cell-renderer-type';
+import { TableCellStateParser } from './cells/state-parsers/table-cell-state-parser';
+import { TableCheckboxCellRendererComponent } from './cells/state-renderers/checkbox/table-checkbox-cell-renderer.component';
+import { TableExpanderCellRendererComponent } from './cells/state-renderers/expander/table-expander-cell-renderer.component';
+import { CoreTableCellRendererType } from './cells/types/core-table-cell-renderer-type';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
   ColumnConfigProvider,
@@ -169,11 +172,14 @@ export class TableComponent
   private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
   private static readonly SORT_COLUMN_URL_PARAM: string = 'sort-by';
   private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
+
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
     field: '$$state',
     width: '32px',
     visible: true,
-    renderer: StandardTableCellRendererType.RowExpander,
+    display: CoreTableCellRendererType.RowExpander,
+    renderer: TableExpanderCellRendererComponent,
+    parser: TableCellStateParser,
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
   };
 
@@ -181,7 +187,9 @@ export class TableComponent
     field: '$$state',
     width: '32px',
     visible: true,
-    renderer: StandardTableCellRendererType.Checkbox,
+    display: CoreTableCellRendererType.Checkbox,
+    renderer: TableCheckboxCellRendererComponent,
+    parser: TableCellStateParser,
     onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
   };
 
@@ -434,7 +442,7 @@ export class TableComponent
     }
 
     this.columnConfigs?.forEach(columnConfig => {
-      valueMap.set(columnConfig.field, this.dataSource!.getValues(columnConfig));
+      valueMap.set(columnConfig.field, this.dataSource!.getFilterValues(columnConfig));
     });
 
     return valueMap;

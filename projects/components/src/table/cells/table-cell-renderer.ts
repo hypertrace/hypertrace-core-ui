@@ -1,22 +1,32 @@
 import { Type } from '@angular/core';
-import { TableCellRendererComponent } from './table-cell-renderer.component';
+import { TableCellRendererBase } from './table-cell-renderer-base';
+import { CoreTableCellParserType } from './types/core-table-cell-parser-type';
+import { CoreTableCellRendererType } from './types/core-table-cell-renderer-type';
 import { TableCellAlignmentType } from './types/table-cell-alignment-type';
 
-export interface TableCellRendererMetadata {
-  type: string;
-  alignment: TableCellAlignmentType;
-}
-
+/*
+ * TableCellRendererConstructor is used by lookup service to dynamically instantiate cell renderers
+ */
 export interface TableCellRendererConstructor
-  extends Type<TableCellRendererComponent<unknown, unknown>>,
+  extends Type<TableCellRendererBase<unknown, unknown>>,
     TableCellRendererMetadata {}
 
-type TableCellRendererDecorator = (constructor: TableCellRendererConstructor) => void;
-
+/*
+ * @TableCellRenderer decorator is used to configure type, alignment, parser for cell renderers
+ */
 // tslint:disable-next-line:only-arrow-functions
 export function TableCellRenderer(tableCellRendererMetadata: TableCellRendererMetadata): TableCellRendererDecorator {
   return (constructor: TableCellRendererConstructor): void => {
-    constructor.type = tableCellRendererMetadata.type;
-    constructor.alignment = tableCellRendererMetadata.alignment;
+    constructor.prototype.type = constructor.type = tableCellRendererMetadata.type;
+    constructor.prototype.alignment = constructor.alignment = tableCellRendererMetadata.alignment;
+    constructor.prototype.parser = constructor.parser = tableCellRendererMetadata.parser;
   };
+}
+
+type TableCellRendererDecorator = (constructor: TableCellRendererConstructor) => void;
+
+export interface TableCellRendererMetadata {
+  type: CoreTableCellRendererType | string;
+  alignment: TableCellAlignmentType;
+  parser: CoreTableCellParserType | string;
 }
