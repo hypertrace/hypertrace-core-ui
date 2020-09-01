@@ -4,6 +4,7 @@ import { FilterAttribute } from '../../filter-bar/filter-attribute';
 import { TableCellRendererConstructor } from '../cells/table-cell-renderer';
 import { TableCellRendererLookupService } from '../cells/table-cell-renderer-lookup.service';
 import { TableCellAlignmentType } from '../cells/types/table-cell-alignment-type';
+import { TableCdkColumnUtil } from '../data/table-cdk-column-util';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 
 @Component({
@@ -14,7 +15,7 @@ import { TableColumnConfig, TableSortDirection } from '../table-api';
     <div
       *ngIf="this.columnConfig"
       [ngClass]="this.classes"
-      [htcTooltip]="this.columnConfig.title"
+      [htcTooltip]="this.columnConfig.titleTooltip || this.columnConfig.title"
       class="table-header-cell-renderer"
     >
       <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
@@ -87,6 +88,10 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
   }
 
   private buildClasses(): string[] {
-    return [this.alignment, this.sort].filter(str => str !== undefined).map(str => (str as string).toLowerCase());
+    return [
+      ...(this.alignment ? [this.alignment.toLowerCase()] : []),
+      ...(this.sort ? [this.sort.toLowerCase()] : []),
+      ...(this.columnConfig && TableCdkColumnUtil.isColumnSortable(this.columnConfig) ? ['sortable'] : [])
+    ];
   }
 }
