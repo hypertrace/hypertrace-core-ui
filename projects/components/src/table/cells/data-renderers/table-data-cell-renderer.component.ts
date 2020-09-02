@@ -9,8 +9,8 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import { FilterAttribute } from '../../../filter-bar/filter-attribute';
-import { TableColumnConfig, TableRow } from '../../table-api';
-import { TableCellRendererLookupService } from '../table-cell-renderer-lookup.service';
+import { TableColumnConfigExtended, TableRow } from '../../table-api';
+import { createInjector } from '../table-cell-injection';
 import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
 
 @Component({
@@ -19,13 +19,13 @@ import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="table-data-cell-renderer" [class.selected]="this.popoverOpen">
-      <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
+      <ng-container *ngIf="this.columnConfig?.filterable && this.leftAlignFilterButton">
         <ng-container *ngTemplateOutlet="filterButton"></ng-container>
       </ng-container>
       <div class="cell-renderer-content" [ngClass]="this.alignment" (click)="this.onClick($event)">
         <ng-container #cellRenderer></ng-container>
       </div>
-      <ng-container *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton">
+      <ng-container *ngIf="this.columnConfig?.filterable && !this.leftAlignFilterButton">
         <ng-container *ngTemplateOutlet="filterButton"></ng-container>
       </ng-container>
 
@@ -33,8 +33,8 @@ import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
         <htc-filter-button
           class="filter-button"
           [metadata]="this.metadata"
-          [attribute]="this.columnConfig?.filterAttribute"
-          [value]="this.parseValue()"
+          [attribute]="this.columnConfig?.attribute"
+          [value]="this.parseFilterValue()"
           (popoverOpen)="this.popoverOpen = $event"
         ></htc-filter-button>
       </ng-template>
@@ -46,7 +46,7 @@ export class TableDataCellRendererComponent implements OnInit {
   public metadata?: FilterAttribute[];
 
   @Input()
-  public columnConfig?: TableColumnConfig;
+  public columnConfig?: TableColumnConfigExtended;
 
   @Input()
   public index?: number;
@@ -66,7 +66,6 @@ export class TableDataCellRendererComponent implements OnInit {
 
   public constructor(
     private readonly injector: Injector,
-    private readonly tableCellRendererLookupService: TableCellRendererLookupService,
     private readonly componentFactoryResolver: ComponentFactoryResolver
   ) {}
 
@@ -85,32 +84,36 @@ export class TableDataCellRendererComponent implements OnInit {
 
     // Dynamic Component Setup
     this.cellRenderer.createComponent(
-      this.componentFactoryResolver.resolveComponentFactory(this.columnConfig.renderer!),
+      this.componentFactoryResolver.resolveComponentFactory(this.columnConfig.renderer),
       0,
-      this.tableCellRendererLookupService.createInjector(
-        this.columnConfig,
-        this.index,
-        this.cellData,
-        this.rowData,
-        this.injector
-      )
+      createInjector(this.columnConfig, this.index, this.cellData, this.rowData, this.injector)
     );
 
     // Allow columnConfig to override default alignment for cell renderer
-    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer!.alignment;
+    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
   }
 
   public onClick(event: MouseEvent): void {
-    const hasClickHandler = this.columnConfig && this.columnConfig.onClick;
+    if (this.columnConfig === undefined || this.rowData === undefined) {
+      throw Error(`Undefined columnConfig or rowData`);
+    }
 
-    if (hasClickHandler) {
-      this.columnConfig!.onClick!(this.rowData!, this.columnConfig!);
+    if (this.isClickHandlerDefined(this.columnConfig.onClick)) {
+      this.columnConfig.onClick(this.rowData, this.columnConfig);
       event.stopPropagation();
     }
   }
 
-  public parseValue(): unknown {
-    return new this.columnConfig!.parser!().parseFilterValue(this.cellData);
+  public parseFilterValue(): unknown {
+    if (this.columnConfig === undefined || this.cellData === undefined) {
+      throw Error(`Undefined columnConfig or cellData`);
+    }
+
+    return this.columnConfig.parser.parseFilterValue(this.cellData);
+  }
+
+  private isClickHandlerDefined(onClick: unknown): onClick is Function {
+    return onClick !== undefined && onClick instanceof Function;
   }
 }

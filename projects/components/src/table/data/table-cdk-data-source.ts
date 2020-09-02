@@ -4,7 +4,13 @@ import { combineLatest, NEVER, Observable, of, Subject, throwError } from 'rxjs'
 import { catchError, debounceTime, map, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
 import { PageEvent } from '../../paginator/page.event';
 import { PaginationProvider } from '../../paginator/paginator-api';
-import { RowStateChange, StatefulTableRow, StatefulTreeTableRow, TableColumnConfig, TableRow } from '../table-api';
+import {
+  RowStateChange,
+  StatefulTableRow,
+  StatefulTreeTableRow,
+  TableColumnConfigExtended,
+  TableRow
+} from '../table-api';
 import { TableCdkColumnUtil } from './table-cdk-column-util';
 import {
   ColumnConfigProvider,
@@ -17,10 +23,10 @@ import { TableCdkRowUtil } from './table-cdk-row-util';
 import { TableDataRequest } from './table-data-source';
 
 type WatchedObservables = [
-  TableColumnConfig[],
+  TableColumnConfigExtended[],
   PageEvent,
   string,
-  TableColumnConfig | undefined,
+  TableColumnConfigExtended | undefined,
   StatefulTableRow | undefined
 ];
 
@@ -28,7 +34,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   private static readonly DEFAULT_PAGE_SIZE: number = 1000;
   private static readonly FILTER_DEBOUNCE_MS: number = 200;
 
-  private columnConfigs: Map<string, TableColumnConfig> = new Map<string, TableColumnConfig>();
+  private columnConfigs: Map<string, TableColumnConfigExtended> = new Map<string, TableColumnConfigExtended>();
   private cachedRows: StatefulTableRow[] = [];
   private readonly cachedValues: Map<string, unknown[]> = new Map<string, unknown[]>();
   private lastRowChange: StatefulTableRow | undefined;
@@ -73,8 +79,8 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     this.loadingStateSubject.complete();
   }
 
-  public getFilterValues(columnConfig: TableColumnConfig): unknown[] {
-    return this.cachedValues.has(columnConfig.field) ? this.cachedValues.get(columnConfig.field)! : [];
+  public getFilterValues(field: string): unknown[] {
+    return this.cachedValues.has(field) ? this.cachedValues.get(field)! : [];
   }
 
   private cacheRows(rows: StatefulTableRow[]): void {
@@ -90,9 +96,13 @@ export class TableCdkDataSource implements DataSource<TableRow> {
         const key = keyValueTuple[0];
         const value = keyValueTuple[1];
 
-        const columnConfig = this.columnConfigs.get(key)!;
-        const parser = new columnConfig.parser!();
-        const filterValue = parser.parseFilterValue(value);
+        const columnConfig = this.columnConfigs.get(key);
+
+        if (columnConfig === undefined) {
+          return;
+        }
+
+        const filterValue = columnConfig.parser.parseFilterValue(value);
 
         if (valueMap.has(key)) {
           valueMap.get(key)?.add(filterValue);
@@ -151,7 +161,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     ]).pipe(map(values => this.detectRowStateChanges(...values)));
   }
 
-  private columnConfigChange(): Observable<TableColumnConfig[]> {
+  private columnConfigChange(): Observable<TableColumnConfigExtended[]> {
     return this.columnConfigProvider.columnConfigs$.pipe(
       tap(columnConfigs => {
         this.columnConfigs.clear();
@@ -175,10 +185,10 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   }
 
   private detectRowStateChanges(
-    columnConfigs: TableColumnConfig[],
+    columnConfigs: TableColumnConfigExtended[],
     pageEvent: PageEvent,
     filter: string,
-    changedColumn: TableColumnConfig | undefined,
+    changedColumn: TableColumnConfigExtended | undefined,
     changedRow: StatefulTableRow | undefined
   ): WatchedObservables {
     return [columnConfigs, pageEvent, filter, changedColumn, this.buildRowStateChange(changedRow)];
@@ -202,10 +212,10 @@ export class TableCdkDataSource implements DataSource<TableRow> {
    ****************************/
 
   private buildDataObservable(
-    columnConfigs: TableColumnConfig[],
+    columnConfigs: TableColumnConfigExtended[],
     pageEvent: PageEvent,
     filter: string,
-    changedColumn: TableColumnConfig | undefined,
+    changedColumn: TableColumnConfigExtended | undefined,
     changedRow: StatefulTableRow | undefined
   ): Observable<StatefulTableRow[]> {
     if (changedRow !== undefined) {
@@ -247,7 +257,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   }
 
   private fetchNewData(
-    columnConfigs: TableColumnConfig[],
+    columnConfigs: TableColumnConfigExtended[],
     pageEvent: PageEvent,
     searchQuery: string
   ): Observable<StatefulTableRow[]> {
@@ -273,7 +283,11 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     );
   }
 
-  private buildRequest(columnConfigs: TableColumnConfig[], pageConfig: PageEvent, filter: string): TableDataRequest {
+  private buildRequest(
+    columnConfigs: TableColumnConfigExtended[],
+    pageConfig: PageEvent,
+    filter: string
+  ): TableDataRequest {
     const request: TableDataRequest = {
       columns: TableCdkColumnUtil.fetchableColumnConfigs(columnConfigs),
       position: {
@@ -284,7 +298,9 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     };
 
     columnConfigs
-      .filter((columnConfig): columnConfig is RequireBy<TableColumnConfig, 'sort'> => columnConfig.sort !== undefined)
+      .filter(
+        (columnConfig): columnConfig is RequireBy<TableColumnConfigExtended, 'sort'> => columnConfig.sort !== undefined
+      )
       .forEach(columnConfig => {
         /*
          * NOTE: The columnConfigs are set up to allow multi-column sorting, but this is not currently supported.

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnI
 import { TypedSimpleChanges } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-bar/filter-attribute';
 import { TableCellAlignmentType } from '../cells/types/table-cell-alignment-type';
-import { TableColumnConfig, TableSortDirection } from '../table-api';
+import { TableColumnConfigExtended, TableSortDirection } from '../table-api';
 
 @Component({
   selector: 'htc-table-header-cell-renderer',
@@ -15,11 +15,11 @@ import { TableColumnConfig, TableSortDirection } from '../table-api';
       [htcTooltip]="this.columnConfig.title"
       class="table-header-cell-renderer"
     >
-      <ng-container *ngIf="this.columnConfig?.filterAttribute && this.leftAlignFilterButton">
+      <ng-container *ngIf="this.columnConfig?.filterable && this.leftAlignFilterButton">
         <ng-container *ngTemplateOutlet="filterButton"></ng-container>
       </ng-container>
       <div class="title" [ngClass]="this.classes" (click)="this.sortChange.emit()">{{ this.columnConfig.title }}</div>
-      <ng-container *ngIf="this.columnConfig?.filterAttribute && !this.leftAlignFilterButton">
+      <ng-container *ngIf="this.columnConfig?.filterable && !this.leftAlignFilterButton">
         <ng-container *ngTemplateOutlet="filterButton"></ng-container>
       </ng-container>
 
@@ -27,8 +27,8 @@ import { TableColumnConfig, TableSortDirection } from '../table-api';
         <htc-in-filter-button
           class="filter-button"
           [metadata]="this.metadata"
-          [attribute]="this.columnConfig.filterAttribute"
-          [values]="this.values"
+          [attribute]="this.columnConfig.attribute"
+          [values]="this.columnConfig.filterValues"
         ></htc-in-filter-button>
       </ng-template>
     </div>
@@ -39,16 +39,13 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
   public metadata?: FilterAttribute[];
 
   @Input()
-  public columnConfig?: TableColumnConfig;
+  public columnConfig?: TableColumnConfigExtended;
 
   @Input()
   public index?: number;
 
   @Input()
   public sort?: TableSortDirection;
-
-  @Input()
-  public values?: unknown[];
 
   @Output()
   public readonly sortChange: EventEmitter<void> = new EventEmitter();
@@ -73,7 +70,7 @@ export class TableHeaderCellRendererComponent implements OnInit, OnChanges {
     }
 
     // Allow columnConfig to override default alignment for cell renderer
-    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer?.alignment;
+    this.alignment = this.columnConfig.alignment ?? this.columnConfig.renderer.alignment;
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
     this.classes = this.buildClasses();
   }

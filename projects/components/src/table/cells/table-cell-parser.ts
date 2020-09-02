@@ -15,7 +15,7 @@ export interface TableCellParserConstructor<TCellData, TValue, TFilterValue>
 // tslint:disable-next-line:only-arrow-functions
 export function TableCellParser(tableCellParserMetadata: TableCellParserMetadata): TableCellParserDecorator {
   return (constructor: TableCellParserConstructor<unknown, unknown, unknown>): void => {
-    constructor.prototype.type = constructor.type = tableCellParserMetadata.type;
+    constructor.type = tableCellParserMetadata.type;
   };
 }
 

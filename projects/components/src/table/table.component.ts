@@ -19,9 +19,6 @@ import { filter, map } from 'rxjs/operators';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
-import { TableCellStateParser } from './cells/state-parsers/table-cell-state-parser';
-import { TableCheckboxCellRendererComponent } from './cells/state-renderers/checkbox/table-checkbox-cell-renderer.component';
-import { TableExpanderCellRendererComponent } from './cells/state-renderers/expander/table-expander-cell-renderer.component';
 import { CoreTableCellRendererType } from './cells/types/core-table-cell-renderer-type';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
@@ -36,12 +33,14 @@ import { TableDataSource } from './data/table-data-source';
 import {
   StatefulTableRow,
   TableColumnConfig,
+  TableColumnConfigExtended,
   TableMode,
   TableRow,
   TableSelectionMode,
   TableSortDirection,
   TableStyle
 } from './table-api';
+import { TableService } from './table.service';
 
 // tslint:disable max-file-line-count
 @Component({
@@ -76,7 +75,6 @@ import {
               [columnConfig]="columnDef"
               [index]="index"
               [sort]="columnDef.sort"
-              [values]="this.availableValues?.get(columnDef.field)"
               (sortChange)="this.onHeaderCellClick(columnDef)"
             >
             </htc-table-header-cell-renderer>
@@ -178,8 +176,6 @@ export class TableComponent
     width: '32px',
     visible: true,
     display: CoreTableCellRendererType.RowExpander,
-    renderer: TableExpanderCellRendererComponent,
-    parser: TableCellStateParser,
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
   };
 
@@ -188,8 +184,6 @@ export class TableComponent
     width: '32px',
     visible: true,
     display: CoreTableCellRendererType.Checkbox,
-    renderer: TableCheckboxCellRendererComponent,
-    parser: TableCellStateParser,
     onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
   };
 
@@ -265,34 +259,35 @@ export class TableComponent
   @ViewChild(PaginatorComponent)
   public paginator?: PaginatorComponent;
 
-  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<TableColumnConfig[]>(
-    []
-  );
+  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfigExtended[]> = new BehaviorSubject<
+    TableColumnConfigExtended[]
+  >([]);
   private readonly filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private readonly rowStateSubject: BehaviorSubject<StatefulTableRow | undefined> = new BehaviorSubject<
     StatefulTableRow | undefined
   >(undefined);
-  private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
-    TableColumnConfig | undefined
+  private readonly columnStateSubject: BehaviorSubject<TableColumnConfigExtended | undefined> = new BehaviorSubject<
+    TableColumnConfigExtended | undefined
   >(undefined);
 
-  public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
+  public readonly columnConfigs$: Observable<TableColumnConfigExtended[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
   public readonly rowState$: Observable<StatefulTableRow | undefined> = this.rowStateSubject.asObservable();
-  public readonly columnState$: Observable<TableColumnConfig | undefined> = this.columnStateSubject.asObservable();
+  public readonly columnState$: Observable<
+    TableColumnConfigExtended | undefined
+  > = this.columnStateSubject.asObservable();
   public readonly urlPageData$: Observable<Partial<PageEvent> | undefined> = this.activatedRoute.queryParamMap.pipe(
     map(params => this.getPageData(params))
   );
 
-  public isTableFullPage: boolean = false;
-
   public dataSource?: TableCdkDataSource;
-  public availableValues?: Map<string, unknown[]>;
+  public isTableFullPage: boolean = false;
 
   public constructor(
     private readonly changeDetector: ChangeDetectorRef,
     private readonly navigationService: NavigationService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly tableService: TableService
   ) {
     combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
       .pipe(
@@ -307,8 +302,8 @@ export class TableComponent
       this.isTableFullPage = this.display === TableStyle.FullPage;
     }
 
-    if (changes.columnConfigs || changes.detailContent) {
-      this.columnConfigsSubject.next(this.buildColumnConfigs());
+    if (changes.columnConfigs || changes.detailContent || changes.metadata) {
+      this.columnConfigsSubject.next(this.buildColumnConfigExtendeds());
     }
 
     if (changes.data || changes.columnConfigs || changes.pageSize || changes.pageSizeOptions || changes.pageable) {
@@ -342,8 +337,9 @@ export class TableComponent
 
     this.dataSource = this.buildDataSource();
     this.dataSource?.loadingStateChange$.subscribe(() => {
-      this.availableValues = this.getAvailableValues();
+      this.tableService.updateFilterValues(this.columnConfigsSubject.value, this.dataSource!); // Mutation! Ew!
     });
+    this.columnConfigsSubject.next(this.buildColumnConfigExtendeds());
     this.rowStateSubject.next(undefined);
     this.toggleRowSelections(this.selections);
   }
@@ -352,7 +348,7 @@ export class TableComponent
     return !!this.data && !!this.columnConfigs && (this.pageable ? !!this.paginator : true);
   }
 
-  public onHeaderCellClick(columnConfig: TableColumnConfig): void {
+  public onHeaderCellClick(columnConfig: TableColumnConfigExtended): void {
     this.updateSort({
       column: columnConfig,
       direction: this.getNextSortDirection(columnConfig.sort)
@@ -410,20 +406,20 @@ export class TableComponent
     return this.hasExpandableRows() ? index - 1 : index;
   }
 
-  private buildColumnConfigs(): TableColumnConfig[] {
-    if (!this.columnConfigs) {
+  private buildColumnConfigExtendeds(): TableColumnConfigExtended[] {
+    if (!this.columnConfigs || !this.dataSource) {
       return [];
     }
 
+    let colConfigs = this.columnConfigs;
+
     if (this.hasExpandableRows()) {
-      return [this.expandableToggleColumnConfig, ...this.columnConfigs];
+      colConfigs = [this.expandableToggleColumnConfig, ...this.columnConfigs];
+    } else if (this.hasMultiSelect()) {
+      colConfigs = [this.multiSelectRowColumnConfig, ...this.columnConfigs];
     }
 
-    if (this.hasMultiSelect()) {
-      return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
-    }
-
-    return this.columnConfigs;
+    return this.tableService.buildExtendedColumnConfigs(colConfigs, this.dataSource, this.metadata);
   }
 
   private buildDataSource(): TableCdkDataSource | undefined {
@@ -432,20 +428,6 @@ export class TableComponent
     }
 
     return new TableCdkDataSource(this, this, this, this, this, this.paginator);
-  }
-
-  public getAvailableValues(): Map<string, unknown[]> {
-    const valueMap = new Map<string, unknown[]>();
-
-    if (this.dataSource === undefined) {
-      return valueMap;
-    }
-
-    this.columnConfigs?.forEach(columnConfig => {
-      valueMap.set(columnConfig.field, this.dataSource!.getFilterValues(columnConfig));
-    });
-
-    return valueMap;
   }
 
   public applyFilter(value: string): void {
@@ -596,7 +578,7 @@ export class TableComponent
       : undefined;
   }
 
-  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfig[]): Required<SortedColumn> | undefined {
+  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfigExtended[]): Required<SortedColumn> | undefined {
     if (!this.syncWithUrl) {
       return undefined;
     }
@@ -614,6 +596,6 @@ export class TableComponent
 }
 
 interface SortedColumn {
-  column: TableColumnConfig;
+  column: TableColumnConfigExtended;
   direction?: TableSortDirection;
 }

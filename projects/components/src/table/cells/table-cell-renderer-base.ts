@@ -1,11 +1,6 @@
 import { Directive, Inject, OnInit } from '@angular/core';
-import { TableColumnConfig, TableRow } from '../table-api';
-import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA
-} from './table-cell-injection-tokens';
+import { TableColumnConfigExtended, TableRow } from '../table-api';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from './table-cell-injection';
 import { TableCellParserBase } from './table-cell-parser-base';
 import { CoreTableCellParserType } from './types/core-table-cell-parser-type';
 import { CoreTableCellRendererType } from './types/core-table-cell-renderer-type';
@@ -25,17 +20,17 @@ export abstract class TableCellRendererBase<TCellData, TValue = TCellData> imple
   public readonly isFirstColumn: boolean = false;
 
   public constructor(
-    @Inject(TABLE_COLUMN_CONFIG) private readonly columnConfig: TableColumnConfig,
+    @Inject(TABLE_COLUMN_CONFIG) private readonly columnConfig: TableColumnConfigExtended,
+    @Inject(TABLE_COLUMN_INDEX) private readonly index: number,
     @Inject(TABLE_CELL_DATA) private readonly cellData: TCellData,
-    @Inject(TABLE_ROW_DATA) private readonly rowData: TableRow,
-    @Inject(TABLE_COLUMN_INDEX) private readonly index: number
+    @Inject(TABLE_ROW_DATA) private readonly rowData: TableRow
   ) {
     this.clickable = this.columnConfig.onClick !== undefined;
     this.isFirstColumn = this.index === 0;
   }
 
   public ngOnInit(): void {
-    const cellParser = new this.columnConfig.parser!() as TableCellParserBase<TCellData, TValue, unknown>;
+    const cellParser = this.columnConfig.parser as TableCellParserBase<TCellData, TValue, unknown>;
 
     this._value = cellParser.parseValue(this.cellData, this.rowData);
     this._units = cellParser.parseUnits(this.cellData, this.rowData);

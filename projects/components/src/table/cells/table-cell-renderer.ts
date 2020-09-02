@@ -17,9 +17,9 @@ export interface TableCellRendererConstructor
 // tslint:disable-next-line:only-arrow-functions
 export function TableCellRenderer(tableCellRendererMetadata: TableCellRendererMetadata): TableCellRendererDecorator {
   return (constructor: TableCellRendererConstructor): void => {
-    constructor.prototype.type = constructor.type = tableCellRendererMetadata.type;
-    constructor.prototype.alignment = constructor.alignment = tableCellRendererMetadata.alignment;
-    constructor.prototype.parser = constructor.parser = tableCellRendererMetadata.parser;
+    constructor.type = tableCellRendererMetadata.type;
+    constructor.alignment = tableCellRendererMetadata.alignment;
+    constructor.parser = tableCellRendererMetadata.parser;
   };
 }
 

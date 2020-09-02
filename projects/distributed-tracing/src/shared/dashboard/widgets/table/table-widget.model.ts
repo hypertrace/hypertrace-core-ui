@@ -1,11 +1,4 @@
-import {
-  FilterAttribute,
-  TableDataSource,
-  TableMode,
-  TableRow,
-  TableSelectionMode,
-  TableStyle
-} from '@hypertrace/components';
+import { TableDataSource, TableMode, TableRow, TableSelectionMode, TableStyle } from '@hypertrace/components';
 import {
   ArrayPropertyTypeInstance,
   EnumPropertyTypeInstance,
@@ -25,7 +18,7 @@ import {
   STRING_PROPERTY
 } from '@hypertrace/hyperdash';
 import { ModelInject, MODEL_API } from '@hypertrace/hyperdash-angular';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { InteractionHandler } from '../../interaction/interaction-handler';
 import { SpecificationBackedTableColumnDef, TableWidgetColumnModel } from './table-widget-column.model';
 
@@ -133,12 +126,8 @@ export class TableWidgetModel {
     return this.api.getData<TableDataSource<TableRow>>();
   }
 
-  public getColumns(attributes: FilterAttribute[]): Observable<SpecificationBackedTableColumnDef[]> {
-    return of(
-      this.columns.map(column =>
-        column.asTableColumnDef(attributes.find(attribute => attribute.name === column.value.name))
-      )
-    );
+  public getColumns(): SpecificationBackedTableColumnDef[] {
+    return this.columns.map(column => column.asTableColumnDef());
   }
 
   public getChildModel(row: TableRow): object | undefined {

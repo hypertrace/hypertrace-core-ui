@@ -1,8 +1,11 @@
+import { Injector } from '@angular/core';
 import { TableRow } from '../table-api';
 import { CoreTableCellParserType } from './types/core-table-cell-parser-type';
 
 export abstract class TableCellParserBase<TCellData, TValue, TFilterValue> {
   public static readonly type: CoreTableCellParserType;
+
+  public constructor(protected readonly injector: Injector) {}
 
   public abstract parseValue(cellData: TCellData, rowData: TableRow): TValue;
   public abstract parseFilterValue(cellData: TCellData): TFilterValue;

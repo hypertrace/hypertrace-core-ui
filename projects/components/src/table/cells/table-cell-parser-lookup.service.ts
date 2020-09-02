@@ -7,13 +7,9 @@ import { TableCellParserConstructor } from './table-cell-parser';
 export class TableCellParserLookupService {
   private readonly parsers: Map<string, TableCellParserConstructor<unknown, unknown, unknown>> = new Map();
 
-  public register(parser: TableCellParserConstructor<unknown, unknown, unknown>): void {
-    this.parsers.set(parser.type, parser);
-  }
-
-  public registerAll(renderers: TableCellParserConstructor<unknown, unknown, unknown>[]): void {
-    renderers.forEach(renderer => {
-      this.register(renderer);
+  public register(...parsers: TableCellParserConstructor<unknown, unknown, unknown>[]): void {
+    parsers.forEach(parser => {
+      this.parsers.set(parser.type, parser);
     });
   }
 

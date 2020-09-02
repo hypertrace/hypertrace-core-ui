@@ -213,7 +213,7 @@ export * from './table/table.component';
 export * from './table/table-api';
 export * from './table/data/table-data-source';
 export * from './table/cells/types/table-cell-alignment-type';
-export * from './table/cells/table-cell-injection-tokens';
+export * from './table/cells/table-cell-injection';
 export * from './table/cells/types/core-table-cell-renderer-type';
 export * from './table/cells/table-cell-renderer-base';
 export * from './table/cells/table-cell-parser-base';

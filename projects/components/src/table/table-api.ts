@@ -1,24 +1,30 @@
 import { Dictionary } from '@hypertrace/common';
 import { Observable } from 'rxjs';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
-import { TableCellParserConstructor } from './cells/table-cell-parser';
+import { TableCellParserBase } from './cells/table-cell-parser-base';
 import { TableCellRendererConstructor } from './cells/table-cell-renderer';
 import { TableCellAlignmentType } from './cells/types/table-cell-alignment-type';
 
 export interface TableColumnConfig {
-  field: string;
+  field: string; // This is the unique name for the column (usually same as name except for composite fields)
+  name?: string; // Attribute name (for composite fields this should be the filterable attribute)
   display?: string;
-  renderer?: TableCellRendererConstructor;
-  parser?: TableCellParserConstructor<unknown, unknown, unknown>;
-  filterAttribute?: FilterAttribute;
   title?: string;
   titleTooltip?: string;
   sort?: TableSortDirection;
   visible?: boolean;
   sortable?: boolean;
+  filterable?: boolean;
   alignment?: TableCellAlignmentType;
   width?: number | string;
   onClick?(row: TableRow, column: TableColumnConfig): void;
+}
+
+export interface TableColumnConfigExtended extends TableColumnConfig {
+  attribute?: FilterAttribute; // Undefined if we can't determine scope yet (e.g. Interactions)
+  renderer: TableCellRendererConstructor;
+  parser: TableCellParserBase<unknown, unknown, unknown>;
+  filterValues: unknown[];
 }
 
 export type TableRow = Dictionary<unknown>;

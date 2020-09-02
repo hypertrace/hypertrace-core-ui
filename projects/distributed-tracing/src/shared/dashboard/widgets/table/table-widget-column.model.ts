@@ -1,16 +1,12 @@
 import {
   CoreTableCellRendererType,
-  FilterAttribute,
   TableCellAlignmentType,
-  TableCellParserLookupService,
-  TableCellRendererLookupService,
   TableColumnConfig,
   TableRow,
   TableSortDirection
 } from '@hypertrace/components';
 import { EnumPropertyTypeInstance, ENUM_TYPE } from '@hypertrace/dashboards';
 import { BOOLEAN_PROPERTY, Model, ModelProperty, ModelPropertyType, STRING_PROPERTY } from '@hypertrace/hyperdash';
-import { ModelInject } from '@hypertrace/hyperdash-angular';
 import { Specification } from '../../../graphql/model/schema/specifier/specification';
 import { InteractionHandler } from '../../interaction/interaction-handler';
 
@@ -95,27 +91,17 @@ export class TableWidgetColumnModel {
   })
   public sort?: TableSortDirection;
 
-  @ModelInject(TableCellRendererLookupService)
-  private readonly tableCellRendererLookupService!: TableCellRendererLookupService;
-
-  @ModelInject(TableCellParserLookupService)
-  private readonly tableCellParserLookupService!: TableCellParserLookupService;
-
-  public asTableColumnDef(filterAttribute?: FilterAttribute): SpecificationBackedTableColumnDef {
-    const rendererConstructor = this.tableCellRendererLookupService.lookup(this.display);
-    const parserConstructor = this.tableCellParserLookupService.lookup(rendererConstructor.parser);
-
+  public asTableColumnDef(): SpecificationBackedTableColumnDef {
     return {
       field: this.value.resultAlias(),
+      name: this.value.name,
       display: this.display,
-      renderer: rendererConstructor,
-      parser: parserConstructor,
-      filterAttribute: this.filterable ? filterAttribute : undefined,
       title: this.title,
       titleTooltip: this.titleTooltip,
       alignment: this.alignment,
       width: this.width,
       visible: this.visible,
+      filterable: this.filterable,
       sort: this.sort,
       onClick: this.buildClickHandlerIfDefined(),
       specification: this.value

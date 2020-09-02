@@ -96,10 +96,10 @@ export class TableCellsModule {
   }
 
   private registerAllParsers(cellParsers: TableCellParserConstructor<unknown, unknown, unknown>[] = []): void {
-    this.tableCellParserLookupService.registerAll(cellParsers);
+    this.tableCellParserLookupService.register(...cellParsers);
   }
 
   private registerAllRenderers(cellRenderers: TableCellRendererConstructor[] = []): void {
-    this.tableCellRendererLookupService.registerAll(cellRenderers);
+    this.tableCellRendererLookupService.register(...cellRenderers);
   }
 }
