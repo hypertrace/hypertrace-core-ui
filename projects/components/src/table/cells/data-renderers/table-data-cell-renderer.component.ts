@@ -113,6 +113,7 @@ export class TableDataCellRendererComponent implements OnInit {
     return this.columnConfig.parser.parseFilterValue(this.cellData);
   }
 
+  // tslint:disable-next-line:ban-types
   private isClickHandlerDefined(onClick: unknown): onClick is Function {
     return onClick !== undefined && onClick instanceof Function;
   }

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import {
-  SequenceSegment,
   CoreTableCellRendererType,
+  SequenceSegment,
   StatefulTableRow,
   TableColumnConfig,
   TableComponent,

@@ -34,7 +34,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
   private static readonly DEFAULT_PAGE_SIZE: number = 1000;
   private static readonly FILTER_DEBOUNCE_MS: number = 200;
 
-  private columnConfigs: Map<string, TableColumnConfigExtended> = new Map<string, TableColumnConfigExtended>();
+  private readonly columnConfigs: Map<string, TableColumnConfigExtended> = new Map<string, TableColumnConfigExtended>();
   private cachedRows: StatefulTableRow[] = [];
   private readonly cachedValues: Map<string, unknown[]> = new Map<string, unknown[]>();
   private lastRowChange: StatefulTableRow | undefined;
