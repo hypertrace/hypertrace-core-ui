@@ -28,7 +28,7 @@ export class TimestampTableCellRendererComponent extends TableCellRendererBase<D
     mode: DateFormatMode.DateAndTimeWithSeconds
   };
 
-  // Extending constructor required with dateFormatter declaration above
+  // Extending constructor required with formatter declaration above
   public constructor(
     @Inject(TABLE_COLUMN_CONFIG) columnConfig: TableColumnConfigExtended,
     @Inject(TABLE_COLUMN_INDEX) index: number,

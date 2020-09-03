@@ -1,6 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormatterStyle } from '@hypertrace/common';
-import { TableCellAlignmentType, TableCellRenderer, TableCellRendererBase } from '@hypertrace/components';
+import {
+  TABLE_CELL_DATA,
+  TABLE_COLUMN_CONFIG,
+  TABLE_COLUMN_INDEX,
+  TABLE_ROW_DATA,
+  TableCellAlignmentType,
+  TableCellRenderer,
+  TableCellRendererBase,
+  TableColumnConfigExtended,
+  TableRow
+} from '@hypertrace/components';
 import { MetricAggregation } from '../../../../../shared/graphql/model/metrics/metric-aggregation';
 import { TracingTableCellType } from '../../tracing-table-cell-type';
 
@@ -27,4 +37,14 @@ export class MetricTableCellRendererComponent extends TableCellRendererBase<
   number
 > {
   public readonly formatter: FormatterStyle = FormatterStyle.None;
+
+  // Extending constructor required with formatter declaration above
+  public constructor(
+    @Inject(TABLE_COLUMN_CONFIG) columnConfig: TableColumnConfigExtended,
+    @Inject(TABLE_COLUMN_INDEX) index: number,
+    @Inject(TABLE_CELL_DATA) cellData: number | Partial<MetricAggregation>,
+    @Inject(TABLE_ROW_DATA) rowData: TableRow
+  ) {
+    super(columnConfig, index, cellData, rowData);
+  }
 }
