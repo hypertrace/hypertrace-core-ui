@@ -11,6 +11,14 @@ import { PageHeaderComponent } from './page-header.component';
 @NgModule({
   declarations: [PageHeaderComponent],
   exports: [PageHeaderComponent],
-  imports: [IconModule, CommonModule, TimeRangeModule, BreadcrumbsModule, LabelModule, NavigableTabModule, BetaTagModule]
+  imports: [
+    IconModule,
+    CommonModule,
+    TimeRangeModule,
+    BreadcrumbsModule,
+    LabelModule,
+    NavigableTabModule,
+    BetaTagModule
+  ]
 })
 export class PageHeaderModule {}

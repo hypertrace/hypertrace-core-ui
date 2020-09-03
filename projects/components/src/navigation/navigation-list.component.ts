@@ -16,8 +16,8 @@ import { IconSize } from '../icon/icon-size';
           <ng-container [ngSwitch]="item.type">
             <div *ngIf="!this.collapsed">
               <div *ngSwitchCase="'${NavItemType.Header}'" class="nav-header">
-                <div class="label"> {{ item.label }} </div>
-                <htc-beta-tag *ngIf="item.isBeta" class="beta" ></htc-beta-tag>
+                <div class="label">{{ item.label }}</div>
+                <htc-beta-tag *ngIf="item.isBeta" class="beta"></htc-beta-tag>
               </div>
             </div>
 
