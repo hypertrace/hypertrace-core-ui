@@ -425,7 +425,7 @@ export class TableComponent
       colConfigs = [this.multiSelectRowColumnConfig, ...this.columnConfigs];
     }
 
-    return this.tableService.buildExtendedColumnConfigs(colConfigs, this.dataSource, this.metadata);
+    return this.tableService.buildExtendedColumnConfigs(colConfigs, this.dataSource, this.metadata || []);
   }
 
   private buildDataSource(): TableCdkDataSource | undefined {
