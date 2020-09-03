@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormatterStyle } from '@hypertrace/common';
 import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA,
   TableCellAlignmentType,
   TableCellRenderer,
   TableCellRendererBase,
   TableColumnConfigExtended,
-  TableRow
+  TableRow,
+  TABLE_CELL_DATA,
+  TABLE_COLUMN_CONFIG,
+  TABLE_COLUMN_INDEX,
+  TABLE_ROW_DATA
 } from '@hypertrace/components';
 import { MetricAggregation } from '../../../../../shared/graphql/model/metrics/metric-aggregation';
 import { TracingTableCellType } from '../../tracing-table-cell-type';
