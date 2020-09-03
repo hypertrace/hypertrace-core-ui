@@ -1,7 +1,7 @@
 import { Dictionary } from '@hypertrace/common';
 import { StatefulPrefetchedTreeTableRow } from '@hypertrace/components';
 import { SpanType } from '../../../../graphql/model/schema/span';
-import { SpanNameCellRendererData } from './span-name/span-name-table-cell-renderer.component';
+import { SpanNameCellData } from './span-name/span-name-cell-data';
 
 export interface WaterfallData {
   id: string;
@@ -26,7 +26,7 @@ export interface WaterfallData {
 
 export interface WaterfallDataNode extends WaterfallData, Omit<StatefulPrefetchedTreeTableRow, '$$state'> {
   $$state: WaterfallChartState;
-  $$spanName: SpanNameCellRendererData;
+  $$spanName: SpanNameCellData;
   $$iconType: string;
   color?: string;
 }

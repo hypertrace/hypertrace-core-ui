@@ -1,54 +1,38 @@
-import { cloneDeep } from 'lodash-es';
-import { StandardTableCellRendererType } from '../cells/types/standard-table-cell-renderer-type';
+import { CoreTableCellRendererType } from '../cells/types/core-table-cell-renderer-type';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 import { TableCdkColumnUtil } from './table-cdk-column-util';
 
 describe('Table column util', () => {
   let dataColumnConfigs: TableColumnConfig[];
   let columnConfigs: TableColumnConfig[];
-  let sortedColumnConfigs: TableColumnConfig[];
 
   beforeEach(() => {
     dataColumnConfigs = [
       {
-        field: 'test-default',
+        id: 'test-default',
+        visible: true,
+        sort: TableSortDirection.Ascending,
+        sortable: true
+      },
+      {
+        id: 'test-text',
+        display: CoreTableCellRendererType.Text,
+        sort: TableSortDirection.Descending,
         visible: true
       },
       {
-        field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
-        visible: true
-      },
-      {
-        field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
-        visible: true
+        id: 'test-numeric',
+        display: CoreTableCellRendererType.Number,
+        visible: true,
+        sortable: false
       }
     ];
 
     columnConfigs = [
       ...dataColumnConfigs,
       {
-        field: 'test-expander',
-        renderer: StandardTableCellRendererType.RowExpander
-      }
-    ];
-
-    sortedColumnConfigs = [
-      {
-        field: 'test-default',
-        visible: true
-      },
-      {
-        field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
-        sort: TableSortDirection.Ascending,
-        visible: true
-      },
-      {
-        field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
-        visible: true
+        id: 'test-expander',
+        display: CoreTableCellRendererType.RowExpander
       }
     ];
   });
@@ -62,14 +46,32 @@ describe('Table column util', () => {
     expect(TableCdkColumnUtil.fetchableColumnConfigs(columnConfigs)).toEqual(dataColumnConfigs);
   });
 
-  test('should unsort other columns when others already sorted', () => {
-    TableCdkColumnUtil.unsortOtherColumns(sortedColumnConfigs[0], sortedColumnConfigs);
-    expect(sortedColumnConfigs).toEqual(dataColumnConfigs);
+  test('should unsort other columns', () => {
+    TableCdkColumnUtil.unsortOtherColumns(dataColumnConfigs[0], dataColumnConfigs);
+    expect(dataColumnConfigs).toEqual([
+      {
+        id: 'test-default',
+        visible: true,
+        sort: TableSortDirection.Ascending,
+        sortable: true
+      },
+      {
+        id: 'test-text',
+        display: CoreTableCellRendererType.Text,
+        visible: true
+      },
+      {
+        id: 'test-numeric',
+        display: CoreTableCellRendererType.Number,
+        visible: true,
+        sortable: false
+      }
+    ]);
   });
 
-  test('should unsort other columns when others not sorted', () => {
-    const cloned = cloneDeep(sortedColumnConfigs);
-    TableCdkColumnUtil.unsortOtherColumns(cloned[1], cloned);
-    expect(cloned).toEqual(sortedColumnConfigs);
+  test('should check sortable for column config', () => {
+    expect(TableCdkColumnUtil.isColumnSortable(dataColumnConfigs[0])).toBeTruthy();
+    expect(TableCdkColumnUtil.isColumnSortable(dataColumnConfigs[1])).toBeTruthy();
+    expect(TableCdkColumnUtil.isColumnSortable(dataColumnConfigs[2])).toBeFalsy();
   });
 });

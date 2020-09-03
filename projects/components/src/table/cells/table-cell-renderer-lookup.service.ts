@@ -1,12 +1,5 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { LoggerService } from '@hypertrace/common';
-import { TableColumnConfig, TableRow } from '../table-api';
-import {
-  TABLE_CELL_RENDERER_CELL_DATA,
-  TABLE_CELL_RENDERER_COLUMN_CONFIG,
-  TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA
-} from './table-cell-injection-tokens';
 import { TableCellRendererConstructor } from './table-cell-renderer';
 
 @Injectable({
@@ -53,35 +46,5 @@ export class TableCellRendererLookupService {
     }
 
     return this.defaultRenderer;
-  }
-
-  public createInjector(
-    columnConfig: TableColumnConfig,
-    index: number,
-    value: unknown,
-    row: TableRow,
-    injector: Injector
-  ): Injector {
-    return Injector.create({
-      providers: [
-        {
-          provide: TABLE_CELL_RENDERER_COLUMN_CONFIG,
-          useValue: columnConfig
-        },
-        {
-          provide: TABLE_CELL_RENDERER_COLUMN_INDEX,
-          useValue: index
-        },
-        {
-          provide: TABLE_CELL_RENDERER_CELL_DATA,
-          useValue: value
-        },
-        {
-          provide: TABLE_CELL_RENDERER_ROW_DATA,
-          useValue: row
-        }
-      ],
-      parent: injector
-    });
   }
 }

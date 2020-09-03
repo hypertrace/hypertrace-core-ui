@@ -1,13 +1,7 @@
 import { FormattingModule } from '@hypertrace/common';
-import {
-  TableColumnConfig,
-  TableRow,
-  TABLE_CELL_RENDERER_CELL_DATA,
-  TABLE_CELL_RENDERER_COLUMN_CONFIG,
-  TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA
-} from '@hypertrace/components';
+import { tableCellDataProvider, tableCellProviders } from '@hypertrace/components';
 import { createComponentFactory } from '@ngneat/spectator/jest';
+import { SpanNameTableCellParser } from './span-name-table-cell-parser';
 import { SpanNameTableCellRendererComponent } from './span-name-table-cell-renderer.component';
 
 describe('Span name table cell renderer component', () => {
@@ -16,34 +10,19 @@ describe('Span name table cell renderer component', () => {
     protocolName: 'test-protocol',
     name: 'test-span-name'
   };
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
-    provide: TABLE_CELL_RENDERER_COLUMN_CONFIG,
-    useValue: column
-  });
-
-  const tableCellRendererIndexProvider = (index: number) => ({
-    provide: TABLE_CELL_RENDERER_COLUMN_INDEX,
-    useValue: index
-  });
-
-  const tableCellDataRendererCellDataProvider = (cellData: unknown) => ({
-    provide: TABLE_CELL_RENDERER_CELL_DATA,
-    useValue: cellData
-  });
-
-  const tableRowDataRendererRowDataProvider = (rowData: TableRow) => ({
-    provide: TABLE_CELL_RENDERER_ROW_DATA,
-    useValue: rowData
-  });
 
   const buildComponent = createComponentFactory({
     component: SpanNameTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
-      tableCellRendererIndexProvider(0),
-      tableCellDataRendererCellDataProvider(spanNameData),
-      tableRowDataRendererRowDataProvider({})
+      tableCellProviders(
+        {
+          id: 'test'
+        },
+        new SpanNameTableCellParser(undefined!),
+        0,
+        spanNameData
+      )
     ],
     shallow: true
   });
@@ -67,7 +46,7 @@ describe('Span name table cell renderer component', () => {
       color: 'blue'
     };
     const spectator = buildComponent({
-      providers: [tableCellDataRendererCellDataProvider(spanNameDataWithColor)]
+      providers: [tableCellDataProvider(spanNameDataWithColor)]
     });
 
     const tooltip = `${spanNameData.serviceName} ${spanNameData.protocolName} ${spanNameData.name}`;

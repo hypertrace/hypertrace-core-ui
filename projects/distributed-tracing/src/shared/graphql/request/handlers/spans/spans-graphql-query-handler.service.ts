@@ -71,7 +71,7 @@ export class SpansGraphQlQueryHandlerService implements GraphQlQueryHandler<Grap
         return this.resultUnits(spec).pipe(
           map(units => ({
             alias: alias,
-            data: units !== undefined ? { units: units, value: data } : data
+            data: units !== undefined && !this.hasUnits(data) ? { units: units, value: data } : data
           }))
         );
       })
@@ -86,6 +86,10 @@ export class SpansGraphQlQueryHandlerService implements GraphQlQueryHandler<Grap
         return span;
       })
     );
+  }
+
+  private hasUnits(data: unknown): boolean {
+    return typeof data === 'object' && data !== null && data.hasOwnProperty('units');
   }
 
   private resultUnits(specification: Specification): Observable<string | undefined> {

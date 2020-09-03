@@ -83,7 +83,8 @@ export * from './shared/graphql/model/specifications/trace-status-specification'
 
 // Table
 export { SpecificationBackedTableColumnDef } from './shared/dashboard/widgets/table/table-widget-column.model';
-export { TracingTableCellRenderer } from './shared/components/table/tracing-table-cell-renderer';
+export * from './shared/components/table/tracing-table-cell-renderer.module';
+export * from './shared/components/table/tracing-table-cell-type';
 
 // Waterfall
 export { WaterfallData } from './shared/dashboard/widgets/waterfall/waterfall/waterfall-chart';
