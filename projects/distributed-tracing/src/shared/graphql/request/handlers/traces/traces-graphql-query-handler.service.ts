@@ -69,7 +69,7 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
         return this.resultUnits(spec, request.traceType!).pipe(
           map(units => ({
             alias: alias,
-            data: units !== undefined ? { units: units, value: data } : data
+            data: units !== undefined && !this.hasUnits(data) ? { units: units, value: data } : data
           }))
         );
       })
@@ -85,6 +85,10 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
         return trace;
       })
     );
+  }
+
+  private hasUnits(data: unknown): boolean {
+    return typeof data === 'object' && data.units !== undefined;
   }
 
   private resultUnits(specification: Specification, scope: string): Observable<string | undefined> {
