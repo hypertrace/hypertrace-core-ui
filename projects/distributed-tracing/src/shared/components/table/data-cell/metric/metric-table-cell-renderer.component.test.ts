@@ -3,17 +3,18 @@ import { createComponentFactory } from '@ngneat/spectator/jest';
 import { MetricHealth } from '../../../../graphql/model/metrics/metric-health';
 
 import {
-  TableColumnConfig,
+  TableColumnConfigExtended,
   TableRow,
   TABLE_CELL_DATA,
   TABLE_COLUMN_CONFIG,
   TABLE_COLUMN_INDEX,
   TABLE_ROW_DATA
 } from '@hypertrace/components';
+import { MetricTableCellParser } from './metric-table-cell-parser';
 import { MetricTableCellRendererComponent } from './metric-table-cell-renderer.component';
 
 describe('Metric table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -37,7 +38,12 @@ describe('Metric table cell renderer component', () => {
     component: MetricTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: MetricTableCellRendererComponent,
+        parser: new MetricTableCellParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(undefined),
       tableRowDataRendererRowDataProvider({})

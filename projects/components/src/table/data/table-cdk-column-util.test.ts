@@ -16,12 +16,12 @@ describe('Table column util', () => {
       },
       {
         field: 'test-text',
-        renderer: CoreTableCellRendererType.Text,
+        display: CoreTableCellRendererType.Text,
         visible: true
       },
       {
         field: 'test-numeric',
-        renderer: CoreTableCellRendererType.Number,
+        display: CoreTableCellRendererType.Number,
         visible: true
       }
     ];
@@ -30,7 +30,7 @@ describe('Table column util', () => {
       ...dataColumnConfigs,
       {
         field: 'test-expander',
-        renderer: CoreTableCellRendererType.RowExpander
+        display: CoreTableCellRendererType.RowExpander
       }
     ];
 
@@ -41,13 +41,13 @@ describe('Table column util', () => {
       },
       {
         field: 'test-text',
-        renderer: CoreTableCellRendererType.Text,
+        display: CoreTableCellRendererType.Text,
         sort: TableSortDirection.Ascending,
         visible: true
       },
       {
         field: 'test-numeric',
-        renderer: CoreTableCellRendererType.Number,
+        display: CoreTableCellRendererType.Number,
         visible: true
       }
     ];

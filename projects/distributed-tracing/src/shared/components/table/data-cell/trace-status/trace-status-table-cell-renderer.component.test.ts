@@ -2,7 +2,7 @@ import { FormattingModule } from '@hypertrace/common';
 import { createComponentFactory } from '@ngneat/spectator/jest';
 
 import {
-  TableColumnConfig,
+  TableColumnConfigExtended,
   TableRow,
   TABLE_CELL_DATA,
   TABLE_COLUMN_CONFIG,
@@ -10,16 +10,17 @@ import {
   TABLE_ROW_DATA
 } from '@hypertrace/components';
 import { TraceStatus, TraceStatusType } from '../../../../../shared/graphql/model/schema/trace';
+import { TraceStatusTableCellParser } from './trace-status-table-cell-parser';
 import { TraceStatusTableCellRendererComponent } from './trace-status-table-cell-renderer.component';
 
-describe('Timestamp table cell renderer component', () => {
+describe('Trace status table cell renderer component', () => {
   const traceStatus: TraceStatus = {
     status: TraceStatusType.FAIL,
     statusCode: '404',
     statusMessage: 'Not Found'
   };
 
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -43,7 +44,12 @@ describe('Timestamp table cell renderer component', () => {
     component: TraceStatusTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: TraceStatusTableCellRendererComponent,
+        parser: new TraceStatusTableCellParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(traceStatus),
       tableRowDataRendererRowDataProvider({})

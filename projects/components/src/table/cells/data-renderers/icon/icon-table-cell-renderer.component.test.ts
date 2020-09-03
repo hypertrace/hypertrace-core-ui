@@ -3,17 +3,13 @@ import { IconLibraryTestingModule, IconType } from '@hypertrace/assets-library';
 import { NavigationService } from '@hypertrace/common';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { IconModule } from '../../../../icon/icon.module';
-import { TableColumnConfig, TableRow } from '../../../table-api';
-import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA
-} from '../../table-cell-injection-tokens';
+import { TableColumnConfigExtended, TableRow } from '../../../table-api';
+import { TableCellIconParser } from '../../data-parsers/table-cell-icon-parser';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
 import { IconTableCellRendererComponent } from './icon-table-cell-renderer.component';
 
 describe('Icon table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -38,7 +34,12 @@ describe('Icon table cell renderer component', () => {
     imports: [IconModule, HttpClientTestingModule, IconLibraryTestingModule],
     providers: [
       mockProvider(NavigationService),
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: IconTableCellRendererComponent,
+        parser: new TableCellIconParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(IconType.AddCircleOutline),
       tableRowDataRendererRowDataProvider({})
@@ -68,6 +69,9 @@ describe('Icon table cell renderer component', () => {
       providers: [
         tableCellRendererColumnProvider({
           field: 'test',
+          renderer: IconTableCellRendererComponent,
+          parser: new TableCellIconParser(undefined!),
+          filterValues: [],
           onClick: () => {
             /* NOOP */
           }

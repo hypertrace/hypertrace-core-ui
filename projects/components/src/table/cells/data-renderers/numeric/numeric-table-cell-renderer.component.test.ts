@@ -1,16 +1,12 @@
 import { FormattingModule } from '@hypertrace/common';
 import { byText, createComponentFactory } from '@ngneat/spectator/jest';
-import { TableColumnConfig, TableRow } from '../../../table-api';
-import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA
-} from '../../table-cell-injection-tokens';
+import { TableColumnConfigExtended, TableRow } from '../../../table-api';
+import { TableCellNumberParser } from '../../data-parsers/table-cell-number-parser';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
 import { NumericTableCellRendererComponent } from './numeric-table-cell-renderer.component';
 
 describe('Numeric table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -34,7 +30,12 @@ describe('Numeric table cell renderer component', () => {
     component: NumericTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: NumericTableCellRendererComponent,
+        parser: new TableCellNumberParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(undefined),
       tableRowDataRendererRowDataProvider({})
@@ -61,6 +62,9 @@ describe('Numeric table cell renderer component', () => {
       providers: [
         tableCellRendererColumnProvider({
           field: 'test',
+          renderer: NumericTableCellRendererComponent,
+          parser: new TableCellNumberParser(undefined!),
+          filterValues: [],
           onClick: () => {
             /* NOOP */
           }

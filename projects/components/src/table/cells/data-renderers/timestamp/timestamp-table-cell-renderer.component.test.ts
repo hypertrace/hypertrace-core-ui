@@ -1,16 +1,12 @@
 import { FormattingModule } from '@hypertrace/common';
 import { createComponentFactory } from '@ngneat/spectator/jest';
-import { TableColumnConfig, TableRow } from '../../../table-api';
-import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA
-} from '../../table-cell-injection-tokens';
+import { TableColumnConfigExtended, TableRow } from '../../../table-api';
+import { TableCellTimestampParser } from '../../data-parsers/table-cell-timestamp-parser';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
 import { TimestampTableCellRendererComponent } from './timestamp-table-cell-renderer.component';
 
 describe('Timestamp table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -34,7 +30,12 @@ describe('Timestamp table cell renderer component', () => {
     component: TimestampTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: TimestampTableCellRendererComponent,
+        parser: new TableCellTimestampParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(undefined),
       tableRowDataRendererRowDataProvider({})

@@ -1,10 +1,13 @@
+import { Injector } from '@angular/core';
 import { fakeAsync } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { NavigationService } from '@hypertrace/common';
 import {
-  LetAsyncModule,
   CoreTableCellRendererType,
+  LetAsyncModule,
   StatefulTableRow,
+  TableColumnConfig,
+  TableColumnConfigExtended,
   TableMode,
   TableSelectionMode,
   TableSortDirection
@@ -14,10 +17,16 @@ import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
 import { MockComponent } from 'ng-mocks';
 import { EMPTY, of } from 'rxjs';
 import { PaginatorComponent } from '../paginator/paginator.component';
+import { TableCellStringParser } from './cells/data-parsers/table-cell-string-parser';
+import { TextTableCellRendererComponent } from './cells/data-renderers/text/text-table-cell-renderer.component';
 import { TableCdkRowUtil } from './data/table-cdk-row-util';
 import { TableComponent } from './table.component';
+import { TableService } from './table.service';
 
 describe('Table component', () => {
+  // tslint:disable-next-line:prefer-const
+  let mockInjector: Injector;
+
   // TODO remove builders once table stops mutating inputs
   const buildData = () => [
     {
@@ -28,9 +37,12 @@ describe('Table component', () => {
     }
   ];
 
-  const buildColumns = () => [
+  const buildColumns = (): TableColumnConfigExtended[] => [
     {
-      field: 'foo'
+      field: 'foo',
+      renderer: TextTableCellRendererComponent,
+      parser: new TableCellStringParser(mockInjector!),
+      filterValues: []
     }
   ];
   const createHost = createHostFactory({
@@ -42,6 +54,9 @@ describe('Table component', () => {
       mockProvider(ActivatedRoute),
       mockProvider(ActivatedRoute, {
         queryParamMap: EMPTY
+      }),
+      mockProvider(TableService, {
+        buildExtendedColumnConfigs: (columnConfigs: TableColumnConfig[]) => columnConfigs as TableColumnConfigExtended[]
       })
     ],
     declarations: [MockComponent(PaginatorComponent)],
@@ -149,7 +164,7 @@ describe('Table component', () => {
     expect(paginator?.pageIndex).toBe(1);
   });
 
-  test('reads sort data from URL if syncWithUrl true', () => {
+  test('reads sort data from URL if syncWithUrl true', fakeAsync(() => {
     const spectator = createHost(undefined, {
       hostProps: {
         columnConfigs: buildColumns(),
@@ -167,6 +182,7 @@ describe('Table component', () => {
         })
       ]
     });
+    spectator.tick();
 
     expect(spectator.component.columnConfigs![0]).toEqual(
       expect.objectContaining({
@@ -174,7 +190,7 @@ describe('Table component', () => {
         field: 'foo'
       })
     );
-  });
+  }));
 
   test('does not alter the URL on sorting if syncWithUrl false', () => {
     const columns = buildColumns();
@@ -209,7 +225,7 @@ describe('Table component', () => {
     });
   });
 
-  test('adds the multi select row column config for multi select mode', () => {
+  test('adds the multi select row column config for multi select mode', fakeAsync(() => {
     const columns = buildColumns();
     const spectator = createHost(
       '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
@@ -222,24 +238,25 @@ describe('Table component', () => {
         }
       }
     );
+    spectator.tick();
 
     runFakeRxjs(({ expectObservable }) => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
           expect.objectContaining({
             field: '$$state',
-            renderer: CoreTableCellRendererType.Checkbox,
+            display: CoreTableCellRendererType.Checkbox,
             visible: true
           }),
-          {
+          expect.objectContaining({
             field: 'foo'
-          }
+          })
         ]
       });
     });
-  });
+  }));
 
-  test('skips the multi select row column config for single select mode', () => {
+  test('skips the multi select row column config for single select mode', fakeAsync(() => {
     const columns = buildColumns();
     const spectator = createHost(
       '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
@@ -252,19 +269,20 @@ describe('Table component', () => {
         }
       }
     );
+    spectator.tick();
 
     runFakeRxjs(({ expectObservable }) => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
-          {
+          expect.objectContaining({
             field: 'foo'
-          }
+          })
         ]
       });
     });
-  });
+  }));
 
-  test('expander column config and no multi select row column config for non flat table mode', () => {
+  test('expander column config and no multi select row column config for non flat table mode', fakeAsync(() => {
     const columns = buildColumns();
     const spectator = createHost(
       '<htc-table [columnConfigs]="columnConfigs" [data]="data" [selectionMode]="selectionMode" [mode]="mode"></htc-table>',
@@ -277,22 +295,23 @@ describe('Table component', () => {
         }
       }
     );
+    spectator.tick();
 
     runFakeRxjs(({ expectObservable }) => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
           expect.objectContaining({
             field: '$$state',
-            renderer: CoreTableCellRendererType.RowExpander,
+            display: CoreTableCellRendererType.RowExpander,
             visible: true
           }),
-          {
+          expect.objectContaining({
             field: 'foo'
-          }
+          })
         ]
       });
     });
-  });
+  }));
 
   test('should trigger toggle row selection for multi row select config', () => {
     const columns = buildColumns();

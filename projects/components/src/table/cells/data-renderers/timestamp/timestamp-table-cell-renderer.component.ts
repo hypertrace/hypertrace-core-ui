@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { DateFormatMode, DateFormatOptions } from '@hypertrace/common';
+import { TableColumnConfigExtended, TableRow } from '../../../table-api';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
 import { TableCellRenderer } from '../../table-cell-renderer';
 import { TableCellRendererBase } from '../../table-cell-renderer-base';
 import { CoreTableCellParserType } from '../../types/core-table-cell-parser-type';
@@ -25,4 +27,14 @@ export class TimestampTableCellRendererComponent extends TableCellRendererBase<D
   public readonly dateFormat: DateFormatOptions = {
     mode: DateFormatMode.DateAndTimeWithSeconds
   };
+
+  // Extending constructor required with dateFormatter declaration above
+  public constructor(
+    @Inject(TABLE_COLUMN_CONFIG) columnConfig: TableColumnConfigExtended,
+    @Inject(TABLE_COLUMN_INDEX) index: number,
+    @Inject(TABLE_CELL_DATA) cellData: Date | number,
+    @Inject(TABLE_ROW_DATA) rowData: TableRow
+  ) {
+    super(columnConfig, index, cellData, rowData);
+  }
 }

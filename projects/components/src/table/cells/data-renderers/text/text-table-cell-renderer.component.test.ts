@@ -1,16 +1,12 @@
 import { FormattingModule } from '@hypertrace/common';
 import { byText, createComponentFactory } from '@ngneat/spectator/jest';
-import { TableColumnConfig, TableRow } from '../../../table-api';
-import {
-  TABLE_CELL_DATA,
-  TABLE_COLUMN_CONFIG,
-  TABLE_COLUMN_INDEX,
-  TABLE_ROW_DATA
-} from '../../table-cell-injection-tokens';
+import { TableColumnConfigExtended, TableRow } from '../../../table-api';
+import { TableCellStringParser } from '../../data-parsers/table-cell-string-parser';
+import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
 import { TextTableCellRendererComponent } from './text-table-cell-renderer.component';
 
 describe('Text table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -34,7 +30,12 @@ describe('Text table cell renderer component', () => {
     component: TextTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: TextTableCellRendererComponent,
+        parser: new TableCellStringParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(undefined),
       tableRowDataRendererRowDataProvider({})
@@ -62,6 +63,9 @@ describe('Text table cell renderer component', () => {
         tableCellDataRendererCellDataProvider('test-text'),
         tableCellRendererColumnProvider({
           field: 'test',
+          renderer: TextTableCellRendererComponent,
+          parser: new TableCellStringParser(undefined!),
+          filterValues: [],
           onClick: () => {
             /* NOOP */
           }

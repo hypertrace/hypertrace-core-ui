@@ -1,6 +1,6 @@
 import { FormattingModule } from '@hypertrace/common';
 import {
-  TableColumnConfig,
+  TableColumnConfigExtended,
   TableRow,
   TABLE_CELL_DATA,
   TABLE_COLUMN_CONFIG,
@@ -8,6 +8,7 @@ import {
   TABLE_ROW_DATA
 } from '@hypertrace/components';
 import { createComponentFactory } from '@ngneat/spectator/jest';
+import { SpanNameTableCellParser } from './span-name-table-cell-parser';
 import { SpanNameTableCellRendererComponent } from './span-name-table-cell-renderer.component';
 
 describe('Span name table cell renderer component', () => {
@@ -16,7 +17,7 @@ describe('Span name table cell renderer component', () => {
     protocolName: 'test-protocol',
     name: 'test-span-name'
   };
-  const tableCellRendererColumnProvider = (column: TableColumnConfig) => ({
+  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
     provide: TABLE_COLUMN_CONFIG,
     useValue: column
   });
@@ -40,7 +41,12 @@ describe('Span name table cell renderer component', () => {
     component: SpanNameTableCellRendererComponent,
     imports: [FormattingModule],
     providers: [
-      tableCellRendererColumnProvider({ field: 'test' }),
+      tableCellRendererColumnProvider({
+        field: 'test',
+        renderer: SpanNameTableCellRendererComponent,
+        parser: new SpanNameTableCellParser(undefined!),
+        filterValues: []
+      }),
       tableCellRendererIndexProvider(0),
       tableCellDataRendererCellDataProvider(spanNameData),
       tableRowDataRendererRowDataProvider({})

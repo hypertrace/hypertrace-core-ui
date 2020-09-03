@@ -23,7 +23,7 @@ describe('Table widget column model', () => {
       expect.objectContaining({
         field: 'name',
         title: 'Name column',
-        renderer: CoreTableCellRendererType.Text
+        display: CoreTableCellRendererType.Text
       })
     );
   });
