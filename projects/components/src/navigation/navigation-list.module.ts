@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { BetaTagModule } from '../beta-tag/beta-tag.module';
 import { ButtonModule } from '../button/button.module';
 import { FeatureConfigCheckModule } from '../feature-check/feature-config-check.module';
 import { IconModule } from '../icon/icon.module';
@@ -21,7 +22,8 @@ import { NavigationListComponent } from './navigation-list.component';
     FeatureConfigCheckModule,
     ButtonModule,
     LinkModule,
-    LabelModule
+    LabelModule,
+    BetaTagModule
   ],
   declarations: [NavigationListComponent, NavItemComponent],
   exports: [NavigationListComponent]
