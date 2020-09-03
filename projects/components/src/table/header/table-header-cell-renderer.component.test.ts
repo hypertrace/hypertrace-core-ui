@@ -1,5 +1,7 @@
-import { TableCellAlignmentType, TableColumnConfig } from '@hypertrace/components';
+import { TableCellAlignmentType, TableColumnConfigExtended } from '@hypertrace/components';
 import { createHostFactory, mockProvider } from '@ngneat/spectator/jest';
+import { TableCellStringParser } from '../cells/data-parsers/table-cell-string-parser';
+import { TextTableCellRendererComponent } from '../cells/data-renderers/text/text-table-cell-renderer.component';
 import { TableCellRendererLookupService } from '../cells/table-cell-renderer-lookup.service';
 import { TableHeaderCellRendererComponent } from './table-header-cell-renderer.component';
 
@@ -17,8 +19,11 @@ describe('Table Header Cell Renderer', () => {
   });
 
   test('should have sortable class, if column can be sorted', () => {
-    const columnConfig: TableColumnConfig = {
+    const columnConfig: TableColumnConfigExtended = {
       field: 'test-column',
+      renderer: TextTableCellRendererComponent,
+      parser: new TableCellStringParser(undefined!),
+      filterValues: [],
       sortable: true
     };
 
@@ -35,8 +40,11 @@ describe('Table Header Cell Renderer', () => {
   });
 
   test('should not have sortable class, if column cannot be sorted', () => {
-    const columnConfig: TableColumnConfig = {
+    const columnConfig: TableColumnConfigExtended = {
       field: 'test-column',
+      renderer: TextTableCellRendererComponent,
+      parser: new TableCellStringParser(undefined!),
+      filterValues: [],
       sortable: false
     };
 

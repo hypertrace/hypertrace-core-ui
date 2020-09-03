@@ -58,7 +58,6 @@ describe('Table column util', () => {
       {
         field: 'test-text',
         display: CoreTableCellRendererType.Text,
-        sort: TableSortDirection.Ascending,
         visible: true
       },
       {
