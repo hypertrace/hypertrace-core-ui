@@ -3,46 +3,24 @@ import { IconLibraryTestingModule, IconType } from '@hypertrace/assets-library';
 import { NavigationService } from '@hypertrace/common';
 import { createComponentFactory, mockProvider } from '@ngneat/spectator/jest';
 import { IconModule } from '../../../../icon/icon.module';
-import { TableColumnConfigExtended, TableRow } from '../../../table-api';
 import { TableCellIconParser } from '../../data-parsers/table-cell-icon-parser';
-import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from '../../table-cell-injection';
+import { tableCellColumnProvider, tableCellProviders } from '../../test/cell-providers';
 import { IconTableCellRendererComponent } from './icon-table-cell-renderer.component';
 
 describe('Icon table cell renderer component', () => {
-  const tableCellRendererColumnProvider = (column: TableColumnConfigExtended) => ({
-    provide: TABLE_COLUMN_CONFIG,
-    useValue: column
-  });
-
-  const tableCellRendererIndexProvider = (index: number) => ({
-    provide: TABLE_COLUMN_INDEX,
-    useValue: index
-  });
-
-  const tableCellDataRendererCellDataProvider = (cellData: unknown) => ({
-    provide: TABLE_CELL_DATA,
-    useValue: cellData
-  });
-
-  const tableRowDataRendererRowDataProvider = (rowData: TableRow) => ({
-    provide: TABLE_ROW_DATA,
-    useValue: rowData
-  });
-
   const buildComponent = createComponentFactory({
     component: IconTableCellRendererComponent,
     imports: [IconModule, HttpClientTestingModule, IconLibraryTestingModule],
     providers: [
       mockProvider(NavigationService),
-      tableCellRendererColumnProvider({
-        field: 'test',
-        renderer: IconTableCellRendererComponent,
-        parser: new TableCellIconParser(undefined!),
-        filterValues: []
-      }),
-      tableCellRendererIndexProvider(0),
-      tableCellDataRendererCellDataProvider(IconType.AddCircleOutline),
-      tableRowDataRendererRowDataProvider({})
+      ...tableCellProviders(
+        {
+          id: 'test'
+        },
+        new TableCellIconParser(undefined!),
+        0,
+        IconType.AddCircleOutline
+      )
     ],
     shallow: true
   });
@@ -67,11 +45,8 @@ describe('Icon table cell renderer component', () => {
   test('should add clickable class for columns without a click handler', () => {
     const spectator = buildComponent({
       providers: [
-        tableCellRendererColumnProvider({
-          field: 'test',
-          renderer: IconTableCellRendererComponent,
-          parser: new TableCellIconParser(undefined!),
-          filterValues: [],
+        tableCellColumnProvider({
+          id: 'test',
           onClick: () => {
             /* NOOP */
           }

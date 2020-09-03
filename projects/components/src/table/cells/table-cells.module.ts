@@ -100,6 +100,6 @@ export class TableCellsModule {
   }
 
   private registerAllRenderers(cellRenderers: TableCellRendererConstructor[] = []): void {
-    this.tableCellRendererLookupService.register(...cellRenderers);
+    this.tableCellRendererLookupService.registerAll(cellRenderers, TextTableCellRendererComponent);
   }
 }

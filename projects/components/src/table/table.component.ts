@@ -34,14 +34,13 @@ import { TableDataSource } from './data/table-data-source';
 import {
   StatefulTableRow,
   TableColumnConfig,
-  TableColumnConfigExtended,
   TableMode,
   TableRow,
   TableSelectionMode,
   TableSortDirection,
   TableStyle
 } from './table-api';
-import { TableService } from './table.service';
+import { TableColumnConfigExtended, TableService } from './table.service';
 
 // tslint:disable max-file-line-count
 @Component({
@@ -68,7 +67,7 @@ import { TableService } from './table.service';
     >
       <!-- Columns -->
       <div *ngFor="let columnDef of this.columnConfigsSubject.value; index as index">
-        <ng-container [cdkColumnDef]="columnDef.field">
+        <ng-container [cdkColumnDef]="columnDef.id">
           <cdk-header-cell
             *cdkHeaderCellDef
             [style.flex-basis]="columnDef.width"
@@ -102,7 +101,7 @@ import { TableService } from './table.service';
               [columnConfig]="columnDef"
               [index]="this.columnIndex(columnDef, index)"
               [rowData]="row"
-              [cellData]="row[columnDef.field]"
+              [cellData]="row[columnDef.id]"
               (click)="this.onDataCellClick(row)"
             ></htc-table-data-cell-renderer>
           </cdk-cell>
@@ -110,7 +109,7 @@ import { TableService } from './table.service';
       </div>
 
       <!-- Expandable Detail Column -->
-      <ng-container [cdkColumnDef]="this.expandedDetailColumnConfig.field" *ngIf="this.isDetailType()">
+      <ng-container [cdkColumnDef]="this.expandedDetailColumnConfig.id" *ngIf="this.isDetailType()">
         <cdk-cell *cdkCellDef="let row" [attr.colspan]="this.columnConfigsSubject.value.length" class="expanded-cell">
           <htc-table-expanded-detail-row-cell-renderer
             *ngIf="this.isRowExpanded(row)"
@@ -137,10 +136,7 @@ import { TableService } from './table.service';
 
       <!-- Expandable Detail Rows -->
       <ng-container *ngIf="this.isDetailType()">
-        <cdk-row
-          *cdkRowDef="let row; columns: [this.expandedDetailColumnConfig.field]"
-          class="expandable-row"
-        ></cdk-row>
+        <cdk-row *cdkRowDef="let row; columns: [this.expandedDetailColumnConfig.id]" class="expandable-row"></cdk-row>
       </ng-container>
     </cdk-table>
 
@@ -177,7 +173,7 @@ export class TableComponent
   private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
 
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
-    field: '$$state',
+    id: '$$state',
     width: '32px',
     visible: true,
     display: CoreTableCellRendererType.RowExpander,
@@ -185,7 +181,7 @@ export class TableComponent
   };
 
   private readonly multiSelectRowColumnConfig: TableColumnConfig = {
-    field: '$$state',
+    id: '$$state',
     width: '32px',
     visible: true,
     display: CoreTableCellRendererType.Checkbox,
@@ -193,7 +189,7 @@ export class TableComponent
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
-    field: '$$detail'
+    id: '$$detail'
   };
 
   @Input()
@@ -366,7 +362,7 @@ export class TableComponent
 
     if (this.syncWithUrl) {
       this.navigationService.addQueryParametersToUrl({
-        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.field,
+        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.id,
         [TableComponent.SORT_DIRECTION_URL_PARAM]: columnConfig.sort
       });
     }
@@ -447,7 +443,7 @@ export class TableComponent
   public visibleColumns(): string[] {
     return this.columnConfigsSubject.value
       .filter(columnConfig => columnConfig.visible)
-      .map(columnConfig => columnConfig.field);
+      .map(columnConfig => columnConfig.id);
   }
 
   private updateSort(sort: SortedColumn): void {
@@ -599,7 +595,7 @@ export class TableComponent
       return undefined;
     }
 
-    const sortColumn = columns.find(column => column.field === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
+    const sortColumn = columns.find(column => column.id === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
     const sortDirection = params.get(TableComponent.SORT_DIRECTION_URL_PARAM) as TableSortDirection | null;
 
     return sortColumn && sortDirection

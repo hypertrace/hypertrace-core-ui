@@ -93,7 +93,7 @@ export class TableWidgetColumnModel {
 
   public asTableColumnDef(): SpecificationBackedTableColumnDef {
     return {
-      field: this.value.resultAlias(),
+      id: this.value.resultAlias(),
       name: this.value.name,
       display: this.display,
       title: this.title,

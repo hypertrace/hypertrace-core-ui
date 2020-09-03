@@ -3,7 +3,8 @@ import { TypedSimpleChanges } from '@hypertrace/common';
 import { FilterAttribute } from '../../filter-bar/filter-attribute';
 import { TableCellAlignmentType } from '../cells/types/table-cell-alignment-type';
 import { TableCdkColumnUtil } from '../data/table-cdk-column-util';
-import { TableColumnConfigExtended, TableSortDirection } from '../table-api';
+import { TableSortDirection } from '../table-api';
+import { TableColumnConfigExtended } from '../table.service';
 
 @Component({
   selector: 'htc-table-header-cell-renderer',

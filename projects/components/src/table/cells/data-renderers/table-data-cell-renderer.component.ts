@@ -4,13 +4,16 @@ import {
   ComponentFactoryResolver,
   Injector,
   Input,
+  OnChanges,
   OnInit,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
+import { TypedSimpleChanges } from '@hypertrace/common';
 import { FilterAttribute } from '../../../filter-bar/filter-attribute';
-import { TableColumnConfigExtended, TableRow } from '../../table-api';
-import { createInjector } from '../table-cell-injection';
+import { TableRow } from '../../table-api';
+import { TableColumnConfigExtended } from '../../table.service';
+import { createTableCellInjector } from '../table-cell-injection';
 import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
 
 @Component({
@@ -34,14 +37,14 @@ import { TableCellAlignmentType } from '../types/table-cell-alignment-type';
           class="filter-button"
           [metadata]="this.metadata"
           [attribute]="this.columnConfig?.attribute"
-          [value]="this.parseFilterValue()"
+          [value]="this.filterValue"
           (popoverOpen)="this.popoverOpen = $event"
         ></htc-filter-button>
       </ng-template>
     </div>
   `
 })
-export class TableDataCellRendererComponent implements OnInit {
+export class TableDataCellRendererComponent implements OnInit, OnChanges {
   @Input()
   public metadata?: FilterAttribute[];
 
@@ -63,6 +66,7 @@ export class TableDataCellRendererComponent implements OnInit {
   public alignment?: TableCellAlignmentType;
   public leftAlignFilterButton: boolean = false;
   public popoverOpen: boolean = false;
+  public filterValue: unknown;
 
   public constructor(
     private readonly injector: Injector,
@@ -75,18 +79,25 @@ export class TableDataCellRendererComponent implements OnInit {
     }
 
     if (this.index === undefined) {
-      throw new Error(`Table column index undefined for field '${this.columnConfig.field}'`);
+      throw new Error(`Table column index undefined for ID '${this.columnConfig.id}'`);
     }
 
     if (this.rowData === undefined) {
-      throw new Error(`Table row undefined for field '${this.columnConfig.field}'`);
+      throw new Error(`Table row undefined for ID '${this.columnConfig.id}'`);
     }
 
     // Dynamic Component Setup
     this.cellRenderer.createComponent(
       this.componentFactoryResolver.resolveComponentFactory(this.columnConfig.renderer),
       0,
-      createInjector(this.columnConfig, this.index, this.cellData, this.rowData, this.injector)
+      createTableCellInjector(
+        this.columnConfig,
+        this.index,
+        this.columnConfig.parser,
+        this.cellData,
+        this.rowData,
+        this.injector
+      )
     );
 
     // Allow columnConfig to override default alignment for cell renderer
@@ -94,12 +105,18 @@ export class TableDataCellRendererComponent implements OnInit {
     this.leftAlignFilterButton = this.alignment === TableCellAlignmentType.Right;
   }
 
+  public ngOnChanges(changes: TypedSimpleChanges<this>): void {
+    if (changes.cellData || changes.columnConfig) {
+      this.filterValue = this.parseFilterValue();
+    }
+  }
+
   public onClick(event: MouseEvent): void {
     if (this.columnConfig === undefined || this.rowData === undefined) {
       throw Error(`Undefined columnConfig or rowData`);
     }
 
-    if (this.isClickHandlerDefined(this.columnConfig.onClick)) {
+    if (this.columnConfig.onClick instanceof Function) {
       this.columnConfig.onClick(this.rowData, this.columnConfig);
       event.stopPropagation();
     }
@@ -107,14 +124,9 @@ export class TableDataCellRendererComponent implements OnInit {
 
   public parseFilterValue(): unknown {
     if (this.columnConfig === undefined || this.cellData === undefined) {
-      throw Error(`Undefined columnConfig or cellData`);
+      return undefined;
     }
 
     return this.columnConfig.parser.parseFilterValue(this.cellData);
-  }
-
-  // tslint:disable-next-line:ban-types
-  private isClickHandlerDefined(onClick: unknown): onClick is Function {
-    return onClick !== undefined && onClick instanceof Function;
   }
 }

@@ -1,6 +1,12 @@
 import { Directive, Inject, OnInit } from '@angular/core';
-import { TableColumnConfigExtended, TableRow } from '../table-api';
-import { TABLE_CELL_DATA, TABLE_COLUMN_CONFIG, TABLE_COLUMN_INDEX, TABLE_ROW_DATA } from './table-cell-injection';
+import { TableColumnConfig, TableRow } from '../table-api';
+import {
+  TABLE_CELL_DATA,
+  TABLE_COLUMN_CONFIG,
+  TABLE_COLUMN_INDEX,
+  TABLE_DATA_PARSER,
+  TABLE_ROW_DATA
+} from './table-cell-injection';
 import { TableCellParserBase } from './table-cell-parser-base';
 import { CoreTableCellParserType } from './types/core-table-cell-parser-type';
 import { CoreTableCellRendererType } from './types/core-table-cell-renderer-type';
@@ -20,8 +26,9 @@ export abstract class TableCellRendererBase<TCellData, TValue = TCellData> imple
   public readonly isFirstColumn: boolean = false;
 
   public constructor(
-    @Inject(TABLE_COLUMN_CONFIG) private readonly columnConfig: TableColumnConfigExtended,
+    @Inject(TABLE_COLUMN_CONFIG) private readonly columnConfig: TableColumnConfig,
     @Inject(TABLE_COLUMN_INDEX) private readonly index: number,
+    @Inject(TABLE_DATA_PARSER) private readonly parser: TableCellParserBase<TCellData, TValue, unknown>,
     @Inject(TABLE_CELL_DATA) private readonly cellData: TCellData,
     @Inject(TABLE_ROW_DATA) private readonly rowData: TableRow
   ) {
@@ -30,11 +37,9 @@ export abstract class TableCellRendererBase<TCellData, TValue = TCellData> imple
   }
 
   public ngOnInit(): void {
-    const cellParser = this.columnConfig.parser as TableCellParserBase<TCellData, TValue, unknown>;
-
-    this._value = cellParser.parseValue(this.cellData, this.rowData);
-    this._units = cellParser.parseUnits(this.cellData, this.rowData);
-    this._tooltip = cellParser.parseTooltip(this.cellData, this.rowData);
+    this._value = this.parser.parseValue(this.cellData, this.rowData);
+    this._units = this.parser.parseUnits(this.cellData, this.rowData);
+    this._tooltip = this.parser.parseTooltip(this.cellData, this.rowData);
   }
 
   public get value(): TValue {

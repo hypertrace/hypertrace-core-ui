@@ -69,14 +69,14 @@ export class WaterfallChartComponent implements OnChanges {
   public datasource?: TableDataSource<WaterfallDataNode>;
   public readonly columnDefs: TableColumnConfig[] = [
     {
-      field: '$$spanName',
+      id: '$$spanName',
       visible: true,
       sortable: false,
       title: 'Name',
       display: WaterfallTableCellType.SpanName
     },
     {
-      field: '$$iconType',
+      id: '$$iconType',
       visible: true,
       sortable: false,
       title: '',

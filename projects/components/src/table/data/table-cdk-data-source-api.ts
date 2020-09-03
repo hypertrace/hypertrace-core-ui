@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
-import { StatefulTableRow, TableColumnConfigExtended, TableMode, TableRow, TableSelectionMode } from '../table-api';
+import { StatefulTableRow, TableMode, TableRow, TableSelectionMode } from '../table-api';
+import { TableColumnConfigExtended } from '../table.service';
 import { TableDataSource } from './table-data-source';
 
 export interface TableDataSourceProvider {

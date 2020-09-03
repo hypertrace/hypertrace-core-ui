@@ -4,13 +4,8 @@ import { combineLatest, NEVER, Observable, of, Subject, throwError } from 'rxjs'
 import { catchError, debounceTime, map, mergeMap, startWith, switchMap, tap } from 'rxjs/operators';
 import { PageEvent } from '../../paginator/page.event';
 import { PaginationProvider } from '../../paginator/paginator-api';
-import {
-  RowStateChange,
-  StatefulTableRow,
-  StatefulTreeTableRow,
-  TableColumnConfigExtended,
-  TableRow
-} from '../table-api';
+import { RowStateChange, StatefulTableRow, StatefulTreeTableRow, TableRow } from '../table-api';
+import { TableColumnConfigExtended } from '../table.service';
 import { TableCdkColumnUtil } from './table-cdk-column-util';
 import {
   ColumnConfigProvider,
@@ -165,7 +160,7 @@ export class TableCdkDataSource implements DataSource<TableRow> {
     return this.columnConfigProvider.columnConfigs$.pipe(
       tap(columnConfigs => {
         this.columnConfigs.clear();
-        columnConfigs.forEach(columnConfig => this.columnConfigs.set(columnConfig.field, columnConfig));
+        columnConfigs.forEach(columnConfig => this.columnConfigs.set(columnConfig.id, columnConfig));
       })
     );
   }

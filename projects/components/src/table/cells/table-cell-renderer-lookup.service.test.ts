@@ -14,11 +14,11 @@ describe('Table cell renderer service', () => {
   test('should be able to lookup registered cell renderers', () => {
     const spectator = createService();
 
-    spectator.service.register(
+    spectator.service.registerAll([
       TextTableCellRendererComponent,
       IconTableCellRendererComponent,
       NumericTableCellRendererComponent
-    );
+    ]);
     const found = spectator.service.lookup(IconTableCellRendererComponent.type);
     expect(found).toEqual(IconTableCellRendererComponent);
   });

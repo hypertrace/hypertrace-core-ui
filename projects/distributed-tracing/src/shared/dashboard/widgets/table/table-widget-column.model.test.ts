@@ -21,7 +21,7 @@ describe('Table widget column model', () => {
     const columnDef = model.asTableColumnDef();
     expect(columnDef).toEqual(
       expect.objectContaining({
-        field: 'name',
+        id: 'name',
         title: 'Name column',
         display: CoreTableCellRendererType.Text
       })

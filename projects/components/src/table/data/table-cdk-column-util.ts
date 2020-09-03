@@ -16,7 +16,7 @@ export namespace TableCdkColumnUtil {
 
   export const unsortOtherColumns = (sortedColumn: TableColumnConfig, otherColumns: TableColumnConfig[]): void =>
     otherColumns
-      .filter(column => column.field !== sortedColumn.field)
+      .filter(column => column.id !== sortedColumn.id)
       .forEach(filteredColumn => (filteredColumn.sort = undefined));
 
   export const isColumnSortable = (columnConfig: TableColumnConfig): boolean =>

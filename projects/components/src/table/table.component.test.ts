@@ -7,7 +7,6 @@ import {
   SearchBoxComponent,
   StatefulTableRow,
   TableColumnConfig,
-  TableColumnConfigExtended,
   TableMode,
   TableSelectionMode,
   TableSortDirection
@@ -21,7 +20,7 @@ import { TableCellStringParser } from './cells/data-parsers/table-cell-string-pa
 import { TextTableCellRendererComponent } from './cells/data-renderers/text/text-table-cell-renderer.component';
 import { TableCdkRowUtil } from './data/table-cdk-row-util';
 import { TableComponent } from './table.component';
-import { TableService } from './table.service';
+import { TableColumnConfigExtended, TableService } from './table.service';
 
 // tslint:disable max-file-line-count
 describe('Table component', () => {
@@ -37,7 +36,7 @@ describe('Table component', () => {
 
   const buildColumns = (): TableColumnConfigExtended[] => [
     {
-      field: 'foo',
+      id: 'foo',
       renderer: TextTableCellRendererComponent,
       parser: new TableCellStringParser(undefined!),
       filterValues: []
@@ -246,7 +245,7 @@ describe('Table component', () => {
     expect(spectator.component.columnConfigs![0]).toEqual(
       expect.objectContaining({
         sort: TableSortDirection.Ascending,
-        field: 'foo'
+        id: 'foo'
       })
     );
   }));
@@ -303,12 +302,12 @@ describe('Table component', () => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
           expect.objectContaining({
-            field: '$$state',
+            id: '$$state',
             display: CoreTableCellRendererType.Checkbox,
             visible: true
           }),
           expect.objectContaining({
-            field: 'foo'
+            id: 'foo'
           })
         ]
       });
@@ -334,7 +333,7 @@ describe('Table component', () => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
           expect.objectContaining({
-            field: 'foo'
+            id: 'foo'
           })
         ]
       });
@@ -360,12 +359,12 @@ describe('Table component', () => {
       expectObservable(spectator.component.columnConfigs$).toBe('x', {
         x: [
           expect.objectContaining({
-            field: '$$state',
+            id: '$$state',
             display: CoreTableCellRendererType.RowExpander,
             visible: true
           }),
           expect.objectContaining({
-            field: 'foo'
+            id: 'foo'
           })
         ]
       });
