@@ -29,6 +29,7 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
           ></htc-icon>
 
           <htc-label [label]="titlecrumb.label"></htc-label>
+          <htc-beta-tag class="beta" *ngIf="this.isBeta"></htc-beta-tag>
         </div>
       </div>
 
@@ -45,6 +46,9 @@ import { NavigableTab } from '../../tabs/navigable/navigable-tab';
 export class PageHeaderComponent {
   @Input()
   public tabs?: NavigableTab[] = [];
+
+  @Input()
+  public isBeta: boolean = false;
 
   public breadcrumbs$: Observable<Breadcrumb[] | undefined> = this.breadcrumbsService.breadcrumbs$.pipe(
     map(breadcrumbs => (breadcrumbs.length > 0 ? breadcrumbs : undefined))
