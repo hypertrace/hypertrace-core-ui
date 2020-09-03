@@ -16,7 +16,8 @@ import { IconSize } from '../icon/icon-size';
           <ng-container [ngSwitch]="item.type">
             <div *ngIf="!this.collapsed">
               <div *ngSwitchCase="'${NavItemType.Header}'" class="nav-header">
-                {{ item.label }}
+                <div class="label">{{ item.label }}</div>
+                <htc-beta-tag *ngIf="item.isBeta" class="beta"></htc-beta-tag>
               </div>
             </div>
 
@@ -124,6 +125,7 @@ export interface FooterItemLinkConfig {
 export interface NavItemHeaderConfig {
   type: NavItemType.Header;
   label: string;
+  isBeta?: boolean;
 }
 
 export interface NavItemDividerConfig {
