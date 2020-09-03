@@ -1,5 +1,5 @@
-import { StandardTableCellRendererType, TableMode, TableSortDirection, TableStyle } from '@hypertrace/components';
-import { TracingTableCellRenderer } from '../../shared/components/table/tracing-table-cell-renderer';
+import { CoreTableCellRendererType, TableMode, TableSortDirection, TableStyle } from '@hypertrace/components';
+import { TracingTableCellType } from '../../shared/components/table/tracing-table-cell-type';
 import { DashboardDefaultConfiguration } from '../../shared/dashboard/dashboard-wrapper/navigable-dashboard.module';
 
 export const spanListDashboard: DashboardDefaultConfiguration = {
@@ -35,7 +35,7 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
         type: 'table-widget-column',
         title: 'Latency',
         width: '120px',
-        display: TracingTableCellRenderer.Metric,
+        display: TracingTableCellType.Metric,
         value: {
           type: 'attribute-specification',
           attribute: 'duration'
@@ -48,7 +48,7 @@ export const spanListDashboard: DashboardDefaultConfiguration = {
         type: 'table-widget-column',
         title: 'Timestamp',
         width: '220px',
-        display: StandardTableCellRendererType.Timestamp,
+        display: CoreTableCellRendererType.Timestamp,
         value: {
           type: 'attribute-specification',
           attribute: 'startTime'

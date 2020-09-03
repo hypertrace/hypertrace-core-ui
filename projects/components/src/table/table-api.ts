@@ -1,17 +1,17 @@
 import { Dictionary } from '@hypertrace/common';
 import { Observable } from 'rxjs';
-import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { TableCellAlignmentType } from './cells/types/table-cell-alignment-type';
 
 export interface TableColumnConfig {
-  field: string;
-  filterAttribute?: FilterAttribute;
+  id: string; // This is the unique ID for the column (often same as 'name' except for composite fields)
+  name?: string; // Attribute name (for composite columns use the attribute that should be filtered/sorted)
+  display?: string;
   title?: string;
   titleTooltip?: string;
-  renderer?: string;
   sort?: TableSortDirection;
   visible?: boolean;
   sortable?: boolean;
+  filterable?: boolean;
   alignment?: TableCellAlignmentType;
   width?: number | string;
   onClick?(row: TableRow, column: TableColumnConfig): void;

@@ -2,17 +2,19 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { FormatterStyle } from '@hypertrace/common';
 import {
   TableCellAlignmentType,
+  TableCellParserBase,
   TableCellRenderer,
-  TableCellRendererComponent,
+  TableCellRendererBase,
   TableColumnConfig,
   TableRow,
-  TABLE_CELL_RENDERER_CELL_DATA,
-  TABLE_CELL_RENDERER_COLUMN_CONFIG,
-  TABLE_CELL_RENDERER_COLUMN_INDEX,
-  TABLE_CELL_RENDERER_ROW_DATA
+  TABLE_CELL_DATA,
+  TABLE_COLUMN_CONFIG,
+  TABLE_COLUMN_INDEX,
+  TABLE_DATA_PARSER,
+  TABLE_ROW_DATA
 } from '@hypertrace/components';
 import { MetricAggregation } from '../../../../../shared/graphql/model/metrics/metric-aggregation';
-import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
+import { TracingTableCellType } from '../../tracing-table-cell-type';
 
 @Component({
   selector: 'htc-metric-table-cell-renderer',
@@ -28,50 +30,22 @@ import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
   `
 })
 @TableCellRenderer({
-  type: TracingTableCellRenderer.Metric,
-  alignment: TableCellAlignmentType.Right
+  type: TracingTableCellType.Metric,
+  alignment: TableCellAlignmentType.Right,
+  parser: TracingTableCellType.Metric
 })
-export class MetricTableCellRendererComponent extends TableCellRendererComponent<CellData, number> {
+export class MetricTableCellRendererComponent extends TableCellRendererBase<CellData, number> {
   public readonly formatter: FormatterStyle = FormatterStyle.None;
 
-  // Note: We have the constructor here as well due to some test weirdness triggered by the local property assignment
+  // Extending constructor required with formatter declaration above
   public constructor(
-    @Inject(TABLE_CELL_RENDERER_COLUMN_CONFIG) columnConfig: TableColumnConfig,
-    @Inject(TABLE_CELL_RENDERER_COLUMN_INDEX) index: number,
-    @Inject(TABLE_CELL_RENDERER_ROW_DATA) rowData: TableRow,
-    @Inject(TABLE_CELL_RENDERER_CELL_DATA) cellData: CellData
+    @Inject(TABLE_COLUMN_CONFIG) columnConfig: TableColumnConfig,
+    @Inject(TABLE_COLUMN_INDEX) index: number,
+    @Inject(TABLE_DATA_PARSER) parser: TableCellParserBase<CellData, number, unknown>,
+    @Inject(TABLE_CELL_DATA) cellData: number | Partial<MetricAggregation>,
+    @Inject(TABLE_ROW_DATA) rowData: TableRow
   ) {
-    super(columnConfig, index, rowData, cellData);
-  }
-
-  public parseValue(cellData: CellData): number {
-    return Math.round(this.extractValue(cellData)!);
-  }
-
-  protected parseUnits(cellData: CellData): string {
-    return this.extractUnits(cellData)!;
-  }
-
-  private extractValue(cellData: CellData): number | undefined {
-    switch (typeof cellData) {
-      case 'number':
-        return cellData;
-      case 'object':
-        return cellData.value;
-      default:
-        return undefined;
-    }
-  }
-
-  private extractUnits(cellData: CellData): string | undefined {
-    switch (typeof cellData) {
-      case 'number':
-        return undefined;
-      case 'object':
-        return cellData.units;
-      default:
-        return undefined;
-    }
+    super(columnConfig, index, parser, cellData, rowData);
   }
 }
 

@@ -19,7 +19,7 @@ import { filter, map } from 'rxjs/operators';
 import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
-import { StandardTableCellRendererType } from './cells/types/standard-table-cell-renderer-type';
+import { CoreTableCellRendererType } from './cells/types/core-table-cell-renderer-type';
 import { TableCdkColumnUtil } from './data/table-cdk-column-util';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
@@ -40,6 +40,7 @@ import {
   TableSortDirection,
   TableStyle
 } from './table-api';
+import { TableColumnConfigExtended, TableService } from './table.service';
 
 // tslint:disable max-file-line-count
 @Component({
@@ -66,7 +67,7 @@ import {
     >
       <!-- Columns -->
       <div *ngFor="let columnDef of this.columnConfigsSubject.value; index as index">
-        <ng-container [cdkColumnDef]="columnDef.field">
+        <ng-container [cdkColumnDef]="columnDef.id">
           <cdk-header-cell
             *cdkHeaderCellDef
             [style.flex-basis]="columnDef.width"
@@ -78,7 +79,6 @@ import {
               [columnConfig]="columnDef"
               [index]="index"
               [sort]="columnDef.sort"
-              [values]="this.availableValues?.get(columnDef.field)"
               (sortChange)="this.onHeaderCellClick(columnDef)"
             >
             </htc-table-header-cell-renderer>
@@ -101,7 +101,7 @@ import {
               [columnConfig]="columnDef"
               [index]="this.columnIndex(columnDef, index)"
               [rowData]="row"
-              [cellData]="row[columnDef.field]"
+              [cellData]="row[columnDef.id]"
               (click)="this.onDataCellClick(row)"
             ></htc-table-data-cell-renderer>
           </cdk-cell>
@@ -109,7 +109,7 @@ import {
       </div>
 
       <!-- Expandable Detail Column -->
-      <ng-container [cdkColumnDef]="this.expandedDetailColumnConfig.field" *ngIf="this.isDetailType()">
+      <ng-container [cdkColumnDef]="this.expandedDetailColumnConfig.id" *ngIf="this.isDetailType()">
         <cdk-cell *cdkCellDef="let row" [attr.colspan]="this.columnConfigsSubject.value.length" class="expanded-cell">
           <htc-table-expanded-detail-row-cell-renderer
             *ngIf="this.isRowExpanded(row)"
@@ -136,10 +136,7 @@ import {
 
       <!-- Expandable Detail Rows -->
       <ng-container *ngIf="this.isDetailType()">
-        <cdk-row
-          *cdkRowDef="let row; columns: [this.expandedDetailColumnConfig.field]"
-          class="expandable-row"
-        ></cdk-row>
+        <cdk-row *cdkRowDef="let row; columns: [this.expandedDetailColumnConfig.id]" class="expandable-row"></cdk-row>
       </ng-container>
     </cdk-table>
 
@@ -174,24 +171,25 @@ export class TableComponent
   private static readonly PAGE_SIZE_URL_PARAM: string = 'page-size';
   private static readonly SORT_COLUMN_URL_PARAM: string = 'sort-by';
   private static readonly SORT_DIRECTION_URL_PARAM: string = 'sort-direction';
+
   private readonly expandableToggleColumnConfig: TableColumnConfig = {
-    field: '$$state',
+    id: '$$state',
     width: '32px',
     visible: true,
-    renderer: StandardTableCellRendererType.RowExpander,
+    display: CoreTableCellRendererType.RowExpander,
     onClick: (row: StatefulTableRow) => this.toggleRowExpanded(row)
   };
 
   private readonly multiSelectRowColumnConfig: TableColumnConfig = {
-    field: '$$state',
+    id: '$$state',
     width: '32px',
     visible: true,
-    renderer: StandardTableCellRendererType.Checkbox,
+    display: CoreTableCellRendererType.Checkbox,
     onClick: (row: StatefulTableRow) => this.toggleRowSelected(row)
   };
 
   public readonly expandedDetailColumnConfig: TableColumnConfig = {
-    field: '$$detail'
+    id: '$$detail'
   };
 
   @Input()
@@ -265,34 +263,35 @@ export class TableComponent
   @ViewChild(PaginatorComponent)
   public paginator?: PaginatorComponent;
 
-  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfig[]> = new BehaviorSubject<TableColumnConfig[]>(
-    []
-  );
+  public readonly columnConfigsSubject: BehaviorSubject<TableColumnConfigExtended[]> = new BehaviorSubject<
+    TableColumnConfigExtended[]
+  >([]);
   private readonly filterSubject: BehaviorSubject<string> = new BehaviorSubject<string>('');
   private readonly rowStateSubject: BehaviorSubject<StatefulTableRow | undefined> = new BehaviorSubject<
     StatefulTableRow | undefined
   >(undefined);
-  private readonly columnStateSubject: BehaviorSubject<TableColumnConfig | undefined> = new BehaviorSubject<
-    TableColumnConfig | undefined
+  private readonly columnStateSubject: BehaviorSubject<TableColumnConfigExtended | undefined> = new BehaviorSubject<
+    TableColumnConfigExtended | undefined
   >(undefined);
 
-  public readonly columnConfigs$: Observable<TableColumnConfig[]> = this.columnConfigsSubject.asObservable();
+  public readonly columnConfigs$: Observable<TableColumnConfigExtended[]> = this.columnConfigsSubject.asObservable();
   public readonly filter$: Observable<string> = this.filterSubject.asObservable();
   public readonly rowState$: Observable<StatefulTableRow | undefined> = this.rowStateSubject.asObservable();
-  public readonly columnState$: Observable<TableColumnConfig | undefined> = this.columnStateSubject.asObservable();
+  public readonly columnState$: Observable<
+    TableColumnConfigExtended | undefined
+  > = this.columnStateSubject.asObservable();
   public readonly urlPageData$: Observable<Partial<PageEvent> | undefined> = this.activatedRoute.queryParamMap.pipe(
     map(params => this.getPageData(params))
   );
 
-  public isTableFullPage: boolean = false;
-
   public dataSource?: TableCdkDataSource;
-  public availableValues?: Map<string, unknown[]>;
+  public isTableFullPage: boolean = false;
 
   public constructor(
     private readonly changeDetector: ChangeDetectorRef,
     private readonly navigationService: NavigationService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly tableService: TableService
   ) {
     combineLatest([this.activatedRoute.queryParamMap, this.columnConfigs$])
       .pipe(
@@ -307,8 +306,8 @@ export class TableComponent
       this.isTableFullPage = this.display === TableStyle.FullPage;
     }
 
-    if (changes.columnConfigs || changes.detailContent) {
-      this.columnConfigsSubject.next(this.buildColumnConfigs());
+    if (changes.columnConfigs || changes.detailContent || changes.metadata) {
+      this.columnConfigsSubject.next(this.buildColumnConfigExtendeds());
     }
 
     if (changes.data || changes.columnConfigs || changes.pageSize || changes.pageSizeOptions || changes.pageable) {
@@ -342,8 +341,9 @@ export class TableComponent
 
     this.dataSource = this.buildDataSource();
     this.dataSource?.loadingStateChange$.subscribe(() => {
-      this.availableValues = this.getAvailableValues();
+      this.tableService.updateFilterValues(this.columnConfigsSubject.value, this.dataSource!); // Mutation! Ew!
     });
+    this.columnConfigsSubject.next(this.buildColumnConfigExtendeds());
     this.rowStateSubject.next(undefined);
     this.toggleRowSelections(this.selections);
   }
@@ -352,7 +352,7 @@ export class TableComponent
     return !!this.data && !!this.columnConfigs && (this.pageable ? !!this.paginator : true);
   }
 
-  public onHeaderCellClick(columnConfig: TableColumnConfig): void {
+  public onHeaderCellClick(columnConfig: TableColumnConfigExtended): void {
     if (TableCdkColumnUtil.isColumnSortable(columnConfig)) {
       this.updateSort({
         column: columnConfig,
@@ -362,7 +362,7 @@ export class TableComponent
 
     if (this.syncWithUrl) {
       this.navigationService.addQueryParametersToUrl({
-        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.field,
+        [TableComponent.SORT_COLUMN_URL_PARAM]: columnConfig.sort === undefined ? undefined : columnConfig.id,
         [TableComponent.SORT_DIRECTION_URL_PARAM]: columnConfig.sort
       });
     }
@@ -412,20 +412,20 @@ export class TableComponent
     return this.hasExpandableRows() ? index - 1 : index;
   }
 
-  private buildColumnConfigs(): TableColumnConfig[] {
-    if (!this.columnConfigs) {
+  private buildColumnConfigExtendeds(): TableColumnConfigExtended[] {
+    if (!this.columnConfigs || !this.dataSource) {
       return [];
     }
 
+    let colConfigs = this.columnConfigs;
+
     if (this.hasExpandableRows()) {
-      return [this.expandableToggleColumnConfig, ...this.columnConfigs];
+      colConfigs = [this.expandableToggleColumnConfig, ...this.columnConfigs];
+    } else if (this.hasMultiSelect()) {
+      colConfigs = [this.multiSelectRowColumnConfig, ...this.columnConfigs];
     }
 
-    if (this.hasMultiSelect()) {
-      return [this.multiSelectRowColumnConfig, ...this.columnConfigs];
-    }
-
-    return this.columnConfigs;
+    return this.tableService.buildExtendedColumnConfigs(colConfigs, this.dataSource, this.metadata);
   }
 
   private buildDataSource(): TableCdkDataSource | undefined {
@@ -436,20 +436,6 @@ export class TableComponent
     return new TableCdkDataSource(this, this, this, this, this, this.paginator);
   }
 
-  public getAvailableValues(): Map<string, unknown[]> {
-    const valueMap = new Map<string, unknown[]>();
-
-    if (this.dataSource === undefined) {
-      return valueMap;
-    }
-
-    this.columnConfigs?.forEach(columnConfig => {
-      valueMap.set(columnConfig.field, this.dataSource!.getValues(columnConfig));
-    });
-
-    return valueMap;
-  }
-
   public applyFilter(value: string): void {
     this.filterSubject.next(value);
   }
@@ -457,7 +443,7 @@ export class TableComponent
   public visibleColumns(): string[] {
     return this.columnConfigsSubject.value
       .filter(columnConfig => columnConfig.visible)
-      .map(columnConfig => columnConfig.field);
+      .map(columnConfig => columnConfig.id);
   }
 
   private updateSort(sort: SortedColumn): void {
@@ -604,12 +590,12 @@ export class TableComponent
       : undefined;
   }
 
-  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfig[]): Required<SortedColumn> | undefined {
+  private sortDataFromUrl(params: ParamMap, columns: TableColumnConfigExtended[]): Required<SortedColumn> | undefined {
     if (!this.syncWithUrl) {
       return undefined;
     }
 
-    const sortColumn = columns.find(column => column.field === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
+    const sortColumn = columns.find(column => column.id === params.get(TableComponent.SORT_COLUMN_URL_PARAM));
     const sortDirection = params.get(TableComponent.SORT_DIRECTION_URL_PARAM) as TableSortDirection | null;
 
     return sortColumn && sortDirection
@@ -622,6 +608,6 @@ export class TableComponent
 }
 
 interface SortedColumn {
-  column: TableColumnConfig;
+  column: TableColumnConfigExtended;
   direction?: TableSortDirection;
 }

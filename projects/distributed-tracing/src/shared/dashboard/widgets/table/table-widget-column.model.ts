@@ -1,5 +1,5 @@
 import {
-  FilterAttribute,
+  CoreTableCellRendererType,
   TableCellAlignmentType,
   TableColumnConfig,
   TableRow,
@@ -71,7 +71,7 @@ export class TableWidgetColumnModel {
     // tslint:disable-next-line: no-object-literal-type-assertion
     type: STRING_PROPERTY.type
   })
-  public display?: string;
+  public display: string = CoreTableCellRendererType.Text;
 
   @ModelProperty({
     key: 'click-handler',
@@ -91,16 +91,17 @@ export class TableWidgetColumnModel {
   })
   public sort?: TableSortDirection;
 
-  public asTableColumnDef(filterAttribute?: FilterAttribute): SpecificationBackedTableColumnDef {
+  public asTableColumnDef(): SpecificationBackedTableColumnDef {
     return {
-      field: this.value.resultAlias(),
-      filterAttribute: this.filterable ? filterAttribute : undefined,
+      id: this.value.resultAlias(),
+      name: this.value.name,
+      display: this.display,
       title: this.title,
       titleTooltip: this.titleTooltip,
-      renderer: this.display,
       alignment: this.alignment,
       width: this.width,
       visible: this.visible,
+      filterable: this.filterable,
       sort: this.sort,
       onClick: this.buildClickHandlerIfDefined(),
       specification: this.value

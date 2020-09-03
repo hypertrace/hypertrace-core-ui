@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TableCellAlignmentType, TableCellRenderer, TableCellRendererComponent } from '@hypertrace/components';
+import { TableCellAlignmentType, TableCellRenderer, TableCellRendererBase } from '@hypertrace/components';
 import { TraceStatus } from '../../../../../shared/graphql/model/schema/trace';
-import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
+import { TracingTableCellType } from '../../tracing-table-cell-type';
 
 @Component({
   selector: 'htc-status-table-cell-renderer',
@@ -16,11 +16,8 @@ import { TracingTableCellRenderer } from '../../tracing-table-cell-renderer';
   `
 })
 @TableCellRenderer({
-  type: TracingTableCellRenderer.TraceStatus,
-  alignment: TableCellAlignmentType.Left
+  type: TracingTableCellType.TraceStatus,
+  alignment: TableCellAlignmentType.Left,
+  parser: TracingTableCellType.TraceStatus
 })
-export class TraceStatusTableCellRendererComponent extends TableCellRendererComponent<TraceStatus> {
-  public parseValue(cellData: TraceStatus): TraceStatus {
-    return cellData;
-  }
-}
+export class TraceStatusTableCellRendererComponent extends TableCellRendererBase<TraceStatus> {}
