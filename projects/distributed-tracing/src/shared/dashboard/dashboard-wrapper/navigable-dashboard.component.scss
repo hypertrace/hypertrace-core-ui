@@ -1,7 +1,7 @@
 @import 'layout';
 
 :host {
-  flex: 1 1 auto; // When part of a flex layout, we want this element to take remaining space
+  flex: 1 1; // When part of a flex layout, we want this element to take remaining space
   min-height: 0;
 }
 
@@ -15,7 +15,7 @@
   }
 
   .dashboard {
-    flex: 1 1 auto;
+    flex: 1 1;
     overflow: hidden;
   }
 }
