@@ -4,7 +4,7 @@ import { WidgetRenderer } from '@hypertrace/dashboards';
 import { Renderer } from '@hypertrace/hyperdash';
 import { RendererApi, RENDERER_API } from '@hypertrace/hyperdash-angular';
 import { Observable, of } from 'rxjs';
-import { map, mergeMap, startWith, switchMap } from 'rxjs/operators';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { AttributeMetadata, toFilterType } from '../../../graphql/model/metadata/attribute-metadata';
 import { MetadataService } from '../../../services/metadata/metadata.service';
 import { TableWidgetModel } from './table-widget.model';
@@ -24,7 +24,7 @@ import { TableWidgetModel } from './table-widget.model';
       <htc-table
         class="table"
         [ngClass]="{ 'header-margin': this.model.header?.topMargin }"
-        [columnConfigs]="this.columnConfigs$ | async"
+        [columnConfigs]="this.columnConfigs"
         [metadata]="this.metadata$ | async"
         [mode]="this.model.mode"
         [selectionMode]="this.model.selectionMode"
@@ -47,7 +47,7 @@ export class TableWidgetRendererComponent
   extends WidgetRenderer<TableWidgetModel, TableDataSource<TableRow> | undefined>
   implements OnInit {
   public metadata$: Observable<FilterAttribute[]>;
-  public columnConfigs$: Observable<TableColumnConfig[]>;
+  public columnConfigs: TableColumnConfig[];
 
   public constructor(
     @Inject(RENDERER_API) api: RendererApi<TableWidgetModel>,
@@ -57,7 +57,7 @@ export class TableWidgetRendererComponent
     super(api, changeDetector);
 
     this.metadata$ = this.getScopeAttributes();
-    this.columnConfigs$ = this.getColumnConfigs();
+    this.columnConfigs = this.getColumnConfigs();
   }
 
   public getChildModel = (row: TableRow): object | undefined => this.model.getChildModel(row);
@@ -92,8 +92,8 @@ export class TableWidgetRendererComponent
     );
   }
 
-  private getColumnConfigs(): Observable<TableColumnConfig[]> {
-    return this.getScopeAttributes().pipe(mergeMap(filterAttributes => this.model.getColumns(filterAttributes)));
+  private getColumnConfigs(): TableColumnConfig[] {
+    return this.model.getColumns();
   }
 
   public onRowSelection(selections: TableRow[]): void {

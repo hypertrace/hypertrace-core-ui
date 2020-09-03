@@ -1,9 +1,9 @@
 import { LoggerService } from '@hypertrace/common';
 import { createServiceFactory, mockProvider } from '@ngneat/spectator/jest';
-import { IconTableCellRendererComponent } from './data/icon/icon-table-cell-renderer.component';
-import { NumericTableCellRendererComponent } from './data/numeric/numeric-table-cell-renderer.component';
-import { TextTableCellRendererComponent } from './data/text/text-table-cell-renderer.component';
-import { TimestampTableCellRendererComponent } from './data/timestamp/timestamp-table-cell-renderer.component';
+import { IconTableCellRendererComponent } from './data-renderers/icon/icon-table-cell-renderer.component';
+import { NumericTableCellRendererComponent } from './data-renderers/numeric/numeric-table-cell-renderer.component';
+import { TextTableCellRendererComponent } from './data-renderers/text/text-table-cell-renderer.component';
+import { TimestampTableCellRendererComponent } from './data-renderers/timestamp/timestamp-table-cell-renderer.component';
 import { TableCellRendererLookupService } from './table-cell-renderer-lookup.service';
 
 describe('Table cell renderer service', () => {

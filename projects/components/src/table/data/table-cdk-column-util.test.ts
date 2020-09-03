@@ -1,4 +1,4 @@
-import { StandardTableCellRendererType } from '../cells/types/standard-table-cell-renderer-type';
+import { CoreTableCellRendererType } from '../cells/types/core-table-cell-renderer-type';
 import { TableColumnConfig, TableSortDirection } from '../table-api';
 import { TableCdkColumnUtil } from './table-cdk-column-util';
 
@@ -9,20 +9,20 @@ describe('Table column util', () => {
   beforeEach(() => {
     dataColumnConfigs = [
       {
-        field: 'test-default',
+        id: 'test-default',
         visible: true,
         sort: TableSortDirection.Ascending,
         sortable: true
       },
       {
-        field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
+        id: 'test-text',
+        display: CoreTableCellRendererType.Text,
         sort: TableSortDirection.Descending,
         visible: true
       },
       {
-        field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
+        id: 'test-numeric',
+        display: CoreTableCellRendererType.Number,
         visible: true,
         sortable: false
       }
@@ -31,8 +31,8 @@ describe('Table column util', () => {
     columnConfigs = [
       ...dataColumnConfigs,
       {
-        field: 'test-expander',
-        renderer: StandardTableCellRendererType.RowExpander
+        id: 'test-expander',
+        display: CoreTableCellRendererType.RowExpander
       }
     ];
   });
@@ -50,19 +50,19 @@ describe('Table column util', () => {
     TableCdkColumnUtil.unsortOtherColumns(dataColumnConfigs[0], dataColumnConfigs);
     expect(dataColumnConfigs).toEqual([
       {
-        field: 'test-default',
+        id: 'test-default',
         visible: true,
         sort: TableSortDirection.Ascending,
         sortable: true
       },
       {
-        field: 'test-text',
-        renderer: StandardTableCellRendererType.Text,
+        id: 'test-text',
+        display: CoreTableCellRendererType.Text,
         visible: true
       },
       {
-        field: 'test-numeric',
-        renderer: StandardTableCellRendererType.Number,
+        id: 'test-numeric',
+        display: CoreTableCellRendererType.Number,
         visible: true,
         sortable: false
       }

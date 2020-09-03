@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, ViewChild } from '@angular/core';
 import {
+  CoreTableCellRendererType,
   SequenceSegment,
-  StandardTableCellRendererType,
   StatefulTableRow,
   TableColumnConfig,
   TableComponent,
@@ -12,7 +12,7 @@ import {
 import { of } from 'rxjs';
 
 import { TypedSimpleChanges } from '@hypertrace/common';
-import { SpanNameTableCellRendererComponent } from './span-name/span-name-table-cell-renderer.component';
+import { WaterfallTableCellType } from './span-name/span-name-cell-type';
 import { WaterfallData, WaterfallDataNode } from './waterfall-chart';
 import { WaterfallChartService } from './waterfall-chart.service';
 
@@ -69,20 +69,19 @@ export class WaterfallChartComponent implements OnChanges {
   public datasource?: TableDataSource<WaterfallDataNode>;
   public readonly columnDefs: TableColumnConfig[] = [
     {
-      field: '$$spanName',
+      id: '$$spanName',
       visible: true,
       sortable: false,
       title: 'Name',
-      renderer: SpanNameTableCellRendererComponent.SPAN_NAME
+      display: WaterfallTableCellType.SpanName
     },
     {
-      field: '$$iconType',
+      id: '$$iconType',
       visible: true,
       sortable: false,
       title: '',
       width: '48px',
-
-      renderer: StandardTableCellRendererType.Icon
+      display: CoreTableCellRendererType.Icon
     }
   ];
 
