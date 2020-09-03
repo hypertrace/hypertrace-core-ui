@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { BetaTagModule } from '../beta-tag/beta-tag.module';
 import { ButtonModule } from '../button/button.module';
 import { FeatureConfigCheckModule } from '../feature-check/feature-config-check.module';
 import { IconModule } from '../icon/icon.module';
@@ -10,7 +11,6 @@ import { LetAsyncModule } from '../let-async/let-async.module';
 import { LinkModule } from '../link/link.module';
 import { NavItemComponent } from './nav-item/nav-item.component';
 import { NavigationListComponent } from './navigation-list.component';
-import { BetaTagModule } from '../beta-tag/beta-tag.module';
 
 @NgModule({
   imports: [
