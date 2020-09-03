@@ -13,16 +13,22 @@ import { SheetOverlayComponent } from './sheet/sheet-overlay.component';
   providedIn: 'root'
 })
 export class OverlayService implements OnDestroy {
-  private activePopover?: PopoverRef;
-  private closeSubscription?: Subscription;
+  private activeSheetPopover?: PopoverRef;
+  private activeModalPopover?: PopoverRef;
+
+  private sheetCloseSubscription?: Subscription;
+  private modalCloseSubscription?: Subscription;
 
   public constructor(private readonly popoverService: PopoverService, private readonly defaultInjector: Injector) {}
 
   public ngOnDestroy(): void {
-    this.closeSubscription?.unsubscribe();
+    this.sheetCloseSubscription?.unsubscribe();
+    this.modalCloseSubscription?.unsubscribe();
   }
 
   public createSheet(config: SheetOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
+    this.activeSheetPopover?.close();
+
     const popover = this.popoverService.drawPopover({
       componentOrTemplate: SheetOverlayComponent,
       parentInjector: injector,
@@ -35,13 +41,13 @@ export class OverlayService implements OnDestroy {
 
     popover.closeOnNavigation();
 
-    this.setActivePopover(popover);
+    this.setActiveSheetPopover(popover);
 
     return popover;
   }
 
   public createModal(config: ModalOverlayConfig, injector: Injector = this.defaultInjector): PopoverRef {
-    this.activePopover?.close();
+    this.activeModalPopover?.close();
 
     const popover = this.popoverService.drawPopover({
       componentOrTemplate: ModalOverlayComponent,
@@ -56,17 +62,30 @@ export class OverlayService implements OnDestroy {
 
     popover.closeOnNavigation();
 
-    this.setActivePopover(popover);
+    this.setActiveModalPopover(popover);
 
     return popover;
   }
 
-  private setActivePopover(popover: PopoverRef): void {
-    this.closeSubscription?.unsubscribe();
-    this.activePopover?.close();
+  private setActiveSheetPopover(popover: PopoverRef): void {
+    this.sheetCloseSubscription?.unsubscribe();
+    this.activeSheetPopover?.close();
 
-    this.activePopover = popover;
-    this.activePopover.closeOnNavigation();
-    this.closeSubscription = this.activePopover.closed$.subscribe(() => (this.activePopover = undefined));
+    this.activeSheetPopover = popover;
+    this.activeSheetPopover.closeOnNavigation();
+    this.sheetCloseSubscription = this.activeSheetPopover.closed$.subscribe(
+      () => (this.activeSheetPopover = undefined)
+    );
+  }
+
+  private setActiveModalPopover(popover: PopoverRef): void {
+    this.modalCloseSubscription?.unsubscribe();
+    this.activeModalPopover?.close();
+
+    this.activeModalPopover = popover;
+    this.activeModalPopover.closeOnNavigation();
+    this.modalCloseSubscription = this.activeModalPopover.closed$.subscribe(
+      () => (this.activeModalPopover = undefined)
+    );
   }
 }
