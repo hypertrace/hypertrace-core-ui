@@ -20,6 +20,7 @@ import { FilterAttribute } from '../filter-bar/filter-attribute';
 import { PageEvent } from '../paginator/page.event';
 import { PaginatorComponent } from '../paginator/paginator.component';
 import { CoreTableCellRendererType } from './cells/types/core-table-cell-renderer-type';
+import { TableCdkColumnUtil } from './data/table-cdk-column-util';
 import { TableCdkDataSource } from './data/table-cdk-data-source';
 import {
   ColumnConfigProvider,
@@ -50,7 +51,11 @@ import { TableService } from './table.service';
   template: `
     <!-- Search -->
     <div *ngIf="this.searchable" class="table-controls">
-      <htc-search-box class="search-box" (valueChange)="this.applyFilter($event)"></htc-search-box>
+      <htc-search-box
+        class="search-box"
+        [placeholder]="this.searchPlaceholder"
+        (valueChange)="this.applyFilter($event)"
+      ></htc-search-box>
     </div>
 
     <!-- Table -->
@@ -239,6 +244,9 @@ export class TableComponent
   @Input()
   public pageSize?: number;
 
+  @Input()
+  public searchPlaceholder: string = 'Search';
+
   @Output()
   public readonly selectionsChange: EventEmitter<StatefulTableRow[]> = new EventEmitter<StatefulTableRow[]>();
 
@@ -349,10 +357,12 @@ export class TableComponent
   }
 
   public onHeaderCellClick(columnConfig: TableColumnConfigExtended): void {
-    this.updateSort({
-      column: columnConfig,
-      direction: this.getNextSortDirection(columnConfig.sort)
-    });
+    if (TableCdkColumnUtil.isColumnSortable(columnConfig)) {
+      this.updateSort({
+        column: columnConfig,
+        direction: this.getNextSortDirection(columnConfig.sort)
+      });
+    }
 
     if (this.syncWithUrl) {
       this.navigationService.addQueryParametersToUrl({
@@ -552,6 +562,12 @@ export class TableComponent
         [TableComponent.PAGE_SIZE_URL_PARAM]: pageEvent.pageSize
       });
     }
+
+    if (this.selections && this.selections.length > 0) {
+      this.selections = [];
+      this.selectionsChange.emit(this.selections);
+    }
+
     this.pageChange.emit(pageEvent);
   }
 
