@@ -88,7 +88,7 @@ export class TracesGraphQlQueryHandlerService implements GraphQlQueryHandler<Gra
   }
 
   private hasUnits(data: unknown): boolean {
-    return typeof data === 'object' && data.units !== undefined;
+    return typeof data === 'object' && data !== null && data.hasOwnProperty('units');
   }
 
   private resultUnits(specification: Specification, scope: string): Observable<string | undefined> {

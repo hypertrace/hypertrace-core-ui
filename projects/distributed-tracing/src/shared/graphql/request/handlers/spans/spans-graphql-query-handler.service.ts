@@ -89,7 +89,7 @@ export class SpansGraphQlQueryHandlerService implements GraphQlQueryHandler<Grap
   }
 
   private hasUnits(data: unknown): boolean {
-    return typeof data === 'object' && data.units !== undefined;
+    return typeof data === 'object' && data !== null && data.hasOwnProperty('units');
   }
 
   private resultUnits(specification: Specification): Observable<string | undefined> {
