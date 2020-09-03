@@ -10,6 +10,7 @@ import { LetAsyncModule } from '../let-async/let-async.module';
 import { LinkModule } from '../link/link.module';
 import { NavItemComponent } from './nav-item/nav-item.component';
 import { NavigationListComponent } from './navigation-list.component';
+import { BetaTagModule } from '../beta-tag/beta-tag.module';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { NavigationListComponent } from './navigation-list.component';
     FeatureConfigCheckModule,
     ButtonModule,
     LinkModule,
-    LabelModule
+    LabelModule,
+    BetaTagModule
   ],
   declarations: [NavigationListComponent, NavItemComponent],
   exports: [NavigationListComponent]
